@@ -1,0 +1,22 @@
+{
+  "name": "ichis_reports",
+  "version": "1.0.0",
+  "description": "",
+  "license": "BSD-3-Clause",
+  "private": true,
+  "scripts": {
+    "start": "d2-app-scripts start --allowJsxInJs --proxy http://localhost:8080",
+    "build": "d2-app-scripts build",
+    "test": "d2-app-scripts test",
+    "deploy": "d2-app-scripts deploy"
+  },
+  "devDependencies": {
+    "@dhis2/cli-app-scripts": "^12.3.0"
+  },
+  "dependencies": {
+    "@dhis2/app-runtime": "^3.14.0",
+    "axios": "^1.8.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
