@@ -1,25 +1,56 @@
-import React from 'react'
-import { useDataQuery } from '@dhis2/app-runtime'
+import React, { useEffect, useState } from "react";
 
-const query = {
-    dataElements: {
-        resource: 'dataElements',
-    },
-}
+const DataElementList = () => {
+    const [dataElements, setDataElements] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-const DataElementsList = () => {
-    const { error, loading, data } = useDataQuery(query)
+    const username = "admin";
+    const password = "district";
+    const authHeader = "Basic " + btoa(`${username}:${password}`);
 
-    if (error) return <span>Error: {error.message}</span>
-    if (loading) return <span>Loading...</span>
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch(
+                    "https://project.ccdev.org/ictprojects",
+                    {
+                        headers: {
+                            Authorization: authHeader,
+                            "Content-Type": "application/json",
+                        },
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                setDataElements(data.dataElements || []);
+            } catch (error) {
+                setError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    if (loading) return <p>Loading data elements...</p>;
+    if (error) return <p>Error fetching data: {error}</p>;
 
     return (
-        <ul>
-            {data.dataElements.dataElements.map((item) => (
-                <li key={item.id}>{item.displayName}</li>
-            ))}
-        </ul>
-    )
-}
+        <div>
+            <h2>Data Elements</h2>
+            <ul>
+                {dataElements.map((element) => (
+                    <li key={element.id}>{element.displayName}</li>
+                ))}
+            </ul>
+        </div>
+    );
+};
 
-export default DataElementsList
+export default DataElementList;

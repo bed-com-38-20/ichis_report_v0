@@ -5,13 +5,13 @@
   "license": "BSD-3-Clause",
   "private": true,
   "scripts": {
-    "start": "d2-app-scripts start --allowJsxInJs --proxy http://localhost:8080",
+    "start": "d2-app-scripts start --allowJsxInJs --proxy https://project.ccdev.org/ictprojects",
     "build": "d2-app-scripts build",
     "test": "d2-app-scripts test",
     "deploy": "d2-app-scripts deploy"
   },
   "devDependencies": {
-    "@dhis2/cli-app-scripts": "^12.3.0"
+    "@dhis2/cli-app-scripts": "^12.4.0"
   },
   "dependencies": {
     "@dhis2/app-runtime": "^3.14.0",

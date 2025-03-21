@@ -2,8 +2,9 @@ const config = {
     type: 'app',
 
     entryPoints: {
-        app: './src/App.js',
+        app: './src/App.jsx',
     },
 }
 
 module.exports = config
+
