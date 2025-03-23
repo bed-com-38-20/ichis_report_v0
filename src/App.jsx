@@ -1,10 +1,13 @@
-import React from 'react';
-import HealthRegister from './healthRegister';
+import React from "react";
+import { ReportProvider } from "./context/ReportContext"; 
+import ReportBuilder from "./components/ReportBuilder";  
 
-const App = () => (
-    <div>
-        <HealthRegister />
-    </div>
-);
+const App = () => {
+  return (
+    <ReportProvider>
+      <ReportBuilder />
+    </ReportProvider>
+  );
+};
 
 export default App;
