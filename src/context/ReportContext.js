@@ -1,14 +1,25 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 
-export const ReportContext = createContext();
+// Provide a default value to avoid undefined errors
+const ReportContext = createContext({
+    reportConfig: {
+        title: "",
+        description: "",
+        logo: "",
+        dataElements: [],
+        orgUnits: [],
+        timePeriod: "",
+    },
+    setReportConfig: () => {}, // No-op function as default
+});
 
 export const ReportProvider = ({ children }) => {
     const [reportConfig, setReportConfig] = useState({
         title: "",
         description: "",
         logo: "",
-        dataElements: [], // Ensures it's always an array
-        orgUnits: [],     // Ensures it's always an array
+        dataElements: [],
+        orgUnits: [],
         timePeriod: "",
     });
 
@@ -19,11 +30,12 @@ export const ReportProvider = ({ children }) => {
     );
 };
 
-// Ensure the context has a default value to prevent errors
 export const useReportContext = () => {
-    const context = React.useContext(ReportContext);
+    const context = useContext(ReportContext);
     if (!context) {
         throw new Error("useReportContext must be used within a ReportProvider");
     }
     return context;
 };
+
+export default ReportContext;

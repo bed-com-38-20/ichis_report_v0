@@ -1,13 +1,22 @@
 import React from "react";
-import { ReportProvider } from "./context/ReportContext"; 
-import ReportBuilder from "./components/ReportBuilder";  
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ReportProvider } from "./context/ReportContext"; // Import ReportProvider
+import SavedReports from "./pages/SavedReports";
+import ReportBuilder from "./components/ReportBuilder";
+import ViewReport from "./pages/ViewReport";
 
-const App = () => {
-  return (
-    <ReportProvider>
-      <ReportBuilder />
-    </ReportProvider>
-  );
-};
+function App() {
+    return (
+        <ReportProvider> {/* Wrap the entire Router inside ReportProvider */}
+            <Router>
+                <Routes>
+                    <Route path="/" element={<SavedReports />} />
+                    <Route path="/create-report" element={<ReportBuilder />} />
+                    <Route path="/view-report/:id" element={<ViewReport />} />
+                </Routes>
+            </Router>
+        </ReportProvider>
+    );
+}
 
 export default App;
