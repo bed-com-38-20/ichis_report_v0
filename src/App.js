@@ -1,8 +1,12 @@
-import { useDataQuery } from '@dhis2/app-runtime'
-import i18n from '@dhis2/d2-i18n'
-import React from 'react'
-import classes from './App.module.css'
-import DataElementsList from './dataElementList'
+import { useDataQuery } from '@dhis2/app-runtime';
+import i18n from '@dhis2/d2-i18n';
+import React from 'react';
+import classes from './App.module.css';
+import DataElementsList from './dataElementList';
+import TemplateDesigner from './components/TemplateDesigner';
+import ReportDesigner from './components/ReportDesigner';
+
+
 
 const query = {
     me: {
@@ -23,7 +27,10 @@ const MyApp = () => {
 
     return (
         <div className={classes.container}>
-                <DataElementsList />
+            <h1>DHIS2 Custom Report & Template Designer</h1>
+           
+            <TemplateDesigner />
+            <ReportDesigner />
         </div>
     )
 }
