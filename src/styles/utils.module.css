@@ -1,0 +1,16 @@
+.card {
+    height: min-content !important;
+    padding: 3px;
+}
+
+.noBorder {
+    border: none !important;
+}
+
+table.noBorder tbody tr:last-child > * {
+    border-bottom: none;
+}
+
+.cell {
+    vertical-align: top;
+}

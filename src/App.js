@@ -1,37 +1,29 @@
-import { useDataQuery } from '@dhis2/app-runtime';
-import i18n from '@dhis2/d2-i18n';
-import React from 'react';
-import classes from './App.module.css';
-import DataElementsList from './dataElementList';
-import TemplateDesigner from './components/TemplateDesigner';
-import ReportDesigner from './components/ReportDesigner';
+import React from 'react'
+import { HashRouter, Switch, Route } from 'react-router-dom'
+import './locales'
+import './styles/modalFix.css'
 
-
-
-const query = {
-    me: {
-        resource: 'me',
-    },
-}
+import globalStyles from './styles/global.style'
+import classes from './App.module.css'
+import { TABLES } from './modules/paths'
+import { Tables, NoMatch } from './pages'
+import { Navigation } from './navigation'
 
 const MyApp = () => {
-    const { error, loading, data } = useDataQuery(query)
-
-    if (error) {
-        return <span>{i18n.t('ERROR')}</span>
-    }
-
-    if (loading) {
-        return <span>{i18n.t('Loading...')}</span>
-    }
-
     return (
-        <div className={classes.container}>
-            <h1>DHIS2 Custom Report & Template Designer</h1>
-           
-            <TemplateDesigner />
-            <ReportDesigner />
-        </div>
+        <HashRouter>
+            <div className={classes.container}>
+                <main className={classes.right}>
+                    <Switch>
+                        <Route path={TABLES} component={Tables} />
+                        <Route component={NoMatch} />
+                    </Switch>
+                </main>
+            </div>
+            <style jsx global>
+                {globalStyles}
+            </style>
+        </HashRouter>
     )
 }
 

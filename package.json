@@ -6,6 +6,7 @@
   "private": true,
   "scripts": {
     "start": "d2-app-scripts start --allowJsxInJs --proxy https://project.ccdev.org/ictprojects",
+    "apiVersion": "37",
     "build": "d2-app-scripts build",
     "test": "d2-app-scripts test",
     "deploy": "d2-app-scripts deploy"
@@ -14,13 +15,20 @@
     "@dhis2/cli-app-scripts": "^12.3.0"
   },
   "dependencies": {
+    "@dhis2/analytics": "^26.13.2",
+    "@dhis2/app-adapter": "^12.5.1",
     "@dhis2/app-runtime": "^3.14.0",
+    "@dhis2/app-service-datastore": "^1.0.0-beta.3",
     "@dhis2/app-shell": "^12.5.1",
     "@dnd-kit/core": "^6.3.1",
+    "@material-ui/core": "^4.12.4",
     "@shadcn/ui": "^0.0.4",
     "axios": "^1.8.3",
+    "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-router-dom": "^7.4.1",
+    "react-to-print": "^3.0.5",
     "recharts": "^2.15.1",
     "vite": "^6.2.3"
   }
