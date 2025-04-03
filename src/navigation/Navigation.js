@@ -1,5 +1,5 @@
 import React from 'react'
-import { useHistory, useRouteMatch } from 'react-router-dom'
+import { useNavigate, useMatch } from 'react-router-dom'
 import  PropTypes from 'prop-types';
 import { Menu, MenuItem } from '@dhis2/ui'
 import i18n from '../locales'
@@ -7,10 +7,10 @@ import { TABLES, REPORTS, HELP } from '../modules/paths'
 
 const NavigationItem = ({ path, label }) => {
     // browser history object
-    const history = useHistory()
+    const history = useNavigate()
 
     // "null" when not active, "object" when active
-    const routeMatch = useRouteMatch(path)
+    const routeMatch = useMatch(path)
     // If "isActive" is not null and "isActive.isExact" is true
     const isActive = path === '/' ? routeMatch?.isExact : !!routeMatch
 

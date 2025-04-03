@@ -1,5 +1,5 @@
 import React from 'react'
-import { PropTypes }  from 'prop-types'
+// import PropTypes from 'prop-types'
 import i18n from '../../locales'
 import { useSavedObjectList } from '@dhis2/app-service-datastore'
 import {
@@ -12,7 +12,7 @@ import {
     TableCell,
     TableCellHead,
 } from '@dhis2/ui'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import {
     CreateNewTableTemplate,
@@ -29,7 +29,7 @@ import { CreateExampleTable } from './saved-table-templates/CreateExampleTable'
 // - Rename 'template' to 'table'
 
 export function SavedTableTemplates() {
-    const history = useHistory()
+    const navigate = useNavigate()
     const [savedTableTemplates, tableTemplateActions] = useSavedObjectList({
         global: true,
     })
@@ -76,7 +76,7 @@ export function SavedTableTemplates() {
                         >
                             <SavedTableTemplateActions
                                 onGenerate={() =>
-                                    history.push(
+                                    navigate(
                                         getPath(GENERATED_TABLE, template.id)
                                     )
                                 }

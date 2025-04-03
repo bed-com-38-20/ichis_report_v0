@@ -1,7 +1,6 @@
 import React, { useContext, useReducer } from 'react'
 import PropTypes from 'prop-types'
-//import { Redirect } from 'react-router-dom'
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from 'react-router-dom'
 import { useSavedObject } from '@dhis2/app-service-datastore'
 import tableReducer from '../reducers/tableReducer'
 

@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react'
 import { Button, ButtonStrip, Card, Help } from '@dhis2/ui'
 import i18n from '../../locales'
 import { useReactToPrint } from 'react-to-print'
-import { useHistory, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import BackButton from '../../components/BackButton'
 import Icon from '../../components/Icon'
@@ -25,7 +25,7 @@ export function isAllPopulatedInTable(key, table) {
 }
 
 export function GeneratedTable() {
-    const history = useHistory()
+    const history = useNavigate()
     const { id } = useParams()
     const table = useTableState()
 

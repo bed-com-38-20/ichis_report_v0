@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react'
-import { PropTypes } from 'prop-types'
+import PropTypes from 'prop-types'
 
 const OrgUnitFootnotesContext = React.createContext()
 const PeriodFootnotesContext = React.createContext()

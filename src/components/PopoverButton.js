@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import { PropTypes }  from 'prop-types'
+import PropTypes from 'prop-types'
 import { Popover } from '@dhis2/ui'
 
 import IconTooltipButton from './IconTooltipButton'

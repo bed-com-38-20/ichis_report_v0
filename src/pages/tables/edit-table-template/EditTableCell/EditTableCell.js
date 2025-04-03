@@ -1,6 +1,6 @@
 import React from 'react'
 import { Divider, TableCell } from '@dhis2/ui'
-import { PropTypes } from '@dhis2/prop-types'
+import PropTypes from 'prop-types';
 
 import { UPDATE_CELL } from '../../../../reducers/tableReducer'
 import { DATA, TEXT, EMPTY } from '../../../../modules/contentTypes'

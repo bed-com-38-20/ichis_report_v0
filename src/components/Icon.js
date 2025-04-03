@@ -1,6 +1,6 @@
 import React from 'react'
 import { colors } from '@dhis2/ui'
-import { PropTypes }  from 'prop-types'
+import PropTypes from 'prop-types'
 
 function Icon({
     name,

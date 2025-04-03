@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { PropTypes }  from 'prop-types'
+// import PropTypes from 'prop-types'
 import {
     ButtonStrip,
     Card,
@@ -10,7 +10,7 @@ import {
     TableBody,
     TableRow,
 } from '@dhis2/ui'
-import { useParams, useHistory } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import styles from './styles/EditTableTemplate.style'
 import {
@@ -33,7 +33,7 @@ export function EditTableTemplate() {
     const params = useParams()
     const table = useTableState()
     const dataStoreActions = useTableActions()
-    const history = useHistory()
+    const history = useNavigate()
 
     // Save table to datastore in response to changes
     // TODO: Move to TableProvider?

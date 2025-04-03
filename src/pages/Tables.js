@@ -1,8 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { DataStoreProvider } from '@dhis2/app-service-datastore'
-import { Switch, Route } from 'react-router-dom'
-
 import {
     EditTableTemplate,
     SavedTableTemplates,
@@ -10,45 +8,42 @@ import {
 } from './tables/index'
 import { TableProvider } from '../context/tableContext'
 import NoMatch from './NoMatch'
+import { Routes, Route, useParams } from 'react-router-dom'
 
-/**
- * A problem: editing some value on a table in the 'edit' view, then navigating
- * to the 'Generated' view will not show the changes made in the 'edit' view.
- * Refreshing page loads correct (newly updated) values.
- * (Fixed by tracking table state more closely with context.)
- *
- * UPDATE: This may be related to app-service-datastore behavior
- */
 
-export function Tables({ match }) {
+const EditTableWrapper = () => {
+    const { id } = useParams()
+    return (
+        <TableProvider id={id}>
+            <EditTableTemplate />
+        </TableProvider>
+    )
+}
+
+const GeneratedTableWrapper = () => {
+    const { id } = useParams()
+    return (
+        <TableProvider id={id}>
+            <GeneratedTable />
+        </TableProvider>
+    )
+}
+
+export function Tables() {
     return (
         <DataStoreProvider namespace="tableTemplates">
-            <Switch>
-                <Route path={match.url + '/edit/:id'}>
-                    {({ match: idMatch }) => (
-                        <TableProvider id={idMatch.params.id}>
-                            <EditTableTemplate />
-                        </TableProvider>
-                    )}
-                </Route>
-                <Route path={match.url + '/generated/:id'}>
-                    {({ match: idMatch }) => (
-                        <TableProvider id={idMatch.params.id}>
-                            <GeneratedTable />
-                        </TableProvider>
-                    )}
-                </Route>
-                <Route exact path={match.url}>
-                    <SavedTableTemplates />
-                </Route>
-                <Route component={NoMatch} />
-            </Switch>
+            <Routes> {/* ✅ Use Routes instead of Switch */}
+                <Route path="edit/:id" element={<EditTableWrapper />} /> 
+                <Route path="generated/:id" element={<GeneratedTableWrapper />} />
+                <Route path="/" element={<SavedTableTemplates />} />
+                <Route path="*" element={<NoMatch />} /> 
+            </Routes>
         </DataStoreProvider>
     )
 }
 
 Tables.propTypes = {
-    match: PropTypes.shape({ url: PropTypes.string }).isRequired,
+    match: PropTypes.shape({ url: PropTypes.string }), 
 }
 
 export default Tables

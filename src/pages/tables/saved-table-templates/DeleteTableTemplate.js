@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { MenuItem } from '@dhis2/ui'
 import PropTypes from 'prop-types'
+
 import Icon from '../../../components/Icon'
 import ConfirmModal from '../../../components/ConfirmModal'
 import i18n from '../../../locales'

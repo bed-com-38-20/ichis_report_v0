@@ -1,5 +1,5 @@
 import React from 'react'
-import { PropTypes }  from 'prop-types'
+import PropTypes from 'prop-types'
 import { Tooltip, colors } from '@dhis2/ui'
 import i18n from '../locales'
 import { HELP } from '../modules/paths'

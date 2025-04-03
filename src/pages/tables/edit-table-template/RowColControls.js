@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { PropTypes } from '@dhis2/prop-types'
+import PropTypes from 'prop-types';
 import { Divider, FlyoutMenu, MenuItem, TableCellHead } from '@dhis2/ui'
 import {
     DELETE_ROW,

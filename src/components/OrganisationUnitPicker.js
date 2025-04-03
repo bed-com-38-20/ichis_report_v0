@@ -1,5 +1,5 @@
 import React from 'react'
-import { PropTypes }  from 'prop-types'
+import PropTypes from 'prop-types'
 import { OrganisationUnitTree, CircularLoader } from '@dhis2/ui'
 import { useDataQuery } from '@dhis2/app-runtime'
 

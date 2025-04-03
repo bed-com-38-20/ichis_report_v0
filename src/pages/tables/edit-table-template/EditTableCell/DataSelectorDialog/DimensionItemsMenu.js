@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { PropTypes } from '@dhis2/prop-types'
+import PropTypes from 'prop-types';
 import { Menu, MenuItem, colors } from '@dhis2/ui'
 import throttle from 'lodash/throttle'
 

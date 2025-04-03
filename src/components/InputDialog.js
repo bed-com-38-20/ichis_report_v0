@@ -8,7 +8,7 @@ import {
     ButtonStrip,
     InputField,
 } from '@dhis2/ui'
-import { PropTypes }  from 'prop-types'
+import PropTypes from 'prop-types'
 import i18n from '../locales'
 
 function InputDialog({
