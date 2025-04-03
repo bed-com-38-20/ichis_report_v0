@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+
+.container {
+    min-height: 100vh;
+    display: flex;
+    font-size: 1rem;
+}
+
+.left {
+    width: 200px;
+    min-height: 100vh;
+    padding-top: 20px;
+}
+
+.right {
+    flex-grow: 1;
+    min-height: 100vh;
+    padding: 26px 3rem 5rem;
+    background: #fbfcfd;
+}
