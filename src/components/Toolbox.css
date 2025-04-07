@@ -1,0 +1,40 @@
+.toolbox {
+    padding: 16px;
+    height: 100%;
+    overflow-y: auto;
+  }
+  
+  .toolbox-section {
+    margin-bottom: 16px;
+  }
+  
+  .toolbox-section h4 {
+    margin: 8px 0;
+    color: #555;
+    font-size: 14px;
+  }
+  
+  .toolbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    margin: 4px 0;
+    background: #f5f5f5;
+    border-radius: 4px;
+    cursor: grab;
+    user-select: none;
+  }
+  
+  .toolbox-item:hover {
+    background: #e0e0e0;
+  }
+  
+  .toolbox-item:active {
+    cursor: grabbing;
+  }
+  
+  .toolbox-item svg {
+    width: 16px;
+    height: 16px;
+  }

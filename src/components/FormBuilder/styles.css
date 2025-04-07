@@ -1,0 +1,52 @@
+/* src/components/FormBuilder/styles.css */
+.form-builder {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .builder-container {
+    display: flex;
+    width: 100%;
+    padding: 20px;
+    gap: 20px;
+  }
+  
+  .field-types-panel {
+    width: 250px;
+    padding: 16px;
+    background: #f5f7fa;
+    border-radius: 4px;
+  }
+  
+  .field-types {
+    display: grid;
+    gap: 8px;
+  }
+  
+  .field-type {
+    padding: 12px;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .field-type:hover {
+    background: #e8f4fd;
+    border-color: #2c6693;
+  }
+  
+  .form-preview {
+    flex: 1;
+    padding: 16px;
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  
+  .field-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }

@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-04-03T20:52:08.112Z\n"
-"PO-Revision-Date: 2025-04-03T20:52:08.113Z\n"
+"POT-Creation-Date: 2025-04-05T08:23:38.231Z\n"
+"PO-Revision-Date: 2025-04-05T08:23:38.232Z\n"
 
 msgid "Back"
 msgstr "Back"
@@ -353,8 +353,14 @@ msgstr "Back to Saved Tables"
 msgid "Edit Table"
 msgstr "Edit Table"
 
-msgid "Oops! Something went wrong."
-msgstr "Oops! Something went wrong."
+msgid "No data available"
+msgstr "No data available"
+
+msgid "Error loading data"
+msgstr "Error loading data"
+
+msgid "No data item configured"
+msgstr "No data item configured"
 
 msgid "{{id}}{{c}} {{description}}"
 msgstr "{{id}}{{c}} {{description}}"
