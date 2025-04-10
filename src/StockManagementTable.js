@@ -1,8 +1,10 @@
 import React from 'react';
 import { DataTable, DataTableRow, DataTableCell, InputField } from '@dhis2/ui';
 
+
+
 const StockManagementTable = ({ config, onCellValueChange }) => {
-  const { columns, items, data } = config;
+  const { columns = [], items = [], data = {} } = config || {};
 
   const handleCellChange = (itemId, columnId, value) => {
     onCellValueChange(itemId, columnId, value);

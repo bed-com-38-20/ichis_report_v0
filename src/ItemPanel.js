@@ -1,59 +1,78 @@
 import React from 'react';
+import { useDrag } from 'react-dnd';
 import { Card } from '@dhis2/ui';
-import DraggableItem from './DraggableItem';
 
 const ItemPanel = () => {
-  // Sample items  
-  const columnItems = [
-    { id: 'col-a', name: '(A) Beginning Stock', type: 'column' },
-    { id: 'col-b', name: '(B) Dispensed', type: 'column' },
-    { id: 'col-c', name: '(C) Losses', type: 'column' },
-    { id: 'col-d', name: '(D) Adjustment', type: 'column' },
-    { id: 'col-e', name: '(E) Received', type: 'column' },
-    { id: 'col-f', name: '(F) New Stock', type: 'column' },
-    { id: 'col-g', name: '(G) Days Out of Stock', type: 'column' },
-    { id: 'col-h', name: '(H) 7+ Days Stock Out', type: 'column' }
+  const availableColumns = [
+    { id: 'col-a', name: '(A) Beginning Stock', type: 'COLUMN' },
+    { id: 'col-b', name: '(B) Dispensed', type: 'COLUMN' },
+    { id: 'col-c', name: '(C) Losses', type: 'COLUMN' },
+    { id: 'col-d', name: '(D) Adjustment', type: 'COLUMN' },
+    { id: 'col-e', name: '(E) Received', type: 'COLUMN' },
+    { id: 'col-f', name: '(F) New Stock', type: 'COLUMN' },
+    { id: 'col-g', name: '(G) Days Out of Stock', type: 'COLUMN' },
+    { id: 'col-h', name: '(H) 7+ Days Stock Out', type: 'COLUMN' }
   ];
 
-  // Sample drug/supply items  
-  const drugItems = [
-    { id: 'drug1', name: 'LA 6-1', type: 'drug', unit: 'Tablet' },
-    { id: 'drug2', name: 'LA 6-2', type: 'drug', unit: 'Tablet' },
-    { id: 'drug3', name: 'Recall Attesturele', type: 'drug', unit: 'Supp.' },
-    { id: 'drug4', name: 'RDT', type: 'drug', unit: 'Kits' },
-    { id: 'drug5', name: 'Paracetamol', type: 'drug', unit: 'Tablet' },
-    { id: 'drug6', name: 'ORS', type: 'drug', unit: 'Sachet' },
-    { id: 'drug7', name: 'Zinc', type: 'drug', unit: 'Tablet' },
-    { id: 'drug8', name: 'Amoxicillin', type: 'drug', unit: 'Tablets' },
-    { id: 'drug9', name: 'Eye ointment', type: 'drug', unit: 'Tube' },
-    { id: 'drug10', name: 'Glove disposable', type: 'drug', unit: 'Pair' }
+  const availableItems = [
+    { id: 'item1', name: 'LA 6-1', unit: 'Tablet', type: 'ITEM' },
+    { id: 'item2', name: 'LA 6-2', unit: 'Tablet', type: 'ITEM' },
+    { id: 'item3', name: 'Recall Attesturele', unit: 'Supp.', type: 'ITEM' },
+    { id: 'item4', name: 'RDT', unit: 'Kits', type: 'ITEM' },
+    { id: 'item5', name: 'Paracetamol', unit: 'Tablet', type: 'ITEM' },
+    { id: 'item6', name: 'ORS', unit: 'Sachet', type: 'ITEM' },
+    { id: 'item7', name: 'Zinc', unit: 'Tablet', type: 'ITEM' },
+    { id: 'item8', name: 'Amoxicillin', unit: 'Tablets', type: 'ITEM' },
+    { id: 'item9', name: 'Eye ointment', unit: 'Tube', type: 'ITEM' },
+    { id: 'item10', name: 'Glove disposable', unit: 'Pair', type: 'ITEM' }
   ];
 
   return (
     <Card style={styles.card}>
-      <h4 style={styles.sectionTitle}>Report Components</h4>
+      <h4 style={styles.sectionTitle}>Drag to Build Report</h4>
       
       <div style={styles.section}>
         <h5 style={styles.subtitle}>Table Columns</h5>
-        {columnItems.map(item => (
-          <DraggableItem key={item.id} item={item} />
+        {availableColumns.map(item => (
+          <DraggableBox key={item.id} item={item} />
         ))}
       </div>
       
       <div style={styles.section}>
         <h5 style={styles.subtitle}>Drugs/Supplies</h5>
-        {drugItems.map(item => (
-          <DraggableItem key={item.id} item={item} />
+        {availableItems.map(item => (
+          <DraggableBox key={item.id} item={item} />
         ))}
       </div>
-
-      <div style={styles.section}>
-        <h5 style={styles.subtitle}>Form Elements</h5>
-        <DraggableItem item={{ id: 'input', name: 'Text Input', type: 'element' }} />
-        <DraggableItem item={{ id: 'checkbox', name: 'Checkbox', type: 'element' }} />
-        <DraggableItem item={{ id: 'signature', name: 'Signature Line', type: 'element' }} />
-      </div>
     </Card>
+  );
+};
+
+const DraggableBox = ({ item }) => {
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: item.type,
+    item: item,
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  }));
+
+  return (
+    <div
+      ref={drag}
+      style={{
+        opacity: isDragging ? 0.5 : 1,
+        cursor: 'move',
+        marginBottom: '8px',
+        padding: '8px',
+        border: '1px solid #e0e0e0',
+        borderRadius: '4px',
+        backgroundColor: isDragging ? '#f0f7ff' : '#f9f9f9'
+      }}
+    >
+      {item.name}
+      {item.unit && <span style={{ color: '#666', marginLeft: '8px' }}>({item.unit})</span>}
+    </div>
   );
 };
 
@@ -61,7 +80,7 @@ const styles = {
   card: {
     marginTop: '16px',
     padding: '16px',
-    height: 'calc(100vh - 400px)',
+    height: 'calc(100vh - 300px)',
     overflowY: 'auto'
   },
   sectionTitle: {
