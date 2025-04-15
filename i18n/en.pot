@@ -5,11 +5,437 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-03-15T05:52:33.300Z\n"
-"PO-Revision-Date: 2025-03-15T05:52:33.301Z\n"
+"POT-Creation-Date: 2025-04-14T22:52:55.829Z\n"
+"PO-Revision-Date: 2025-04-14T22:52:55.829Z\n"
 
-msgid "ERROR"
-msgstr "ERROR"
+msgid "Data"
+msgstr "Data"
 
-msgid "Loading..."
-msgstr "Loading..."
+msgid "Text"
+msgstr "Text"
+
+msgid "Empty"
+msgstr "Empty"
+
+msgid "Reporting rate"
+msgstr "Reporting rate"
+
+msgid "Reporting rate on time"
+msgstr "Reporting rate on time"
+
+msgid "Actual reports"
+msgstr "Actual reports"
+
+msgid "Actual reports on time"
+msgstr "Actual reports on time"
+
+msgid "Expected reports"
+msgstr "Expected reports"
+
+msgid "Program"
+msgstr "Program"
+
+msgid "Select a program"
+msgstr "Select a program"
+
+msgid "Indicators"
+msgstr "Indicators"
+
+msgid "Select indicator group"
+msgstr "Select indicator group"
+
+msgid "[ All groups ]"
+msgstr "[ All groups ]"
+
+msgid "Data elements"
+msgstr "Data elements"
+
+msgid "Select data element group"
+msgstr "Select data element group"
+
+msgid "[ All data elements ]"
+msgstr "[ All data elements ]"
+
+msgid "Data sets"
+msgstr "Data sets"
+
+msgid "Select data sets"
+msgstr "Select data sets"
+
+msgid "[ All metrics ]"
+msgstr "[ All metrics ]"
+
+msgid "Event data items"
+msgstr "Event data items"
+
+msgid "Program indicators"
+msgstr "Program indicators"
+
+msgid "No data items found in instance. Add some data items to see example columns"
+msgstr "No data items found in instance. Add some data items to see example columns"
+
+msgid "Home"
+msgstr "Home"
+
+msgid "Custom tables"
+msgstr "Custom tables"
+
+msgid "Custom reports"
+msgstr "Custom reports"
+
+msgid "Help"
+msgstr "Help"
+
+msgid "Menu header"
+msgstr "Menu header"
+
+msgid "Generate Table"
+msgstr "Generate Table"
+
+msgid "View & Edit"
+msgstr "View & Edit"
+
+msgid "Delete"
+msgstr "Delete"
+
+msgid "Custom Tables"
+msgstr "Custom Tables"
+
+msgid ""
+"Create, view, and edit custom tables. Text and data contents of the table "
+"can be chosen on a cell-by-cell basis."
+msgstr ""
+"Create, view, and edit custom tables. Text and data contents of the table "
+"can be chosen on a cell-by-cell basis."
+
+msgid "View Tables"
+msgstr "View Tables"
+
+msgid "Custom Reports"
+msgstr "Custom Reports"
+
+msgid ""
+"Create, view, and edit custom reports. Add text, images, and DHIS assets to "
+"a printable and downloadable report document."
+msgstr ""
+"Create, view, and edit custom reports. Add text, images, and DHIS assets to "
+"a printable and downloadable report document."
+
+msgid "View Reports"
+msgstr "View Reports"
+
+msgid "View instructions for using the Custom Tables and Custom Reports tools."
+msgstr "View instructions for using the Custom Tables and Custom Reports tools."
+
+msgid "View Instructions"
+msgstr "View Instructions"
+
+msgid "Add {{type}}"
+msgstr "Add {{type}}"
+
+msgid "New {{type}}"
+msgstr "New {{type}}"
+
+msgid "{{type}} Name"
+msgstr "{{type}} Name"
+
+msgid "Enter a name"
+msgstr "Enter a name"
+
+msgid "Changes are saved automatically. Last saved at {{time}}."
+msgstr "Changes are saved automatically. Last saved at {{time}}."
+
+msgid "Content type"
+msgstr "Content type"
+
+msgid "Same as table"
+msgstr "Same as table"
+
+msgid "Same as column"
+msgstr "Same as column"
+
+msgid "Same as row"
+msgstr "Same as row"
+
+msgid "Data Item"
+msgstr "Data Item"
+
+msgid "None"
+msgstr "None"
+
+msgid "Select data"
+msgstr "Select data"
+
+msgid "Organisation unit(s)"
+msgstr "Organisation unit(s)"
+
+msgid "Select during generation"
+msgstr "Select during generation"
+
+msgid "Select organisation unit(s)"
+msgstr "Select organisation unit(s)"
+
+msgid "Period(s)"
+msgstr "Period(s)"
+
+msgid "Select period(s)"
+msgstr "Select period(s)"
+
+msgid "Highlighting rules"
+msgstr "Highlighting rules"
+
+msgid "Configure highlighting for cell"
+msgstr "Configure highlighting for cell"
+
+msgid "Configure highlighting intervals for this cell"
+msgstr "Configure highlighting intervals for this cell"
+
+msgid "Choose data for cell"
+msgstr "Choose data for cell"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Save"
+msgstr "Save"
+
+msgid "Data Type"
+msgstr "Data Type"
+
+msgid "Totals"
+msgstr "Totals"
+
+msgid "Details"
+msgstr "Details"
+
+msgid "Detail"
+msgstr "Detail"
+
+msgid "Search"
+msgstr "Search"
+
+msgid "Static Text"
+msgstr "Static Text"
+
+msgid "No text selected"
+msgstr "No text selected"
+
+msgid "Edit text"
+msgstr "Edit text"
+
+msgid "Cell text"
+msgstr "Cell text"
+
+msgid "Enter text"
+msgstr "Enter text"
+
+msgid "Enter static text for cell"
+msgstr "Enter static text for cell"
+
+msgid "Generate Report"
+msgstr "Generate Report"
+
+msgid "Really delete this template?"
+msgstr "Really delete this template?"
+
+msgid "Confirm deletion"
+msgstr "Confirm deletion"
+
+msgid "Lower bounds{{colon}} {{-intervalString}}"
+msgstr "Lower bounds{{colon}} {{-intervalString}}"
+
+msgid "Enable highlighting"
+msgstr "Enable highlighting"
+
+msgid "Highlight cells based on value"
+msgstr "Highlight cells based on value"
+
+msgid "Configure highlighting"
+msgstr "Configure highlighting"
+
+msgid "This value must be lower than the lower bound of the interval above it."
+msgstr "This value must be lower than the lower bound of the interval above it."
+
+msgid "This value must be higher than the lower bound of the interval below it."
+msgstr "This value must be higher than the lower bound of the interval below it."
+
+msgid "All values"
+msgstr "All values"
+
+msgid "No lower bound"
+msgstr "No lower bound"
+
+msgid "Edit Highlighting Intervals"
+msgstr "Edit Highlighting Intervals"
+
+msgid "Lower bound of interval"
+msgstr "Lower bound of interval"
+
+msgid "Color"
+msgstr "Color"
+
+msgid "Reset"
+msgstr "Reset"
+
+msgid "Table name"
+msgstr "Table name"
+
+msgid "Rename table"
+msgstr "Rename table"
+
+msgid "Move row up"
+msgstr "Move row up"
+
+msgid "Move row down"
+msgstr "Move row down"
+
+msgid "Move column left"
+msgstr "Move column left"
+
+msgid "Move column right"
+msgstr "Move column right"
+
+msgid "Assign dimensions to {{name}}"
+msgstr "Assign dimensions to {{name}}"
+
+msgid "Organisation Unit(s)"
+msgstr "Organisation Unit(s)"
+
+msgid "Configure highlighting for {{name}}"
+msgstr "Configure highlighting for {{name}}"
+
+msgid "Edit"
+msgstr "Edit"
+
+msgid "{{name}} actions"
+msgstr "{{name}} actions"
+
+msgid "Data item"
+msgstr "Data item"
+
+msgid "Select data item for {{name}}"
+msgstr "Select data item for {{name}}"
+
+msgid "Select organisation unit(s) for {{name}}"
+msgstr "Select organisation unit(s) for {{name}}"
+
+msgid "Do you want to delete this {{name}}?"
+msgstr "Do you want to delete this {{name}}?"
+
+msgid "Edit {{ name }}"
+msgstr "Edit {{ name }}"
+
+msgid "{{name}} name"
+msgstr "{{name}} name"
+
+msgid "Enter {{name}} name"
+msgstr "Enter {{name}} name"
+
+msgid ""
+"Configure highlighting intervals for this {{name}}. Highlighting for each "
+"cell can be configured independently thereafter."
+msgstr ""
+"Configure highlighting intervals for this {{name}}. Highlighting for each "
+"cell can be configured independently thereafter."
+
+msgid "Clear"
+msgstr "Clear"
+
+msgid "Back to Saved Tables"
+msgstr "Back to Saved Tables"
+
+msgid "Edit Table"
+msgstr "Edit Table"
+
+msgid "No data available"
+msgstr "No data available"
+
+msgid "Error loading data"
+msgstr "Error loading data"
+
+msgid "No data item configured"
+msgstr "No data item configured"
+
+msgid "{{id}}{{c}} {{description}}"
+msgstr "{{id}}{{c}} {{description}}"
+
+msgid "Organisation Units{{c}}"
+msgstr "Organisation Units{{c}}"
+
+msgid "Periods{{c}}"
+msgstr "Periods{{c}}"
+
+msgid "Report parameters"
+msgstr "Report parameters"
+
+msgid ""
+"The parameter(s) chosen below will apply to all data cells that do not have "
+"that parameter specified in the template."
+msgstr ""
+"The parameter(s) chosen below will apply to all data cells that do not have "
+"that parameter specified in the template."
+
+msgid "Generate"
+msgstr "Generate"
+
+msgid "Organisation Unit{{s}} - {{ou}}"
+msgstr "Organisation Unit{{s}} - {{ou}}"
+
+msgid "Period{{s}} - {{pe}}"
+msgstr "Period{{s}} - {{pe}}"
+
+msgid "Date - "
+msgstr "Date - "
+
+msgid "One or more periods are required to query data for this table."
+msgstr "One or more periods are required to query data for this table."
+
+msgid "Report"
+msgstr "Report"
+
+msgid "Tip - hover the mouse over a data cell to see its information."
+msgstr "Tip - hover the mouse over a data cell to see its information."
+
+msgid "Change Report Parameters"
+msgstr "Change Report Parameters"
+
+msgid "View Template"
+msgstr "View Template"
+
+msgid "Print"
+msgstr "Print"
+
+msgid "Create example table"
+msgstr "Create example table"
+
+msgid "Create new"
+msgstr "Create new"
+
+msgid "Create new table template"
+msgstr "Create new table template"
+
+msgid "Create"
+msgstr "Create"
+
+msgid "Confirm delete"
+msgstr "Confirm delete"
+
+msgid "Are you sure you want to delete this template?"
+msgstr "Are you sure you want to delete this template?"
+
+msgid "Table actions"
+msgstr "Table actions"
+
+msgid "Saved Tables"
+msgstr "Saved Tables"
+
+msgid "Name"
+msgstr "Name"
+
+msgctxt "Application title"
+msgid "__MANIFEST_APP_TITLE"
+msgstr "ichis_reports"
+
+msgctxt "Application description"
+msgid "__MANIFEST_APP_DESCRIPTION"
+msgstr ""
