@@ -5,20 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-04-05T08:23:38.231Z\n"
-"PO-Revision-Date: 2025-04-05T08:23:38.232Z\n"
-
-msgid "Back"
-msgstr "Back"
-
-msgid "Cancel"
-msgstr "Cancel"
-
-msgid "Help"
-msgstr "Help"
-
-msgid "Menu"
-msgstr "Menu"
+"POT-Creation-Date: 2025-04-14T22:52:55.829Z\n"
+"PO-Revision-Date: 2025-04-14T22:52:55.829Z\n"
 
 msgid "Data"
 msgstr "Data"
@@ -94,6 +82,9 @@ msgstr "Custom tables"
 
 msgid "Custom reports"
 msgstr "Custom reports"
+
+msgid "Help"
+msgstr "Help"
 
 msgid "Menu header"
 msgstr "Menu header"
@@ -201,6 +192,9 @@ msgstr "Configure highlighting intervals for this cell"
 
 msgid "Choose data for cell"
 msgstr "Choose data for cell"
+
+msgid "Cancel"
+msgstr "Cancel"
 
 msgid "Save"
 msgstr "Save"

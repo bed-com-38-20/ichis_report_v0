@@ -1,0 +1,8 @@
+.org-unit-selector {
+    margin-bottom: 16px;
+  }
+  
+  .org-unit-selector label {
+    display: block;
+    margin-bottom: 8px;
+  }

@@ -1,65 +1,77 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
 import { DataTable, DataTableRow, DataTableCell } from '@dhis2/ui';
+import PropTypes from 'prop-types';
 
-const ReportBuilder = ({ report, onAddColumn, onAddItem }) => {
-  const [{ isOver }, drop] = useDrop({
+const ReportBuilder = ({ columns = [], items = [], onAddColumn, onAddItem }) => {
+  const [{ isOver }, drop] = useDrop(() => ({
     accept: ['COLUMN', 'ITEM'],
-    drop: (item) => {
-      if (item.type === 'COLUMN') {
+    drop: (item, monitor) => {
+      if (monitor.getItemType() === 'COLUMN') {
         onAddColumn(item);
       } else {
         onAddItem(item);
       }
     },
     collect: (monitor) => ({
-      isOver: !!monitor.isOver()
-    })
-  });
+      isOver: !!monitor.isOver(),
+    }),
+  }));
 
   return (
-    <div ref={drop} style={{
-      border: isOver ? '2px dashed #0064d5' : '1px dashed #ccc',
-      minHeight: '300px',
-      padding: '20px',
-      backgroundColor: isOver ? '#f0f7ff' : 'white'
+    <div ref={drop} style={{ 
+      border: isOver ? '2px dashed #0064d5' : '2px dashed transparent',
+      minHeight: '200px',
+      padding: '16px'
     }}>
-      {report.columns.length === 0 ? (
-        <p>Drag columns here to start building your report</p>
-      ) : (
-        <DataTable>
+      <DataTable>
+        {columns.length > 0 && (
           <DataTableRow header>
-            <DataTableCell>Item</DataTableCell>
-            <DataTableCell>Unit</DataTableCell>
-            {report.columns.map(col => (
-              <DataTableCell key={col.id}>{col.name}</DataTableCell>
+            {columns.map((column) => (
+              <DataTableCell key={column.id} header>
+                {column.name}
+              </DataTableCell>
             ))}
           </DataTableRow>
-          
-          {report.items.map(item => (
-            <DataTableRow key={item.id}>
-              <DataTableCell>{item.name}</DataTableCell>
-              <DataTableCell>{item.unit}</DataTableCell>
-              {report.columns.map(col => (
-                <DataTableCell key={`${item.id}-${col.id}`}>
-                  <input type="text" style={styles.input} />
-                </DataTableCell>
-              ))}
-            </DataTableRow>
-          ))}
-        </DataTable>
-      )}
+        )}
+        
+        {items.map((item, index) => (
+          <DataTableRow key={item.id || index}>
+            {columns.map((column) => (
+              <DataTableCell key={`${item.id}-${column.id}`}>
+                {item[column.id] || '-'}
+              </DataTableCell>
+            ))}
+          </DataTableRow>
+        ))}
+        
+        {items.length === 0 && (
+          <DataTableRow>
+            <DataTableCell colSpan={columns.length || 1}>
+              No items added yet
+            </DataTableCell>
+          </DataTableRow>
+        )}
+      </DataTable>
     </div>
   );
 };
 
-const styles = {
-  input: {
-    width: '100%',
-    border: '1px solid #ccc',
-    padding: '8px',
-    borderRadius: '4px'
-  }
+ReportBuilder.propTypes = {
+  columns: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired
+    })
+  ),
+  items: PropTypes.arrayOf(PropTypes.object),
+  onAddColumn: PropTypes.func.isRequired,
+  onAddItem: PropTypes.func.isRequired
+};
+
+ReportBuilder.defaultProps = {
+  columns: [],
+  items: []
 };
 
 export default ReportBuilder;

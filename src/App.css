@@ -1,0 +1,6 @@
+.app-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f0f2f5;
+    font-family: 'Roboto', sans-serif;
+  }
