@@ -1,40 +1,51 @@
+// components/configPanel/PeriodSelector.jsx
 import React from 'react';
 import { SingleSelect, SingleSelectOption } from '@dhis2/ui';
-import './PeriodSelector.css'
+import './PeriodSelector.css';
+import PropTypes from 'prop-types';
 
-const PeriodSelector = ({ reportConfig, setReportConfig }) => {
-  const getPeriodOptions = () => {
-    const currentYear = new Date().getFullYear();
-    return [
-      { label: 'Last 3 months', value: 'LAST_3_MONTHS' },
-      { label: 'Last 6 months', value: 'LAST_6_MONTHS' },
-      { label: 'Last 12 months', value: 'LAST_12_MONTHS' },
-      { label: `This year (${currentYear})`, value: 'THIS_YEAR' },
-      { label: `Last year (${currentYear-1})`, value: 'LAST_YEAR' }
-    ];
-  };
+const PeriodSelector = ({
+  options = [],
+  selected = null,
+  onChange = () => {},
+  placeholder = "Select period"
+}) => (
+  <div className="period-selector">
+    <label>Reporting Period:</label>
+    <SingleSelect
+      selected={selected}
+      onChange={onChange}
+      placeholder={placeholder}
+    >
+      {options.map(option => (
+        <SingleSelectOption 
+          key={option.value} 
+          value={option.value} 
+          label={option.label} 
+        />
+      ))}
+    </SingleSelect>
+  </div>
+);
 
-  return (
-    <div className="period-selector">
-      <label>Reporting Period:</label>
-      <SingleSelect
-        selected={reportConfig.periodSelection}
-        onChange={({ selected }) => setReportConfig(prev => ({
-          ...prev,
-          periodSelection: selected
-        }))}
-        placeholder="Select period"
-      >
-        {getPeriodOptions().map(option => (
-          <SingleSelectOption 
-            key={option.value} 
-            value={option.value} 
-            label={option.label} 
-          />
-        ))}
-      </SingleSelect>
-    </div>
-  );
+// Add PropTypes for better validation
+PeriodSelector.propTypes = {
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired
+    })
+  ),
+  selected: PropTypes.string,
+  onChange: PropTypes.func,
+  placeholder: PropTypes.string
+};
+
+PeriodSelector.defaultProps = {
+  options: [],
+  selected: null,
+  onChange: () => {},
+  placeholder: "Select period"
 };
 
 export default PeriodSelector;

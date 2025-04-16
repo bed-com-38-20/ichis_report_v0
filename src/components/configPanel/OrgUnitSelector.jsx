@@ -1,54 +1,66 @@
-import React, { useEffect } from 'react';
-import { SingleSelect, SingleSelectOption, CircularLoader } from '@dhis2/ui';
-import './OrgUnitSelector.css'
+// components/configPanel/OrgUnitSelector.jsx
+import React from 'react';
+import PropTypes from 'prop-types';
+import { SingleSelect, SingleSelectOption } from '@dhis2/ui';
+import './OrgUnitSelector.css';
 
-const OrgUnitSelector = ({ reportConfig, setReportConfig, metadata, loading }) => {
-  const handleOrgUnitChange = (selected) => {
-    const selectedOrgUnit = metadata.orgUnits.organisationUnits.find(ou => ou.id === selected);
-    setReportConfig(prev => ({
-      ...prev,
-      orgUnit: selected,
-      facility: selectedOrgUnit?.displayName || ''
-    }));
-  };
-
-  useEffect(() => {
-    if (metadata?.orgUnits?.organisationUnits && reportConfig.orgUnit) {
-      const isValid = metadata.orgUnits.organisationUnits.some(
-        ou => ou.id === reportConfig.orgUnit
-      );
-      if (!isValid) {
-        setReportConfig(prev => ({ ...prev, orgUnit: null }));
-      }
-    }
-  }, [metadata, reportConfig.orgUnit]);
-
-  const isValidSelection = metadata?.orgUnits?.organisationUnits?.some(
-    ou => ou.id === reportConfig.orgUnit
-  );
-
+const OrgUnitSelector = ({
+  loading = false,
+  orgUnits = [],
+  selected = null,
+  onChange = () => {},
+  label = "Health Facility:"
+}) => {
+  // Safely handle undefined/null orgUnits
+  const options = Array.isArray(orgUnits) ? orgUnits : [];
+  
   return (
     <div className="org-unit-selector">
-      <label>Health Facility:</label>
-      {loading ? (
-        <CircularLoader small />
-      ) : (
-        <SingleSelect
-          selected={isValidSelection ? reportConfig.orgUnit : null}
-          onChange={({ selected }) => handleOrgUnitChange(selected)}
-          loading={loading}
-        >
-          {metadata?.orgUnits?.organisationUnits?.map(ou => (
-            <SingleSelectOption 
-              key={ou.id} 
-              value={ou.id} 
-              label={ou.displayName} 
-            />
-          ))}
-        </SingleSelect>
-      )}
+      <label>{label}</label>
+      <SingleSelect
+        selected={selected}
+        onChange={({ selected }) => onChange(selected)}
+        loading={loading}
+        disabled={loading || options.length === 0}
+      >
+        {options.map(ou => (
+          <SingleSelectOption 
+            key={ou.id} 
+            value={ou.id} 
+            label={ou.displayName} 
+          />
+        ))}
+        {options.length === 0 && (
+          <SingleSelectOption 
+            value="none" 
+            label="No facilities available" 
+            disabled
+          />
+        )}
+      </SingleSelect>
     </div>
   );
+};
+
+OrgUnitSelector.propTypes = {
+  loading: PropTypes.bool,
+  orgUnits: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      displayName: PropTypes.string.isRequired
+    })
+  ),
+  selected: PropTypes.string,
+  onChange: PropTypes.func,
+  label: PropTypes.string
+};
+
+OrgUnitSelector.defaultProps = {
+  loading: false,
+  orgUnits: [],
+  selected: null,
+  onChange: () => {},
+  label: "Health Facility:"
 };
 
 export default OrgUnitSelector;
