@@ -1,0 +1,30 @@
+/* Hide UI controls when printing */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    .report-header, .report-header * {
+        visibility: visible;
+    }
+
+    .report-header {
+        position: relative;
+        top: 0;
+        left: 0;
+        width: 100%;
+        margin-bottom: 16px;
+        text-align: center;
+    }
+
+    .report-logo {
+        width: 100px;
+        height: auto;
+        margin-bottom: 8px;
+    }
+
+    .report-header + .dhis2-uicore-datatable {
+        visibility: visible;
+        position: relative;
+    }
+}

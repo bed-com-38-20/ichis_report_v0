@@ -1,6 +1,55 @@
-.app-container {
-    display: flex;
-    min-height: 100vh;
-    background-color: #f0f2f5;
-    font-family: 'Roboto', sans-serif;
+.app-grid {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.left-panel {
+  width: 25%;
+  min-width: 300px;
+  background-color: #f9f9f9;
+  padding: 16px;
+  overflow-y: auto;
+  border-right: 1px solid #ccc;
+}
+
+.middle-panel {
+  width: 50%;
+  background-color: #fff;
+  padding: 24px;
+  overflow-y: auto;
+  border-right: 1px solid #ccc;
+}
+
+.right-panel {
+  width: 25%;
+  min-width: 250px;
+  background-color: #f4f6f9;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+/* Print: only print the center panel */
+@media print {
+  .left-panel,
+  .right-panel {
+      display: none;
   }
+  .middle-panel {
+      width: 100% !important;
+      border: none !important;
+      padding: 0 !important;
+  }
+  body * {
+      visibility: hidden;
+  }
+  .middle-panel, .middle-panel * {
+      visibility: visible;
+  }
+  .middle-panel {
+      position: absolute;
+      left: 0;
+      top: 0;
+  }
+}

@@ -1,77 +1,73 @@
-import React from 'react';
-import { useDrop } from 'react-dnd';
-import { DataTable, DataTableRow, DataTableCell } from '@dhis2/ui';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
+import ItemPanel from './ItemPanel';
+import DroppableTable from './DroppableTable';
+import './ReportBuilder.css';
 
-const ReportBuilder = ({ columns = [], items = [], onAddColumn, onAddItem }) => {
-  const [{ isOver }, drop] = useDrop(() => ({
-    accept: ['COLUMN', 'ITEM'],
-    drop: (item, monitor) => {
-      if (monitor.getItemType() === 'COLUMN') {
-        onAddColumn(item);
-      } else {
-        onAddItem(item);
-      }
-    },
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
-    }),
-  }));
+const ReportBuilder = ({ orgUnit, period }) => {
+    const [config, setConfig] = useState({
+        columns: [{ name: 'Period' }, { name: 'Organisation Unit' }],
+        data: {}
+    });
 
-  return (
-    <div ref={drop} style={{ 
-      border: isOver ? '2px dashed #0064d5' : '2px dashed transparent',
-      minHeight: '200px',
-      padding: '16px'
-    }}>
-      <DataTable>
-        {columns.length > 0 && (
-          <DataTableRow header>
-            {columns.map((column) => (
-              <DataTableCell key={column.id} header>
-                {column.name}
-              </DataTableCell>
-            ))}
-          </DataTableRow>
-        )}
-        
-        {items.map((item, index) => (
-          <DataTableRow key={item.id || index}>
-            {columns.map((column) => (
-              <DataTableCell key={`${item.id}-${column.id}`}>
-                {item[column.id] || '-'}
-              </DataTableCell>
-            ))}
-          </DataTableRow>
-        ))}
-        
-        {items.length === 0 && (
-          <DataTableRow>
-            <DataTableCell colSpan={columns.length || 1}>
-              No items added yet
-            </DataTableCell>
-          </DataTableRow>
-        )}
-      </DataTable>
-    </div>
-  );
-};
+    useEffect(() => {
+        const saved = localStorage.getItem('calculatedFields');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            setConfig(prev => ({
+                ...prev,
+                columns: [...prev.columns, ...parsed]
+            }));
+        }
+    }, []);
 
-ReportBuilder.propTypes = {
-  columns: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired
-    })
-  ),
-  items: PropTypes.arrayOf(PropTypes.object),
-  onAddColumn: PropTypes.func.isRequired,
-  onAddItem: PropTypes.func.isRequired
-};
+    useEffect(() => {
+        const fields = config.columns.filter(c => c.formula);
+        localStorage.setItem('calculatedFields', JSON.stringify(fields));
+    }, [config.columns]);
 
-ReportBuilder.defaultProps = {
-  columns: [],
-  items: []
+    const handleAddCalculatedField = (newField) => {
+        if (!config.columns.some(c => c.name === newField.name)) {
+            setConfig(prev => ({
+                ...prev,
+                columns: [...prev.columns, newField]
+            }));
+        }
+    };
+
+    const handleUpdateCalculatedField = (index, updatedField) => {
+        const updated = [...config.columns];
+        const calcFields = config.columns.filter(c => c.formula);
+        updated[config.columns.findIndex(c => c.formula === calcFields[index].formula)] = updatedField;
+        setConfig(prev => ({ ...prev, columns: updated }));
+    };
+
+    const handleDeleteCalculatedField = (index) => {
+        const calcFields = config.columns.filter(col => col.formula);
+        const toDelete = calcFields[index];
+        setConfig(prev => ({
+            ...prev,
+            columns: prev.columns.filter(c => c !== toDelete)
+        }));
+    };
+
+    const calculatedFields = config.columns.filter(col => col.formula);
+
+    return (
+        <div className="report-builder">
+            <ItemPanel
+                onAddCalculatedField={handleAddCalculatedField}
+                onUpdateCalculatedField={handleUpdateCalculatedField}
+                onDeleteCalculatedField={handleDeleteCalculatedField}
+                calculatedFields={calculatedFields}
+            />
+            <DroppableTable
+                config={config}
+                orgUnit={orgUnit}
+                period={period}
+                onConfigChange={setConfig}
+            />
+        </div>
+    );
 };
 
 export default ReportBuilder;
