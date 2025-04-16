@@ -1,344 +1,13 @@
-// import React, { useState, useEffect } from 'react';
-// import { DndProvider } from 'react-dnd';
-// import { HTML5Backend } from 'react-dnd-html5-backend';
-// import { 
-//   Button, 
-//   InputField, 
-//   Card,
-//   AlertBar,
-//   CircularLoader,
-//   SingleSelect,
-//   SingleSelectOption
-// } from '@dhis2/ui';
-// import { useDataQuery, useConfig } from '@dhis2/app-runtime';
-// import ReportHeader from './ReportHeader';
-// import ReportBuilder from './ReportBuilder';
-// import StockManagementTable from './StockManagementTable';
-// import ItemPanel from './ItemPanel';
-// import ComponentsPanel from './ComponentsPanel';
-// import './print.css';
-
-// const App = () => {
-//   const { baseUrl } = useConfig();
-//   const [isLoading, setIsLoading] = useState(true);
-//   const [error, setError] = useState(null);
-//   const [reportConfig, setReportConfig] = useState({
-//     title: '',
-//     subtitle: '',
-//     logo: null,
-//     date: new Date().toLocaleDateString(),
-//     facility: '',
-//     period: '',
-//     data: {},
-//     orgUnit: null,
-//     periodSelection: null,
-//     columns: [],
-//     items: []
-//   });
-
-//   // Handler functions declared first
-//   const handlePrint = () => window.print();
-
-//   const handleTitleChange = ({ value }) => {
-//     setReportConfig(prev => ({ ...prev, title: value }));
-//   };
-
-//   const handleSubtitleChange = ({ value }) => {
-//     setReportConfig(prev => ({ ...prev, subtitle: value }));
-//   };
-
-//   const handleLogoUpload = (e) => {
-//     const file = e.target.files[0];
-//     if (file) {
-//       const reader = new FileReader();
-//       reader.onloadend = () => {
-//         setReportConfig(prev => ({ ...prev, logo: reader.result }));
-//       };
-//       reader.readAsDataURL(file);
-//     }
-//   };
-
-//   const handleOrgUnitChange = (orgUnitId) => {
-//     const selectedOrgUnit = metadata?.orgUnits?.organisationUnits?.find(ou => ou.id === orgUnitId);
-//     setReportConfig(prev => ({
-//       ...prev,
-//       orgUnit: orgUnitId,
-//       facility: selectedOrgUnit?.displayName || ''
-//     }));
-//   };
-
-//   const handlePeriodChange = ({ selected }) => {
-//     setReportConfig(prev => ({ ...prev, periodSelection: selected }));
-//   };
-
-//   const handleAddColumn = (column) => {
-//     setReportConfig(prev => ({
-//       ...prev,
-//       columns: [...prev.columns, column]
-//     }));
-//   };
-
-//   const handleAddItem = (item) => {
-//     setReportConfig(prev => ({
-//       ...prev,
-//       items: [...prev.items, item]
-//     }));
-//   };
-
-//   // Data fetching and transformation functions
-//   const { data: metadata, loading: metadataLoading } = useDataQuery({
-//     orgUnits: {
-//       resource: 'organisationUnits',
-//       params: {
-//         paging: false,
-//         fields: 'id,displayName,level',
-//         level: 3
-//       }
-//     },
-//     systemSettings: {
-//       resource: 'systemSettings',
-//       params: {
-//         key: ['applicationTitle']
-//       }
-//     },
-//     user: {
-//       resource: 'me',
-//       params: {
-//         fields: 'organisationUnits[id,displayName]'
-//       }
-//     }
-//   });
-
-//   const transformDHIS2Data = (dataValueSet) => {
-//     return dataValueSet?.dataValues?.reduce((acc, dv) => ({
-//       ...acc,
-//       [dv.dataElement]: dv.value
-//     }), {}) || {};
-//   };
-
-//   const formatPeriodLabel = (periodType) => {
-//     const format = (date) => date.toLocaleDateString('default', { month: 'long', year: 'numeric' });
-//     const now = new Date();
-    
-//     switch(periodType) {
-//       case 'LAST_3_MONTHS':
-//         const threeMonthsAgo = new Date(now);
-//         threeMonthsAgo.setMonth(now.getMonth() - 3);
-//         return `Last 3 months (${format(threeMonthsAgo)} - ${format(now)})`;
-//       case 'LAST_6_MONTHS':
-//         const sixMonthsAgo = new Date(now);
-//         sixMonthsAgo.setMonth(now.getMonth() - 6);
-//         return `Last 6 months (${format(sixMonthsAgo)} - ${format(now)})`;
-//       case 'LAST_12_MONTHS':
-//         const twelveMonthsAgo = new Date(now);
-//         twelveMonthsAgo.setMonth(now.getMonth() - 12);
-//         return `Last 12 months (${format(twelveMonthsAgo)} - ${format(now)})`;
-//       case 'THIS_YEAR':
-//         return `This year (${now.getFullYear()})`;
-//       case 'LAST_YEAR':
-//         return `Last year (${now.getFullYear()-1})`;
-//       default:
-//         return format(now);
-//     }
-//   };
-
-//   const getPeriodOptions = () => {
-//     const currentYear = new Date().getFullYear();
-//     return [
-//       { label: 'Last 3 months', value: 'LAST_3_MONTHS' },
-//       { label: 'Last 6 months', value: 'LAST_6_MONTHS' },
-//       { label: 'Last 12 months', value: 'LAST_12_MONTHS' },
-//       { label: `This year (${currentYear})`, value: `THIS_YEAR` },
-//       { label: `Last year (${currentYear-1})`, value: 'LAST_YEAR' }
-//     ];
-//   };
-
-//   const fetchReportData = async () => {
-//     if (!reportConfig.orgUnit || !reportConfig.periodSelection) return;
-
-//     setIsLoading(true);
-//     try {
-//       const response = await fetch(
-//         `${baseUrl}/api/dataValueSets?orgUnit=${reportConfig.orgUnit}&period=${reportConfig.periodSelection}`
-//       );
-//       const data = await response.json();
-//       setReportConfig(prev => ({
-//         ...prev,
-//         data: transformDHIS2Data(data),
-//         period: formatPeriodLabel(reportConfig.periodSelection)
-//       }));
-//     } catch (err) {
-//       setError(err);
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
-
-//   // Effects
-//   useEffect(() => {
-//     if (!metadataLoading && metadata) {
-//       setReportConfig(prev => ({
-//         ...prev,
-//         title: metadata.systemSettings.applicationTitle || 'DHIS2 Report',
-//         facility: metadata.user.organisationUnits[0]?.displayName || '',
-//         orgUnit: metadata.user.organisationUnits[0]?.id || null
-//       }));
-//       setIsLoading(false);
-//     }
-//   }, [metadataLoading, metadata]);
-
-//   useEffect(() => {
-//     fetchReportData();
-//   }, [reportConfig.orgUnit, reportConfig.periodSelection]);
-
-//   useEffect(() => {
-//     if (metadata?.orgUnits?.organisationUnits && reportConfig.orgUnit) {
-//       const isValid = metadata.orgUnits.organisationUnits.some(
-//         ou => ou.id === reportConfig.orgUnit
-//       );
-//       if (!isValid) {
-//         setReportConfig(prev => ({ ...prev, orgUnit: null }));
-//       }
-//     }
-//   }, [metadata, reportConfig.orgUnit]);
-
-//   // Modify your SingleSelect render
-//   const orgUnitOptions = metadata?.orgUnits?.organisationUnits || [];
-//   const isValidSelection = orgUnitOptions.some(ou => ou.id === reportConfig.orgUnit);
-
-
-//   if (isLoading && !metadata) return <CircularLoader />;
-//   if (error) return <AlertBar critical>{error.message}</AlertBar>;
-
-//   return (
-//     <DndProvider backend={HTML5Backend}>
-//       <div style={styles.container}>
-//         <div style={styles.sidePanel}>
-//           <div style={styles.configPanel} className="no-print">
-//             <Card>
-//               <div style={styles.configContent}>
-//                 <h3>DHIS2 Integration</h3>
-                
-//                 <div style={{ marginBottom: 16 }}>
-//                   <label>Health Facility:</label>
-//                       <SingleSelect
-//                           selected={isValidSelection ? reportConfig.orgUnit : null}
-//                           onChange={({ selected }) => handleOrgUnitChange(selected)}
-//                           loading={metadataLoading}
-//                         >
-//                           {orgUnitOptions.map(ou => (
-//                             <SingleSelectOption 
-//                               key={ou.id} 
-//                               value={ou.id} 
-//                               label={ou.displayName} 
-//                             />
-//                           ))}
-//                     </SingleSelect>
-//                 </div>
-
-//                 <div style={{ marginBottom: 16 }}>
-//                   <label>Reporting Period:</label>
-//                   <SingleSelect
-//                     selected={reportConfig.periodSelection}
-//                     onChange={handlePeriodChange}
-//                     placeholder="Select period"
-//                   >
-//                     {getPeriodOptions().map(option => (
-//                       <SingleSelectOption 
-//                         key={option.value} 
-//                         value={option.value} 
-//                         label={option.label} 
-//                       />
-//                     ))}
-//                   </SingleSelect>
-//                 </div>
-
-//                 {isLoading && <CircularLoader small />}
-
-//                 <h3>Report Configuration</h3>
-//                 <InputField
-//                   label="Report Title"
-//                   value={reportConfig.title}
-//                   onChange={handleTitleChange}
-//                   style={styles.inputField}
-//                 />
-
-//                 <InputField
-//                   label="Report Subtitle"
-//                   value={reportConfig.subtitle}
-//                   onChange={handleSubtitleChange}
-//                   style={styles.inputField}
-//                 />
-
-//                 <div style={styles.logoUpload}>
-//                   <label style={styles.uploadLabel}>
-//                     Upload Logo
-//                     <input 
-//                       type="file" 
-//                       accept="image/*" 
-//                       onChange={handleLogoUpload}
-//                       style={{ display: 'none' }}
-//                     />
-//                   </label>
-//                   {reportConfig.logo && (
-//                     <img 
-//                       src={reportConfig.logo} 
-//                       alt="Logo Preview" 
-//                       style={styles.logoPreview}
-//                     />
-//                   )}
-//                 </div>
-
-//                 <div style={styles.buttonGroup}>
-//                   <Button primary onClick={handlePrint}>
-//                     Print Report
-//                   </Button>
-//                 </div>
-//               </div>
-//             </Card>
-//           </div>
-//           <ComponentsPanel onAddColumn={handleAddColumn} onAddItem={handleAddItem} />          
-//         </div>
-
-//         <div style={styles.reportPreview}>
-//           <div className="printable-area" style={styles.printableArea}>
-//             <ReportHeader 
-//               title={reportConfig.title}
-//               subtitle={reportConfig.subtitle}
-//               facility={reportConfig.facility}
-//               date={reportConfig.date}
-//               period={reportConfig.period}
-//               logo={reportConfig.logo}
-//             />
-//             <div style={styles.mainArea}>
-//               <ReportBuilder 
-//                   columns={reportConfig.columns || []} 
-//                   items={reportConfig.items || []}
-//                   onAddColumn={handleAddColumn}
-//                   onAddItem={handleAddItem}
-//               />
-//             </div>
-//             <StockManagementTable 
-//               data={reportConfig.data}
-//               columns={reportConfig.columns}
-//               items={reportConfig.items}
-//             />
-//           </div>
-//         </div>
-//       </div>
-//     </DndProvider>
-//   );
-// };
-
-
-// export default App;
-
 import React, { useState, useEffect } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useDataQuery, useConfig } from '@dhis2/app-runtime';
 import ConfigPanel from './components/configPanel/ConfigPanel';
 import ReportPreview from './components/ReportPreview/ReportPreview';
+import FontStyleControls from './components/visual_customazation/font_style_control';
+import ColorThemeSelector from './components/visual_customazation/color_theming';
+import ConditionalFormatting from './components/visual_customazation/formating';
+import ChartIntegration from './components/visual_customazation/charts';
 import './App.css';
 
 const App = () => {
@@ -357,7 +26,25 @@ const App = () => {
     items: []
   });
 
-  // Data fetching logic remains here
+  // we are handling Visual customization states here
+  const [styleSettings, setStyleSettings] = useState({
+    fontSize: '14px',
+    fontFamily: 'Arial',
+    fontWeight: 'normal'
+  });
+  
+  const [colorTheme, setColorTheme] = useState({
+    primary: '#2196F3',
+    secondary: '#FF9800',
+    background: '#FFFFFF',
+    text: '#333333'
+  });
+  
+  const [formatRules, setFormatRules] = useState([]);
+  const [chartSettings, setChartSettings] = useState({});
+  const [activeTab, setActiveTab] = useState('content'); // 'content', 'style', 'format', 'charts'
+
+  // Data fetching logic[ichis]
   const { data: metadata, loading: metadataLoading } = useDataQuery({
     orgUnits: {
       resource: 'organisationUnits',
@@ -380,16 +67,160 @@ const App = () => {
       }
     }
   });
+
+  // we are Updating report configuration with visual settings here
+  const updateReportConfig = (newConfig) => {
+    setReportConfig({
+      ...reportConfig,
+      ...newConfig,
+      visualSettings: {
+        style: styleSettings,
+        theme: colorTheme,
+        formatting: formatRules,
+        charts: chartSettings
+      }
+    });
+  };
+
+  //we are also Handling style changes here
+  const handleStyleChange = (newStyles) => {
+    setStyleSettings(newStyles);
+    updateReportConfig({ ...reportConfig });
+  };
+
+  //we are Handling theme changes here
+  const handleThemeChange = (newTheme) => {
+    setColorTheme(newTheme);
+    updateReportConfig({ ...reportConfig });
+  };
+
+  // we are Handling formatting rule changes here
+  const handleFormatChange = (newRules) => {
+    setFormatRules(newRules);
+    updateReportConfig({ ...reportConfig });
+  };
+
+  //we are Handling chart settings changes here
+  const handleChartChange = (newChartSettings) => {
+    setChartSettings(newChartSettings);
+    updateReportConfig({ ...reportConfig });
+  };
+
+  //we are Exporting report function here
+  const exportReport = () => {
+    //and also the Implementation for exporting the report (PDF, Excel) its hwe
+    console.log('Exporting report with settings:', {
+      reportConfig,
+      style: styleSettings,
+      theme: colorTheme,
+      formatting: formatRules,
+      chart: chartSettings
+    });
+    alert('Report export functionality to be implemented');
+  };
+
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="app-container">
-        <ConfigPanel 
-          reportConfig={reportConfig}
-          setReportConfig={setReportConfig}
-          metadata={metadata}
-          loading={metadataLoading}
-        />
-        <ReportPreview reportConfig={reportConfig} />
+      <div className="app-container" style={styles.container}>
+        <div className="config-side-panel" style={styles.sidePanel}>
+          <div className="tab-navigation" style={styles.tabNavigation}>
+            <button 
+              style={{
+                ...styles.tabButton, 
+                ...(activeTab === 'content' ? styles.activeTab : {})
+              }}
+              onClick={() => setActiveTab('content')}
+            >
+              Content
+            </button>
+            <button 
+              style={{
+                ...styles.tabButton, 
+                ...(activeTab === 'style' ? styles.activeTab : {})
+              }}
+              onClick={() => setActiveTab('style')}
+            >
+              Styling
+            </button>
+            <button 
+              style={{
+                ...styles.tabButton, 
+                ...(activeTab === 'format' ? styles.activeTab : {})
+              }}
+              onClick={() => setActiveTab('format')}
+            >
+              Formatting
+            </button>
+            <button 
+              style={{
+                ...styles.tabButton, 
+                ...(activeTab === 'charts' ? styles.activeTab : {})
+              }}
+              onClick={() => setActiveTab('charts')}
+            >
+              Charts
+            </button>
+          </div>
+          
+          <div className="tab-content" style={styles.tabContent}>
+            {activeTab === 'content' && (
+              <ConfigPanel 
+                reportConfig={reportConfig}
+                setReportConfig={updateReportConfig}
+                metadata={metadata}
+                loading={metadataLoading}
+              />
+            )}
+            
+            {activeTab === 'style' && (
+              <div className="style-customization" style={styles.configContent}>
+                <h3 style={styles.sectionTitle}>Font & Style Settings</h3>
+                <FontStyleControls onStyleChange={handleStyleChange} />
+                
+                <h3 style={styles.sectionTitle}>Color Theme</h3>
+                <ColorThemeSelector onThemeChange={handleThemeChange} />
+              </div>
+            )}
+            
+            {activeTab === 'format' && (
+              <div className="formatting-customization" style={styles.configContent}>
+                <h3 style={styles.sectionTitle}>Conditional Formatting</h3>
+                <ConditionalFormatting onFormatChange={handleFormatChange} />
+              </div>
+            )}
+            
+            {activeTab === 'charts' && (
+              <div className="chart-customization" style={styles.configContent}>
+                <h3 style={styles.sectionTitle}>Chart Integration</h3>
+                <ChartIntegration 
+                  data={reportConfig.data} 
+                  onChartChange={handleChartChange} 
+                />
+              </div>
+            )}
+            
+            <div className="export-actions" style={styles.buttonGroup}>
+              <button 
+                onClick={exportReport}
+                style={styles.exportButton}
+              >
+                Export Report
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div className="report-preview-container" style={styles.reportPreview}>
+          <ReportPreview 
+            reportConfig={{
+              ...reportConfig,
+              styleSettings,
+              colorTheme,
+              formatRules,
+              chartSettings
+            }} 
+          />
+        </div>
       </div>
     </DndProvider>
   );
@@ -400,103 +231,94 @@ const styles = {
     display: 'flex',
     minHeight: '100vh',
     backgroundColor: '#f0f2f5',
-    fontFamily: 'Roboto, sans-serif'
+    fontFamily: 'Roboto, sans-serif',
+    color: '#333',
   },
   sidePanel: {
     width: '350px',
     backgroundColor: '#ffffff',
-    boxShadow: '1px 0 3px rgba(0,0,0,0.1)',
+    boxShadow: '2px 0 8px rgba(0,0,0,0.1)',
     display: 'flex',
     flexDirection: 'column',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    borderRadius: '0 8px 8px 0',
   },
-  configPanel: {
-    padding: '16px',
-    borderBottom: '1px solid #e0e0e0'
+  tabNavigation: {
+    display: 'flex',
+    borderBottom: '1px solid #e0e0e0',
+    backgroundColor: '#f7f9fc',
+  },
+  tabButton: {
+    flex: 1,
+    padding: '14px 8px',
+    backgroundColor: 'transparent',
+    border: 'none',
+    borderBottom: '3px solid transparent',
+    cursor: 'pointer',
+    fontSize: '14px',
+    fontWeight: '600',
+    transition: 'all 0.3s ease',
+    color: '#6e6e6e',
+    outline: 'none',
+  },
+  activeTab: {
+    borderBottom: '3px solid #2196F3',
+    color: '#2196F3',
+    backgroundColor: '#ffffff',
+  },
+  tabContent: {
+    flex: 1,
+    overflowY: 'auto',
+    padding: '0 0 20px 0',
   },
   configContent: {
-    padding: '8px',
-    '& h3': {
-      margin: '0 0 16px 0',
-      color: '#212934',
-      fontSize: '16px',
-      fontWeight: '500'
-    },
-    '& label': {
-      display: 'block',
-      marginBottom: '8px',
-      fontSize: '14px',
-      color: '#565656'
-    }
+    padding: '16px 20px',
   },
-  inputField: {
-    marginBottom: '16px',
-    '& input': {
-      backgroundColor: '#f9f9f9',
-      border: '1px solid #ccc',
-      borderRadius: '4px'
-    }
-  },
-  logoUpload: {
-    margin: '16px 0',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-    alignItems: 'center'
-  },
-  uploadLabel: {
-    padding: '8px 16px',
-    backgroundColor: '#f0f7ff',
-    color: '#0064d5',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    textAlign: 'center',
-    fontSize: '14px',
-    transition: 'background-color 0.2s',
-    '&:hover': {
-      backgroundColor: '#e0f0ff'
-    }
-  },
-  logoPreview: {
-    width: '80px',
-    height: '80px',
-    objectFit: 'contain',
-    border: '1px solid #ddd',
-    borderRadius: '4px'
+  sectionTitle: {
+    margin: '20px 0 12px 0',
+    color: '#212934',
+    fontSize: '16px',
+    fontWeight: '600',
+    borderBottom: '1px solid #eee',
+    paddingBottom: '8px',
   },
   buttonGroup: {
-    marginTop: '24px',
+    margin: '10px 20px 20px',
     display: 'flex',
     flexDirection: 'column',
     gap: '8px',
-    '& button': {
-      width: '100%'
-    }
+  },
+  exportButton: {
+    padding: '12px 16px',
+    backgroundColor: '#4CAF50',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '14px',
+    fontWeight: '600',
+    transition: 'background-color 0.3s ease',
+    textTransform: 'uppercase',
+    letterSpacing: '0.5px',
+    boxShadow: '0 2px 5px rgba(0,0,0,0.15)',
   },
   reportPreview: {
     flex: 1,
-    padding: '24px',
+    padding: '30px',
     backgroundColor: '#f5f5f5',
     overflowY: 'auto',
     display: 'flex',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   printableArea: {
     width: '210mm',
     minHeight: '297mm',
     backgroundColor: 'white',
-    boxShadow: '0 0 10px rgba(0,0,0,0.1)',
+    boxShadow: '0 4px 15px rgba(0,0,0,0.15)',
     padding: '20mm',
-    margin: '0 auto'
+    margin: '0 auto',
+    borderRadius: '4px',
   },
-  mainArea: {
-    margin: '20px 0',
-    padding: '20px',
-    backgroundColor: '#f9f9f9',
-    border: '1px dashed #ddd',
-    borderRadius: '4px'
-  }
 };
-
 
 export default App;
