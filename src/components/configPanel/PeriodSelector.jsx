@@ -1,4 +1,3 @@
-// components/configPanel/PeriodSelector.jsx
 import React from 'react';
 import { SingleSelect, SingleSelectOption } from '@dhis2/ui';
 import './PeriodSelector.css';
@@ -28,7 +27,7 @@ const PeriodSelector = ({
   </div>
 );
 
-// Add PropTypes for better validation
+// Adding PropTypes for better validation
 PeriodSelector.propTypes = {
   options: PropTypes.arrayOf(
     PropTypes.shape({

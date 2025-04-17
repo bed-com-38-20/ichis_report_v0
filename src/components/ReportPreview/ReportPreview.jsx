@@ -1,53 +1,36 @@
-// import React from 'react';
-// import { DataTable, DataTableRow, DataTableCell } from '@dhis2/ui';
-// import ReportHeader from '../../ReportHeader';
-// import ReportBuilder from '../../ReportBuilder';
-// import StockManagementTable from '../../StockManagementTable';
-// import useReportConfig from '../../hook/useReportConfig';
-// import './ReportPreview.css'
-
-// const ReportPreview = () => {
-//   const { reportConfig } = useReportConfig();
-
-//   return (
-//     <div className="report-preview">
-//       <div className="printable-area">
-//         <ReportHeader 
-//           title={reportConfig.title}
-//           subtitle={reportConfig.subtitle}
-//           facility={reportConfig.facility}
-//           date={reportConfig.date}
-//           period={reportConfig.period}
-//           logo={reportConfig.logo}
-//         />
-//         <div className="main-area">
-//           <ReportBuilder 
-//             columns={reportConfig.columns}
-//             items={reportConfig.items}
-//           />
-//           <StockManagementTable 
-//             data={reportConfig.data}
-//             columns={reportConfig.columns}
-//             items={reportConfig.items}
-//           />
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ReportPreview;
-
-// components/ReportPreview/ReportPreview.jsx
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { useDrop } from 'react-dnd';
 import { Card } from '@dhis2/ui';
 import ReportHeader from '../ReportHeader/ReportHeader';
+import { useCellData } from '../../hooks/useCellData';
 import ReportBuilder from '../ReportBuilder/ReportBuilder';
 import StockManagementTable from '../StockManagementTable/StockManagementTable';
 import './ReportPreview.css';
 
 const ReportPreview = ({ reportConfig, onAddColumn, onAddItem }) => {
+  
+  const { fetchCellData } = useCellData(reportConfig);
+  const [cellValues, setCellValues] = useState({});
+
+  useEffect(() => {
+    const fetchAllData = async () => {
+      const values = {};
+      for (const period of reportConfig.periods) {
+        for (const orgUnit of reportConfig.orgUnits) {
+          for (const column of reportConfig.columns) {
+            if (column.type === 'dataElement') {
+              const key = `${period}-${orgUnit}-${column.id}`;
+              values[key] = await fetchCellData(period, orgUnit, column.id);
+            }
+          }
+        }
+      }
+      setCellValues(values);
+    };
+    
+    fetchAllData();
+  }, [reportConfig]);
+  
   const [{ isOver }, drop] = useDrop(() => ({
     accept: 'ITEM',
     drop: (item, monitor) => {

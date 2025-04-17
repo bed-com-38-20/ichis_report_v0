@@ -1,10 +1,7 @@
 import React from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { 
-  AlertBar,
-  CircularLoader  
-} from '@dhis2/ui';
+import { AlertBar, CircularLoader } from '@dhis2/ui';
 import { useReportConfig } from './hooks/useReportConfig';
 import { useDhis2Data } from './hooks/useDhis2Data';
 import ConfigPanel from './components/configPanel/ConfigPanel';
@@ -14,12 +11,8 @@ import './print.css';
 
 const App = () => {
   const {
-    reportConfig,
-    handlers,
-    isLoading,
-    error,
-    metadata,
-    metadataLoading
+    reportConfig, handlers, isLoading,
+    error, metadata, metadataLoading
   } = useReportConfig();
 
   useDhis2Data(reportConfig, handlers.setReportData);
