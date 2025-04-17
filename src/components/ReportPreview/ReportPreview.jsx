@@ -1,115 +1,169 @@
 import React from 'react';
-import { Paper, Box, Typography, Divider } from '@mui/material';
-import ReportLayout from '../layout/ReportLayout';
+import { useDrag, useDrop } from 'react-dnd';
+import './ReportPreview.css';
 
-const ReportPreview = ({ reportConfig }) => {
-  const { 
-    title, 
-    subtitle, 
-    logo, 
-    date, 
-    facility, 
-    period,
-    pageSize = 'A4',
-    orientation = 'portrait',
-    header,
-    footer,
-    sections = []
-  } = reportConfig;
+// Draggable Column Header Component
+const DraggableColumnHeader = ({ column, index, onReorderColumns }) => {
+  const [{ isDragging }, drag] = useDrag({
+    type: 'HEADER',
+    item: { id: column.id, index },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
 
-  // Define page dimensions based on paper size and orientation
-  const getPageDimensions = () => {
-    const dimensions = {
-      'A4': { width: '210mm', height: '297mm' },
-      'letter': { width: '215.9mm', height: '279.4mm' },
-      'legal': { width: '215.9mm', height: '355.6mm' },
-      'custom': reportConfig.customDimensions || { width: '210mm', height: '297mm' }
-    };
-
-    const selected = dimensions[pageSize];
-    
-    if (orientation === 'landscape') {
-      return { width: selected.height, height: selected.width };
-    }
-    
-    return selected;
-  };
-
-  const pageDimensions = getPageDimensions();
+  const [{ isOver }, drop] = useDrop({
+    accept: 'HEADER',
+    drop: (draggedItem) => {
+      if (draggedItem.index !== index) {
+        onReorderColumns(draggedItem.index, index);
+      }
+    },
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+      canDrop: monitor.canDrop(),
+    }),
+  });
 
   return (
-    <Box 
-      sx={{ 
-        flex: 1, 
-        p: 3, 
-        backgroundColor: '#f5f5f5', 
-        overflowY: 'auto',
-        display: 'flex',
-        justifyContent: 'center'
-      }}
+    <th 
+      ref={(node) => drag(drop(node))}
+      className={`table-header ${isDragging ? 'dragging' : ''} ${isOver ? 'over' : ''}`}
     >
-      <Paper 
-        elevation={3}
-        sx={{
-          width: pageDimensions.width,
-          minHeight: pageDimensions.height,
-          backgroundColor: 'white',
-          padding: '20mm',
-          margin: '0 auto',
-          display: 'flex',
-          flexDirection: 'column'
-        }}
+      <div className="header-content">
+        <span className="column-name">{column.displayName}</span>
+        <span className="drag-handle">≡</span>
+      </div>
+    </th>
+  );
+};
+
+const ReportPreview = ({ reportConfig, onReorderColumns }) => {
+  // Generate sample data based on selected columns
+  const generateSampleData = (columns, rowCount = 5) => {
+    const sampleData = [];
+    
+    for (let i = 0; i < rowCount; i++) {
+      const row = {};
+      columns.forEach(column => {
+        // Generate appropriate sample data based on value type
+        switch (column.valueType) {
+          case 'NUMBER':
+            row[column.id] = Math.floor(Math.random() * 100);
+            break;
+          case 'INTEGER':
+            row[column.id] = Math.floor(Math.random() * 100);
+            break;
+          case 'BOOLEAN':
+            row[column.id] = Math.random() > 0.5 ? 'Yes' : 'No';
+            break;
+          case 'DATE':
+            const date = new Date();
+            date.setDate(date.getDate() - Math.floor(Math.random() * 30));
+            row[column.id] = date.toLocaleDateString();
+            break;
+          case 'TEXT':
+          default:
+            row[column.id] = `Sample ${column.displayName} ${i+1}`;
+            break;
+        }
+      });
+      sampleData.push(row);
+    }
+    
+    return sampleData;
+  };
+
+  const sampleData = generateSampleData(reportConfig.selectedColumns);
+
+  return (
+    <div className="report-preview">
+      <div 
+        id="report-preview" 
+        className={`report-page ${reportConfig.pageSize.toLowerCase()} ${reportConfig.orientation}`}
       >
-        {/* Title Block */}
-        <Box sx={{ mb: 4, display: 'flex', alignItems: 'center' }}>
-          {logo && (
-            <Box sx={{ mr: 2 }}>
+        <div className="report-header">
+          <div className="logo-title-container">
+            {reportConfig.logo && (
               <img 
-                src={logo} 
-                alt="Report logo" 
-                style={{ maxHeight: '60px', maxWidth: '100px' }} 
+                src={reportConfig.logo} 
+                alt="Report Logo" 
+                className="report-logo"
               />
-            </Box>
+            )}
+            <div className="report-titles">
+              <h1>{reportConfig.title}</h1>
+              <h2>{reportConfig.subtitle}</h2>
+            </div>
+          </div>
+          
+          <div className="report-metadata">
+            {reportConfig.orgUnit && (
+              <div className="metadata-item">
+                <span className="metadata-label">Organization Unit:</span>
+                <span className="metadata-value">{reportConfig.orgUnit.name}</span>
+              </div>
+            )}
+            
+            {reportConfig.period && reportConfig.period.name && (
+              <div className="metadata-item">
+                <span className="metadata-label">Period:</span>
+                <span className="metadata-value">{reportConfig.period.name}</span>
+              </div>
+            )}
+            
+            <div className="metadata-item">
+              <span className="metadata-label">Date Generated:</span>
+              <span className="metadata-value">{reportConfig.date}</span>
+            </div>
+          </div>
+        </div>
+        
+        <div className="report-content">
+          {reportConfig.selectedColumns.length > 0 ? (
+            <table className="report-table">
+              <thead>
+                <tr>
+                  {reportConfig.selectedColumns.map((column, index) => (
+                    <DraggableColumnHeader 
+                      key={column.id}
+                      column={column}
+                      index={index}
+                      onReorderColumns={onReorderColumns}
+                    />
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {sampleData.map((row, rowIndex) => (
+                  <tr key={rowIndex}>
+                    {reportConfig.selectedColumns.map(column => (
+                      <td key={column.id}>{row[column.id]}</td>
+                    ))}
+                  </tr>
+                ))}
+                
+                {sampleData.length === 0 && (
+                  <tr>
+                    <td colSpan={reportConfig.selectedColumns.length} className="no-data">
+                      No data available
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          ) : (
+            <div className="empty-report">
+              <p>No columns selected. Please add columns to your report from the Data tab.</p>
+            </div>
           )}
-          <Box>
-            <Typography variant="h4" component="h1">
-              {title || 'Report Title'}
-            </Typography>
-            {subtitle && (
-              <Typography variant="subtitle1" color="textSecondary">
-                {subtitle}
-              </Typography>
-            )}
-          </Box>
-        </Box>
-
-        {/* Metadata Block */}
-        <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between' }}>
-          <Box>
-            {facility && (
-              <Typography variant="body2">
-                <strong>Facility:</strong> {facility}
-              </Typography>
-            )}
-            {period && (
-              <Typography variant="body2">
-                <strong>Period:</strong> {period}
-              </Typography>
-            )}
-          </Box>
-          <Typography variant="body2">
-            <strong>Date:</strong> {date}
-          </Typography>
-        </Box>
-
-        <Divider sx={{ mb: 3 }} />
-
-        {/* Report Layout with Sections */}
-        <Box sx={{ flex: 1 }}>
-          <ReportLayout reportConfig={reportConfig} />
-        </Box>
-      </Paper>
-    </Box>
+        </div>
+        
+        <div className="report-footer">
+          <p>Generated by Community Health Register - DHIS2 Application</p>
+        </div>
+      </div>
+    </div>
   );
 };
 

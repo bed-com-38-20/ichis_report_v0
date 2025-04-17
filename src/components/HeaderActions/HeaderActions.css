@@ -1,0 +1,186 @@
+.header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #2c6693;
+    color: white;
+    padding: 0 16px;
+    height: 60px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .logo h2 {
+    margin: 0;
+    font-size: 18px;
+  }
+  
+  .tabs {
+    display: flex;
+    height: 100%;
+  }
+  
+  .tab-button {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    padding: 0 20px;
+    cursor: pointer;
+    font-size: 14px;
+    height: 100%;
+    position: relative;
+    transition: color 0.2s;
+  }
+  
+  .tab-button:hover {
+    color: white;
+  }
+  
+  .tab-button.active {
+    color: white;
+    font-weight: 500;
+  }
+  
+  .tab-button.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: white;
+  }
+  
+  .actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .action-button {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+  }
+  
+  .action-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  .template-button {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+  }
+  
+  .template-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  .templates-dropdown {
+    position: relative;
+  }
+  
+  .templates-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    min-width: 200px;
+    color: #333;
+    z-index: 100;
+    margin-top: 5px;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  
+  .templates-menu h4 {
+    margin: 0;
+    padding: 12px 16px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+  }
+  
+  .templates-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .templates-menu li {
+    border-bottom: 1px solid #f5f5f5;
+  }
+  
+  .templates-menu li:last-child {
+    border-bottom: none;
+  }
+  
+  .templates-menu button {
+    width: 100%;
+    text-align: left;
+    padding: 10px 16px;
+    background: none;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .templates-menu button:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .save-button {
+    background-color: rgba(76, 175, 80, 0.2);
+    border-color: rgba(76, 175, 80, 0.3);
+  }
+  
+  .save-button:hover {
+    background-color: rgba(76, 175, 80, 0.3);
+  }
+  
+  .print-button {
+    background-color: rgba(33, 150, 243, 0.2);
+    border-color: rgba(33, 150, 243, 0.3);
+  }
+  
+  .print-button:hover {
+    background-color: rgba(33, 150, 243, 0.3);
+  }
+  
+  @media (max-width: 768px) {
+    .header-actions {
+      flex-direction: column;
+      height: auto;
+      padding: 10px;
+    }
+    
+    .tabs {
+      width: 100%;
+      margin: 10px 0;
+    }
+    
+    .tab-button {
+      flex: 1;
+      text-align: center;
+    }
+    
+    .actions {
+      width: 100%;
+      justify-content: space-between;
+    }
+    
+    .action-button, .template-button {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+  }
