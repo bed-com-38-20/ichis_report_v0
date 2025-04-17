@@ -333,6 +333,174 @@
 
 // export default App;
 
+// import React, { useState, useEffect } from 'react';
+// import { DndProvider } from 'react-dnd';
+// import { HTML5Backend } from 'react-dnd-html5-backend';
+// import { useDataQuery, useConfig } from '@dhis2/app-runtime';
+// import ConfigPanel from './components/configPanel/ConfigPanel';
+// import ReportPreview from './components/ReportPreview/ReportPreview';
+// import './App.css';
+
+// const App = () => {
+//   const { baseUrl } = useConfig();
+//   const [reportConfig, setReportConfig] = useState({
+//     title: '',
+//     subtitle: '',
+//     logo: null,
+//     date: new Date().toLocaleDateString(),
+//     facility: '',
+//     period: '',
+//     data: {},
+//     orgUnit: null,
+//     periodSelection: null,
+//     columns: [],
+//     items: []
+//   });
+
+//   // Data fetching logic remains here
+//   const { data: metadata, loading: metadataLoading } = useDataQuery({
+//     orgUnits: {
+//       resource: 'organisationUnits',
+//       params: {
+//         paging: false,
+//         fields: 'id,displayName,level',
+//         level: 3
+//       }
+//     },
+//     systemSettings: {
+//       resource: 'systemSettings',
+//       params: {
+//         key: ['applicationTitle']
+//       }
+//     },
+//     user: {
+//       resource: 'me',
+//       params: {
+//         fields: 'organisationUnits[id,displayName]'
+//       }
+//     }
+//   });
+//   return (
+//     <DndProvider backend={HTML5Backend}>
+//       <div className="app-container">
+//         <ConfigPanel 
+//           reportConfig={reportConfig}
+//           setReportConfig={setReportConfig}
+//           metadata={metadata}
+//           loading={metadataLoading}
+//         />
+//         <ReportPreview reportConfig={reportConfig} />
+//       </div>
+//     </DndProvider>
+//   );
+// };
+
+// const styles = {
+//   container: {
+//     display: 'flex',
+//     minHeight: '100vh',
+//     backgroundColor: '#f0f2f5',
+//     fontFamily: 'Roboto, sans-serif'
+//   },
+//   sidePanel: {
+//     width: '350px',
+//     backgroundColor: '#ffffff',
+//     boxShadow: '1px 0 3px rgba(0,0,0,0.1)',
+//     display: 'flex',
+//     flexDirection: 'column',
+//     overflow: 'hidden'
+//   },
+//   configPanel: {
+//     padding: '16px',
+//     borderBottom: '1px solid #e0e0e0'
+//   },
+//   configContent: {
+//     padding: '8px',
+//     '& h3': {
+//       margin: '0 0 16px 0',
+//       color: '#212934',
+//       fontSize: '16px',
+//       fontWeight: '500'
+//     },
+//     '& label': {
+//       display: 'block',
+//       marginBottom: '8px',
+//       fontSize: '14px',
+//       color: '#565656'
+//     }
+//   },
+//   inputField: {
+//     marginBottom: '16px',
+//     '& input': {
+//       backgroundColor: '#f9f9f9',
+//       border: '1px solid #ccc',
+//       borderRadius: '4px'
+//     }
+//   },
+//   logoUpload: {
+//     margin: '16px 0',
+//     display: 'flex',
+//     flexDirection: 'column',
+//     gap: '8px',
+//     alignItems: 'center'
+//   },
+//   uploadLabel: {
+//     padding: '8px 16px',
+//     backgroundColor: '#f0f7ff',
+//     color: '#0064d5',
+//     borderRadius: '4px',
+//     cursor: 'pointer',
+//     textAlign: 'center',
+//     fontSize: '14px',
+//     transition: 'background-color 0.2s',
+//     '&:hover': {
+//       backgroundColor: '#e0f0ff'
+//     }
+//   },
+//   logoPreview: {
+//     width: '80px',
+//     height: '80px',
+//     objectFit: 'contain',
+//     border: '1px solid #ddd',
+//     borderRadius: '4px'
+//   },
+//   buttonGroup: {
+//     marginTop: '24px',
+//     display: 'flex',
+//     flexDirection: 'column',
+//     gap: '8px',
+//     '& button': {
+//       width: '100%'
+//     }
+//   },
+//   reportPreview: {
+//     flex: 1,
+//     padding: '24px',
+//     backgroundColor: '#f5f5f5',
+//     overflowY: 'auto',
+//     display: 'flex',
+//     justifyContent: 'center'
+//   },
+//   printableArea: {
+//     width: '210mm',
+//     minHeight: '297mm',
+//     backgroundColor: 'white',
+//     boxShadow: '0 0 10px rgba(0,0,0,0.1)',
+//     padding: '20mm',
+//     margin: '0 auto'
+//   },
+//   mainArea: {
+//     margin: '20px 0',
+//     padding: '20px',
+//     backgroundColor: '#f9f9f9',
+//     border: '1px dashed #ddd',
+//     borderRadius: '4px'
+//   }
+// };
+
+
+// export default App;
+
 import React, { useState, useEffect } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -344,8 +512,8 @@ import './App.css';
 const App = () => {
   const { baseUrl } = useConfig();
   const [reportConfig, setReportConfig] = useState({
-    title: '',
-    subtitle: '',
+    title: 'DHIS2 Report',
+    subtitle: 'Generated Report',
     logo: null,
     date: new Date().toLocaleDateString(),
     facility: '',
@@ -353,11 +521,15 @@ const App = () => {
     data: {},
     orgUnit: null,
     periodSelection: null,
-    columns: [],
+    pageSize: 'A4',
+    orientation: 'portrait',
+    header: null,
+    footer: null,
+    sections: [],
     items: []
   });
 
-  // Data fetching logic remains here
+  // Data fetching logic
   const { data: metadata, loading: metadataLoading } = useDataQuery({
     orgUnits: {
       resource: 'organisationUnits',
@@ -380,9 +552,28 @@ const App = () => {
       }
     }
   });
+
+  useEffect(() => {
+    // Initialize with a default section if none exists
+    if (reportConfig.sections.length === 0) {
+      setReportConfig({
+        ...reportConfig,
+        sections: [
+          {
+            id: 'section-default',
+            title: 'Main Content',
+            columns: 12,
+            items: [],
+            style: { padding: '16px', marginBottom: '16px' }
+          }
+        ]
+      });
+    }
+  }, []);
+
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="app-container">
+      <div className="app-container" style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
         <ConfigPanel 
           reportConfig={reportConfig}
           setReportConfig={setReportConfig}
@@ -394,109 +585,5 @@ const App = () => {
     </DndProvider>
   );
 };
-
-const styles = {
-  container: {
-    display: 'flex',
-    minHeight: '100vh',
-    backgroundColor: '#f0f2f5',
-    fontFamily: 'Roboto, sans-serif'
-  },
-  sidePanel: {
-    width: '350px',
-    backgroundColor: '#ffffff',
-    boxShadow: '1px 0 3px rgba(0,0,0,0.1)',
-    display: 'flex',
-    flexDirection: 'column',
-    overflow: 'hidden'
-  },
-  configPanel: {
-    padding: '16px',
-    borderBottom: '1px solid #e0e0e0'
-  },
-  configContent: {
-    padding: '8px',
-    '& h3': {
-      margin: '0 0 16px 0',
-      color: '#212934',
-      fontSize: '16px',
-      fontWeight: '500'
-    },
-    '& label': {
-      display: 'block',
-      marginBottom: '8px',
-      fontSize: '14px',
-      color: '#565656'
-    }
-  },
-  inputField: {
-    marginBottom: '16px',
-    '& input': {
-      backgroundColor: '#f9f9f9',
-      border: '1px solid #ccc',
-      borderRadius: '4px'
-    }
-  },
-  logoUpload: {
-    margin: '16px 0',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-    alignItems: 'center'
-  },
-  uploadLabel: {
-    padding: '8px 16px',
-    backgroundColor: '#f0f7ff',
-    color: '#0064d5',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    textAlign: 'center',
-    fontSize: '14px',
-    transition: 'background-color 0.2s',
-    '&:hover': {
-      backgroundColor: '#e0f0ff'
-    }
-  },
-  logoPreview: {
-    width: '80px',
-    height: '80px',
-    objectFit: 'contain',
-    border: '1px solid #ddd',
-    borderRadius: '4px'
-  },
-  buttonGroup: {
-    marginTop: '24px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-    '& button': {
-      width: '100%'
-    }
-  },
-  reportPreview: {
-    flex: 1,
-    padding: '24px',
-    backgroundColor: '#f5f5f5',
-    overflowY: 'auto',
-    display: 'flex',
-    justifyContent: 'center'
-  },
-  printableArea: {
-    width: '210mm',
-    minHeight: '297mm',
-    backgroundColor: 'white',
-    boxShadow: '0 0 10px rgba(0,0,0,0.1)',
-    padding: '20mm',
-    margin: '0 auto'
-  },
-  mainArea: {
-    margin: '20px 0',
-    padding: '20px',
-    backgroundColor: '#f9f9f9',
-    border: '1px dashed #ddd',
-    borderRadius: '4px'
-  }
-};
-
 
 export default App;

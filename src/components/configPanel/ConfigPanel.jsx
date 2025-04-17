@@ -48,12 +48,15 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  CircularProgress
+  CircularProgress,
+  Divider
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ViewQuiltIcon from '@mui/icons-material/ViewQuilt';
 import DataObjectIcon from '@mui/icons-material/DataObject';
+import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import LayoutControls from './LayoutControls';
+import ItemLibrary from '../items/ItemLibrary';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -231,9 +234,15 @@ const ConfigPanel = ({ reportConfig, setReportConfig, metadata, loading }) => {
       }}
     >
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={activeTab} onChange={handleTabChange} variant="fullWidth">
+        <Tabs 
+          value={activeTab} 
+          onChange={handleTabChange} 
+          variant="scrollable"
+          scrollButtons="auto"
+        >
           <Tab icon={<SettingsIcon />} label="General" />
           <Tab icon={<ViewQuiltIcon />} label="Layout" />
+          <Tab icon={<ViewModuleIcon />} label="Items" />
           <Tab icon={<DataObjectIcon />} label="Data" />
         </Tabs>
       </Box>
@@ -247,6 +256,10 @@ const ConfigPanel = ({ reportConfig, setReportConfig, metadata, loading }) => {
       </TabPanel>
       
       <TabPanel value={activeTab} index={2}>
+        <ItemLibrary />
+      </TabPanel>
+      
+      <TabPanel value={activeTab} index={3}>
         <Typography variant="h6" gutterBottom>Data Configuration</Typography>
         <Typography variant="body2" color="textSecondary">
           Configure the data elements and indicators to display in your report.
