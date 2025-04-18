@@ -1,99 +1,110 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import { useDrop } from 'react-dnd';
-import { Card } from '@dhis2/ui';
+import { DataTable, DataTableRow, DataTableCell, DataTableColumnHeader } from '@dhis2/ui';
 import ReportHeader from '../ReportHeader/ReportHeader';
-import { useCellData } from '../../hooks/useCellData';
-import ReportBuilder from '../ReportBuilder/ReportBuilder';
-import StockManagementTable from '../StockManagementTable/StockManagementTable';
 import './ReportPreview.css';
 
-const ReportPreview = ({ reportConfig, onAddColumn, onAddItem }) => {
-  
-  const { fetchCellData } = useCellData(reportConfig);
-  const [cellValues, setCellValues] = useState({});
-
-  useEffect(() => {
-    const fetchAllData = async () => {
-      const values = {};
-      for (const period of reportConfig.periods) {
-        for (const orgUnit of reportConfig.orgUnits) {
-          for (const column of reportConfig.columns) {
-            if (column.type === 'dataElement') {
-              const key = `${period}-${orgUnit}-${column.id}`;
-              values[key] = await fetchCellData(period, orgUnit, column.id);
-            }
-          }
-        }
-      }
-      setCellValues(values);
-    };
-    
-    fetchAllData();
-  }, [reportConfig]);
-  
+const ReportPreview = ({ reportConfig = {}, onAddColumn, onAddItem }) => {
   const [{ isOver }, drop] = useDrop(() => ({
     accept: 'ITEM',
     drop: (item, monitor) => {
       const offset = monitor.getClientOffset();
-      const tableElement = document.querySelector('.stock-management-table');
+      const tableElement = document.querySelector('.report-table');
+      
       if (tableElement && offset) {
         const tableRect = tableElement.getBoundingClientRect();
         const relativeX = offset.x - tableRect.left;
-        const relativeY = offset.y - tableRect.top;
-        
-        // Calculate approximate cell position
         const columnIndex = Math.floor(relativeX / 150); // Approximate column width
-        const rowIndex = Math.floor(relativeY / 40); // Approximate row height
         
-        if (columnIndex >= 2) { // Skip period and org unit columns
-          onAddItem(item, {
-            columnIndex,
-            rowIndex,
-            columnId: reportConfig.columns[columnIndex]?.id
-          });
+        if (columnIndex >= 2) { // Skip system columns
+          const columnId = reportConfig.columns?.[columnIndex]?.id;
+          if (columnId) {
+            onAddItem(item, `${columnId}-${Date.now()}`);
+          }
         } else {
-          // If dropped outside specific cells, add as a new column
           onAddColumn(item);
         }
       } else {
-        // If dropped outside the table, add as a new column
         onAddColumn(item);
       }
     },
     collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
-    }),
+      isOver: !!monitor.isOver()
+    })
   }));
 
+  // Safely get columns with default empty array
+  const columns = reportConfig.columns || [
+    { id: "period", name: "Period", type: "system" },
+    { id: "orgUnit", name: "Facility", type: "system" }
+  ];
+
+  // Get periods and orgUnits from reportConfig
+  const periods = reportConfig.periodSelection 
+    ? [reportConfig.periodSelection] 
+    : ['2023Q1', '2023Q2'];
+  const orgUnits = reportConfig.orgUnit 
+    ? [reportConfig.facility] 
+    : ['Facility A', 'Facility B'];
+
   return (
-    <div 
-      ref={drop}
-      style={{
-        border: isOver ? '2px dashed #0064d5' : '2px dashed transparent',
-        minHeight: '100vh',
-      }}
-    >
-      <div className="printable-area">
-        <ReportHeader 
-          title={reportConfig.title}
-          subtitle={reportConfig.subtitle}
-          facility={reportConfig.facility}
-          date={reportConfig.date}
-          period={reportConfig.period}
+    <div className="report-preview">
+      <div 
+        ref={drop}
+        className="printable-area"
+        style={{
+          border: isOver ? '2px dashed #0064d5' : 'none',
+          padding: '10px'
+        }}
+      >
+        <ReportHeader
+          title={reportConfig.title || 'DHIS2 Report'}
+          subtitle={reportConfig.subtitle || ''}
+          facility={reportConfig.facility || ''}
+          date={reportConfig.date || new Date().toLocaleDateString()}
+          period={reportConfig.periodSelection || ''}
           logo={reportConfig.logo}
         />
+
         <div className="main-area">
-          <ReportBuilder 
-            columns={reportConfig.columns || []} 
-            items={reportConfig.items || []}
-            onAddColumn={onAddColumn}
-            onAddItem={onAddItem}
-          />
-          <StockManagementTable 
-            data={reportConfig.data}
-            columns={reportConfig.columns}
-            items={reportConfig.items}
-          />
+          <DataTable className="report-table">
+            <DataTableRow>
+              {columns.map(column => (
+                <DataTableColumnHeader key={column.id}>
+                  {column.name}
+                  {column.type !== 'system' && (
+                    <div style={{ fontSize: '0.8em', color: '#666' }}>
+                      {column.type}
+                    </div>
+                  )}
+                </DataTableColumnHeader>
+              ))}
+            </DataTableRow>
+
+            {periods.map(period => 
+              orgUnits.map(orgUnit => (
+                <DataTableRow key={`${period}-${orgUnit}`}>
+                  <DataTableCell>{period}</DataTableCell>
+                  <DataTableCell>{orgUnit}</DataTableCell>
+                  {columns.slice(2).map(column => {
+                    const dataKey = `${column.id}-${period}-${orgUnit}`;
+                    const cellData = reportConfig.data?.[dataKey];
+                    
+                    return (
+                      <DataTableCell 
+                        key={dataKey}
+                        style={{
+                          backgroundColor: cellData ? '#f0f7ff' : 'transparent'
+                        }}
+                      >
+                        {cellData?.name || '-'}
+                      </DataTableCell>
+                    );
+                  })}
+                </DataTableRow>
+              ))
+            )}
+          </DataTable>
         </div>
       </div>
     </div>

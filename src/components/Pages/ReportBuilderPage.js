@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
+// src/components/pages/ReportBuilderPage.jsx
+import React, { useState } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { AlertBar, CircularLoader } from '@dhis2/ui';
-import { useReportConfig } from './hooks/useReportConfig';
-import { useDhis2Data } from './hooks/useDhis2Data';
-import ConfigPanel from './components/configPanel/ConfigPanel';
-import ReportPreview from './components/ReportPreview/ReportPreview';
-import HeaderActions from './components/HeaderActions/HeaderActions';
-import './App.css';
-import './print.css';
+import { useReportConfig } from '../../hooks/useReportConfig';
+import { useDhis2Data } from '../../hooks/useDhis2Data';
+import ConfigPanel from '../configPanel/ConfigPanel';
+import ReportPreview from '../ReportPreview/ReportPreview';
+import HeaderActions from '../HeaderActions/HeaderActions';
+//import './ReportBuilderPage.css';
 
-const App = () => {
+const ReportBuilderPage = () => {
   const {
     reportConfig,
     handlers,
@@ -20,7 +20,6 @@ const App = () => {
     metadataLoading
   } = useReportConfig();
 
-  // Add state for HeaderActions functionality
   const [activeTab, setActiveTab] = useState("design");
   const [savedTemplates, setSavedTemplates] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
@@ -71,7 +70,7 @@ const App = () => {
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="app-container">
-        {/* Add HeaderActions component */}
+        {/* Header Actions Component */}
         <HeaderActions
           onPrint={handlers.handlePrint}
           onSave={handleSaveTemplate}
@@ -143,12 +142,6 @@ const App = () => {
 };
 
 const styles = {
-  container: {
-    display: 'flex',
-    minHeight: '100vh',
-    backgroundColor: '#f0f2f5',
-    fontFamily: 'Roboto, sans-serif'
-  },
   sidePanel: {
     width: '350px',
     backgroundColor: '#ffffff',
@@ -159,4 +152,4 @@ const styles = {
   },
 };
 
-export default App;
+export default ReportBuilderPage;

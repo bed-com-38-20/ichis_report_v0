@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { Button, Card, CircularLoader, InputField,
-  SingleSelect, SingleSelectOption, Menu, MenuItem, Tooltip,Divider,
+import {
+  Button,
+  Card,
+  CircularLoader,
+  InputField,
+  SingleSelect,
+  SingleSelectOption,
+  Menu,
+  MenuItem,
+  Tooltip,
+  Divider
 } from "@dhis2/ui";
 import { useDataQuery } from "@dhis2/app-runtime";
 import { useDrag } from "react-dnd";
 import OrgUnitSelector from "./OrgUnitSelector";
 import PeriodSelector from "./PeriodSelector";
 import ReportConfigForm from "./ReportConfigForm";
-import { useReportPersistence } from "../../hooks/useReportPersistence";
 import PropTypes from "prop-types";
 import "./ConfigPanel.css";
 
@@ -93,8 +101,6 @@ const ConfigPanel = ({
   const [metadataType, setMetadataType] = useState("dataElements");
   const [isOpen, setIsOpen] = useState(false);
 
-  const { save, loading: saving } = useReportPersistence(reportConfig);
-  const [reportId, setReportId] = useState("");
   const {
     loading: queryLoading,
     error,
@@ -148,7 +154,7 @@ const ConfigPanel = ({
       { label: "Last 3 months", value: "LAST_3_MONTHS" },
       { label: "Last 6 months", value: "LAST_6_MONTHS" },
       { label: "Last 12 months", value: "LAST_12_MONTHS" },
-      { label: `This year (${currentYear})`, value: `THIS_YEAR` },
+      { label: `This year (${currentYear})`, value: "THIS_YEAR" },
       { label: `Last year (${currentYear - 1})`, value: "LAST_YEAR" },
     ];
   };
@@ -176,6 +182,7 @@ const ConfigPanel = ({
             selected={reportConfig?.periodSelection || null}
             onChange={handlers?.handlePeriodChange || (() => {})}
           />
+
           {loading && <CircularLoader small />}
 
           <ReportConfigForm
@@ -187,20 +194,7 @@ const ConfigPanel = ({
             onLogoUpload={handlers?.handleLogoUpload}
           />
 
-
           <Divider />
-
-          <div className="save-controls">
-            <InputField
-              label="Report ID"
-              value={reportId}
-              onChange={({ value }) => setReportId(value)}
-              placeholder="Enter unique report ID"
-            />
-            <Button primary onClick={() => save(reportId)} loading={saving}>
-              Save Report
-            </Button>
-          </div>
 
           <h3>Data Elements</h3>
           <div style={{ marginBottom: "16px" }}>
@@ -211,7 +205,10 @@ const ConfigPanel = ({
                 label="Metadata type"
                 style={{ width: "180px" }}
               >
-                <SingleSelectOption label="Data Elements" value="dataElements"/>
+                <SingleSelectOption
+                  label="Data Elements"
+                  value="dataElements"
+                />
                 <SingleSelectOption label="Indicators" value="indicators" />
               </SingleSelect>
 
@@ -278,7 +275,6 @@ const ConfigPanel = ({
           )}
 
           <Divider />
-
 
           <div className="button-group">
             <Button primary onClick={handlers.handlePrint}>
