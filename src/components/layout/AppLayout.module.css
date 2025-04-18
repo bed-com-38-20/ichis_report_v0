@@ -1,0 +1,10 @@
+.container {
+    height: 100vh;
+    display: flex;
+}
+
+.mainContent {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}

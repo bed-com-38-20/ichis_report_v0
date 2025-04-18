@@ -1,16 +1,7 @@
 import React, { useState, useEffect } from "react";
-import {
-  Button,
-  Card,
-  CircularLoader,
-  InputField,
-  SingleSelect,
-  SingleSelectOption,
-  Menu,
-  MenuItem,
-  Tooltip,
-  Divider
-} from "@dhis2/ui";
+import { Button, Card,CircularLoader,InputField,
+  SingleSelect,SingleSelectOption, Menu, MenuItem,
+  Tooltip,  Divider } from "@dhis2/ui";
 import { useDataQuery } from "@dhis2/app-runtime";
 import { useDrag } from "react-dnd";
 import OrgUnitSelector from "./OrgUnitSelector";

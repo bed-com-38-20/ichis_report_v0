@@ -1,7 +1,7 @@
 import React from 'react';
 //import Layout, { Navigation } from '@dhis2/ui';
 import Navigation from './Navigation';
-//import styles from './AppLayout.module.css';
+import styles from './AppLayout.module.css';
 
 const AppLayout = ({ children }) => {
     return (

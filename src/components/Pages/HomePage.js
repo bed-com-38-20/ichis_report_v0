@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Button } from '@dhis2/ui';
 import { useNavigate } from 'react-router-dom';
-//import styles from './HomePage.module.css';
+import styles from './HomePage.module.css';
 
 const HomePage = () => {
     const navigate = useNavigate();
