@@ -7,6 +7,7 @@ import { useDhis2Data } from '../../hooks/useDhis2Data';
 import ConfigPanel from '../configPanel/ConfigPanel';
 import ReportPreview from '../ReportPreview/ReportPreview';
 import HeaderActions from '../HeaderActions/HeaderActions';
+import { useTemplateStore } from '../../hooks/useTemplateStore';
 //import './ReportBuilderPage.css';
 
 const ReportBuilderPage = () => {
@@ -24,36 +25,60 @@ const ReportBuilderPage = () => {
   const [isSaving, setIsSaving] = useState(false);
 
   useDhis2Data(reportConfig, handlers.setReportData);
+  const { saveTemplates, loadTemplates } = useTemplateStore();
 
-  // Handler for saving templates
-  const handleSaveTemplate = () => {
+  const handleSaveTemplate = async () => {
     setIsSaving(true);
     const templateId = `template-${Date.now()}`;
     const newTemplate = {
-      id: templateId,
-      name: reportConfig.title,
-      config: { ...reportConfig },
-      createdAt: new Date().toISOString(),
+        id: templateId,
+        name: reportConfig.title,
+        config: { ...reportConfig },
+        createdAt: new Date().toISOString(),
     };
 
-    setSavedTemplates([...savedTemplates, newTemplate]);
-
     try {
-      const existingTemplates = JSON.parse(
-        localStorage.getItem("reportTemplates") || "[]"
-      );
-      localStorage.setItem(
-        "reportTemplates",
-        JSON.stringify([...existingTemplates, newTemplate])
-      );
-      alert("Template saved successfully!");
+        const existingTemplates = await loadTemplates();
+        const updatedTemplates = [...existingTemplates, newTemplate];
+        await saveTemplates(updatedTemplates);
+        alert("Template saved to DHIS2 DataStore!");
     } catch (error) {
-      console.error("Error saving template:", error);
-      alert("Failed to save template. Please try again.");
+        console.error("Error saving template to DHIS2 DataStore:", error);
+        alert("Failed to save template. Check the console for details.");
     } finally {
-      setIsSaving(false);
+        setIsSaving(false);
     }
   };
+
+  // Handler for saving templates
+  // const handleSaveTemplate = () => {
+  //   setIsSaving(true);
+  //   const templateId = `template-${Date.now()}`;
+  //   const newTemplate = {
+  //     id: templateId,
+  //     name: reportConfig.title,
+  //     config: { ...reportConfig },
+  //     createdAt: new Date().toISOString(),
+  //   };
+
+  //   setSavedTemplates([...savedTemplates, newTemplate]);
+
+  //   try {
+  //     const existingTemplates = JSON.parse(
+  //       localStorage.getItem("reportTemplates") || "[]"
+  //     );
+  //     localStorage.setItem(
+  //       "reportTemplates",
+  //       JSON.stringify([...existingTemplates, newTemplate])
+  //     );
+  //     alert("Template saved successfully!");
+  //   } catch (error) {
+  //     console.error("Error saving template:", error);
+  //     alert("Failed to save template. Please try again.");
+  //   } finally {
+  //     setIsSaving(false);
+  //   }
+  // };
 
   // Handler for loading templates
   const handleLoadTemplate = (templateId) => {
