@@ -47,8 +47,16 @@ export const useTemplateStore = () => {
         }
     };
 
+    const deleteTemplate = async (templateId) => {
+        const existingTemplates = await loadTemplates();
+        const updatedTemplates = existingTemplates.filter(t => t.id !== templateId);
+        await saveTemplates(updatedTemplates);
+        return updatedTemplates;
+    };
+
     return {
         loadTemplates,
         saveTemplates,
+        deleteTemplate,
     };
 };

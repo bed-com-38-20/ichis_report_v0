@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { AlertBar, CircularLoader } from '@dhis2/ui';
@@ -17,15 +18,57 @@ const ReportBuilderPage = () => {
     isLoading,
     error,
     metadata,
-    metadataLoading
+    metadataLoading,
+    setReportConfig
   } = useReportConfig();
 
   const [activeTab, setActiveTab] = useState("design");
   const [savedTemplates, setSavedTemplates] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [templateLoading, setTemplateLoading] = useState(false);
+  const [searchParams] = useSearchParams();
+  const templateId = searchParams.get('templateId');
 
   useDhis2Data(reportConfig, handlers.setReportData);
   const { saveTemplates, loadTemplates } = useTemplateStore();
+
+  // Load template data if editing
+  useEffect(() => {
+    const preloadTemplate = async () => {
+      if (templateId) {
+        setTemplateLoading(true);
+        try {
+          const templates = await loadTemplates()
+          const selected = templates.find(t => t.id === templateId)
+
+          if (selected) {
+            setReportConfig(selected.config)
+            setSuccessMessage(`Template "${selected.name}" loaded successfully!`);
+          } else {
+            setSuccessMessage(`Template not found.`);
+          }
+        } catch (err) {
+          console.error('Failed to preload template:', err)
+          setSuccessMessage('Failed to load template.');
+        } finally {
+          setTemplateLoading(false);
+        }
+      }
+    };
+
+    preloadTemplate()
+  }, [templateId, loadTemplates, setReportConfig])
+
+  // Load saved templates to populate dropdown
+  useEffect(() => {
+    const fetchTemplates = async () => {
+      const templates = await loadTemplates()
+      setSavedTemplates(templates)
+    }
+
+    fetchTemplates()
+  }, [loadTemplates])
 
   const handleSaveTemplate = async () => {
     setIsSaving(true);
@@ -94,6 +137,13 @@ const ReportBuilderPage = () => {
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="app-container">
+
+        {/* {successMessage && (
+          <AlertBar duration={4000} onHidden={() => setSuccessMessage('')}>
+            {successMessage}
+          </AlertBar>
+        )} */}
+
         {/* Header Actions Component */}
         <HeaderActions
           onPrint={handlers.handlePrint}
