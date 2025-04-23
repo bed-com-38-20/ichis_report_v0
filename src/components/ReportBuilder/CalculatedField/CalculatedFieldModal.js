@@ -12,9 +12,13 @@ import {
     Radio,
     Field,
     Card,
-    CircularLoader,  // Corrected import for CircularLoader
+    CircularLoader,  
 } from '@dhis2/ui'
 import { fetchFormulaHints } from './CalculatedFieldService'
+import { getFormulaHintsAsText } from './CalculatedFieldService';
+
+const hints = await getFormulaHintsAsText();
+
 
 const CalculatedFieldModal = ({ isOpen, onClose, onAdd }) => {
     const [fieldName, setFieldName] = useState('')

@@ -30,8 +30,11 @@ export const ReportBuilderProvider = ({ children }) => {
   useEffect(() => { fetchTemplates(); }, []);
 
   useEffect(() => {
-    if (reportConfig.orgUnit && reportConfig.period &&
-      (reportConfig.dataElements.length > 0 || reportConfig.indicators.length > 0)) {
+    if (
+      reportConfig?.orgUnit?.id &&
+      reportConfig?.period?.id &&
+      (reportConfig.dataElements?.length > 0 || reportConfig.indicators?.length > 0)
+    ) {
       fetchDataValues();
     }
   }, [reportConfig]);
@@ -57,7 +60,7 @@ export const ReportBuilderProvider = ({ children }) => {
   const fetchDataValues = async () => {
     try {
       const { orgUnit, period, dataElements, indicators } = reportConfig;
-      if (!orgUnit || !period || (dataElements.length === 0 && indicators.length === 0)) return;
+      if (!orgUnit?.id || !period?.id || (!dataElements.length && !indicators.length)) return;
 
       let processedValues = {};
 
@@ -73,7 +76,7 @@ export const ReportBuilderProvider = ({ children }) => {
           }
         };
         const response = await dataEngine.query(query);
-        if (response.dataValues?.dataValues) {
+        if (response?.dataValues?.dataValues) {
           response.dataValues.dataValues.forEach(dv => {
             const key = `${dv.dataElement}.${dv.categoryOptionCombo}`;
             processedValues[key] = parseFloat(dv.value) || 0;
@@ -81,7 +84,6 @@ export const ReportBuilderProvider = ({ children }) => {
         }
       }
 
-      // Fetch indicators
       if (indicators.length > 0) {
         const indicatorQuery = {
           analytics: {
@@ -96,10 +98,9 @@ export const ReportBuilderProvider = ({ children }) => {
           }
         };
         const indResponse = await dataEngine.query(indicatorQuery);
-        if (indResponse.analytics?.rows) {
+        if (indResponse?.analytics?.rows) {
           indResponse.analytics.rows.forEach(row => {
-            const key = row[0]; // Indicator ID
-            processedValues[key] = parseFloat(row[1]) || 0;
+            processedValues[row[0]] = parseFloat(row[1]) || 0;
           });
         }
       }
@@ -120,14 +121,15 @@ export const ReportBuilderProvider = ({ children }) => {
       placement: field.placement,
       result
     };
-    setReportElements([...reportElements, newElement]);
+    setReportElements(prev => [...prev, newElement]);
     showAlert({ message: 'Calculated field added successfully', type: 'success' });
   };
 
   const addDynamicText = (textItem) => {
     let processedContent = textItem.content;
     if (textItem.includeVariables) {
-      processedContent = processedContent.replace(/\${orgUnit\.name}/g, reportConfig.orgUnit?.name || '')
+      processedContent = processedContent
+        .replace(/\${orgUnit\.name}/g, reportConfig.orgUnit?.name || '')
         .replace(/\${period\.name}/g, reportConfig.period?.name || '')
         .replace(/\${currentDate}/g, new Date().toLocaleDateString())
         .replace(/\${reportTitle}/g, reportConfig.title || '')
@@ -144,7 +146,7 @@ export const ReportBuilderProvider = ({ children }) => {
         fontWeight: 'normal', fontStyle: 'normal', fontSize: 'medium', textAlign: 'left'
       }
     };
-    setReportElements([...reportElements, newElement]);
+    setReportElements(prev => [...prev, newElement]);
     showAlert({ message: 'Dynamic text added successfully', type: 'success' });
   };
 
@@ -159,7 +161,7 @@ export const ReportBuilderProvider = ({ children }) => {
       placement: chartConfig.placement,
       visualization: chartConfig.visualization || {}
     };
-    setReportElements([...reportElements, newElement]);
+    setReportElements(prev => [...prev, newElement]);
     showAlert({ message: 'Chart added successfully', type: 'success' });
   };
 
@@ -175,17 +177,17 @@ export const ReportBuilderProvider = ({ children }) => {
         showBorders: true, headerBackground: '#f0f0f0', zebra: true
       }
     };
-    setReportElements([...reportElements, newElement]);
+    setReportElements(prev => [...prev, newElement]);
     showAlert({ message: 'Data table added successfully', type: 'success' });
   };
 
   const removeElement = (elementId) => {
-    setReportElements(reportElements.filter(element => element.id !== elementId));
+    setReportElements(prev => prev.filter(element => element.id !== elementId));
     showAlert({ message: 'Element removed from report', type: 'success' });
   };
 
   const updateElement = (elementId, updatedProps) => {
-    setReportElements(reportElements.map(element => {
+    setReportElements(prev => prev.map(element => {
       if (element.id === elementId) {
         return {
           ...element,
@@ -267,8 +269,9 @@ export const ReportBuilderProvider = ({ children }) => {
     doc.text(reportConfig.title || 'DHIS2 Report', 10, 10);
     doc.setFontSize(12);
 
-    reportElements.forEach((element, idx) => {
-      let y = 20 + (idx * 10);
+    let y = 20;
+    reportElements.forEach(element => {
+      if (y > 270) { doc.addPage(); y = 10; }
       if (element.type === 'dynamicText') {
         doc.text(element.content, 10, y);
       } else if (element.type === 'calculatedField') {
@@ -278,6 +281,7 @@ export const ReportBuilderProvider = ({ children }) => {
       } else if (element.type === 'chart') {
         doc.text(`[Chart] ${element.title}`, 10, y);
       }
+      y += 10;
     });
 
     doc.save(`${reportConfig.title.replace(/\s+/g, '_')}.pdf`);
@@ -287,32 +291,31 @@ export const ReportBuilderProvider = ({ children }) => {
   const openModal = (modalType) => setModalState({ isOpen: true, modalType });
   const closeModal = () => setModalState({ isOpen: false, modalType: null });
 
-  const contextValue = {
-    reportElements,
-    reportConfig,
-    setReportConfig,
-    modalState,
-    openModal,
-    closeModal,
-    templates,
-    isTemplatesLoading,
-    isSaving,
-    dataValues,
-    addCalculatedField,
-    addDynamicText,
-    addChart,
-    addDataTable,
-    removeElement,
-    updateElement,
-    saveAsTemplate,
-    loadTemplate,
-    deleteTemplate,
-    exportToPDF
-    // Add future: collaborative editing functions here
-  };
-
   return (
-    <ReportBuilderContext.Provider value={contextValue}>
+    <ReportBuilderContext.Provider
+      value={{
+        reportElements,
+        reportConfig,
+        setReportConfig,
+        modalState,
+        openModal,
+        closeModal,
+        templates,
+        isTemplatesLoading,
+        isSaving,
+        dataValues,
+        addCalculatedField,
+        addDynamicText,
+        addChart,
+        addDataTable,
+        removeElement,
+        updateElement,
+        saveAsTemplate,
+        loadTemplate,
+        deleteTemplate,
+        exportToPDF
+      }}
+    >
       {children}
     </ReportBuilderContext.Provider>
   );
