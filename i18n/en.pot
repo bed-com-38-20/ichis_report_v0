@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-04-14T22:52:55.829Z\n"
-"PO-Revision-Date: 2025-04-14T22:52:55.829Z\n"
+"POT-Creation-Date: 2025-04-23T03:42:19.345Z\n"
+"PO-Revision-Date: 2025-04-23T03:42:19.347Z\n"
 
 msgid "Data"
 msgstr "Data"
@@ -97,6 +97,9 @@ msgstr "View & Edit"
 
 msgid "Delete"
 msgstr "Delete"
+
+msgid "Welcome to DHIS2 Report Builder"
+msgstr "Welcome to DHIS2 Report Builder"
 
 msgid "Custom Tables"
 msgstr "Custom Tables"

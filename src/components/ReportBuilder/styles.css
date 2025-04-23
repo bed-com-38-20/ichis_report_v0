@@ -1,0 +1,30 @@
+.report-builder {
+    padding: 16px;
+    border-radius: 4px;
+    margin: 20px 0;
+    min-height: 200px;
+    transition: all 0.3s ease;
+  }
+  
+  .report-builder.drag-active {
+    border: 2px dashed #0064d5;
+    background-color: rgba(0, 100, 213, 0.05);
+  }
+  
+  /* Table styles */
+  .report-builder table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .report-builder th,
+  .report-builder td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .cell-drop-active {
+    background-color: #f0f7ff !important;
+    outline: 2px dashed #0064d5;
+  }
