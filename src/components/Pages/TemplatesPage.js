@@ -4,12 +4,12 @@ import { Button, Table, TableHead, TableRow, TableCell, TableBody, Card, Circula
 import IconButton from '@mui/material/IconButton';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+ import MenuItem from '@mui/material/MenuItem';
+ import Dialog from '@mui/material/Dialog';
+ import DialogActions from '@mui/material/DialogActions';
+ import DialogContent from '@mui/material/DialogContent';
+ import DialogContentText from '@mui/material/DialogContentText';
+ import DialogTitle from '@mui/material/DialogTitle';
 import { useTemplateStore } from '../../hooks/useTemplateStore';
 
 
@@ -24,6 +24,7 @@ const TemplatesPage = () => {
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
     const navigate = useNavigate();
     const { loadTemplates, deleteTemplate } = useTemplateStore();
+    
 
     useEffect(() => {
         const fetchTemplates = async () => {
@@ -45,7 +46,7 @@ const TemplatesPage = () => {
 
     const handleCreateNew = () => {
         // Navigate to the ReportBuilderPage
-        navigate('/builder?templateId=${selectedTemplate.id}');
+        navigate('/builder');
     };
 
     const openMenu = (event, template) => {
@@ -91,12 +92,6 @@ const TemplatesPage = () => {
             setSelectedTemplate(null);
         }
     };
-    
-
-    // const handleTableActions = (template) => {
-    //     setSelectedTemplate(template);
-    //     setShowDeleteModal(true);
-    // };
 
     return (
         <div style={{ padding: '20px' }}>
@@ -140,41 +135,39 @@ const TemplatesPage = () => {
                     </Table>
                 </Card>
             )}
-
             {successMessage && (
-                <AlertBar duration={4000} onHidden={() => setSuccessMessage('')}>
-                    {successMessage}
-                </AlertBar>
-            )}
-
-            {/* Dropdown Menu */}
-            <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={closeMenu}>
-                <MenuItem onClick={handleEdit}>Edit</MenuItem>
-                <MenuItem onClick={handleGenerate}>Generate</MenuItem>
-                <MenuItem onClick={confirmDelete}>Delete</MenuItem>
-            </Menu>
-
-            {/* Delete Confirmation Dialog */}
-            <Dialog
-                open={deleteConfirmOpen}
-                onClose={() => setDeleteConfirmOpen(false)}
-            >
-                <DialogTitle>Delete Template</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Are you sure you want to delete the template "{selectedTemplate?.name}"?
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setDeleteConfirmOpen(false)} secondary>
-                        Cancel
-                    </Button>
-                    <Button onClick={handleDelete} destructive disabled={!selectedTemplate || deleting}>
-                    {deleting ? <CircularLoader small /> : 'Delete'}
-                    </Button>
-                </DialogActions>
-            </Dialog>
-
+                 <AlertBar duration={4000} onHidden={() => setSuccessMessage('')}>
+                     {successMessage}
+                 </AlertBar>
+             )}
+ 
+             {/* Dropdown Menu */}
+             <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={closeMenu}>
+                 <MenuItem onClick={handleEdit}>Edit</MenuItem>
+                 <MenuItem onClick={handleGenerate}>Generate</MenuItem>
+                 <MenuItem onClick={confirmDelete}>Delete</MenuItem>
+             </Menu>
+ 
+             {/* Delete Confirmation Dialog */}
+             <Dialog
+                 open={deleteConfirmOpen}
+                 onClose={() => setDeleteConfirmOpen(false)}
+             >
+                 <DialogTitle>Delete Template</DialogTitle>
+                 <DialogContent>
+                     <DialogContentText>
+                         Are you sure you want to delete the template "{selectedTemplate?.name}"?
+                     </DialogContentText>
+                 </DialogContent>
+                 <DialogActions>
+                     <Button onClick={() => setDeleteConfirmOpen(false)} secondary>
+                         Cancel
+                     </Button>
+                     <Button onClick={handleDelete} destructive disabled={!selectedTemplate || deleting}>
+                     {deleting ? <CircularLoader small /> : 'Delete'}
+                     </Button>
+                 </DialogActions>
+             </Dialog>
         </div>
     );
 };
