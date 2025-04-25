@@ -171,6 +171,8 @@ import HeaderActions from '../HeaderActions/HeaderActions';
 // New feature components
 import CalculatedFieldButton from '../ReportBuilder/CalculatedField/CalculatedFieldButton';
 import DynamicTextButton from '../ReportBuilder/DynamicText/DynamicTextButton';
+import { useTemplateStore } from '../../hooks/useTemplateStore';
+//import './ReportBuilderPage.css';
 
 const ReportBuilderPage = () => {
   const {
@@ -187,31 +189,62 @@ const ReportBuilderPage = () => {
   const [isSaving, setIsSaving] = useState(false);
 
   useDhis2Data(reportConfig, handlers.setReportData);
+  const { saveTemplates, loadTemplates } = useTemplateStore();
 
-  const handleSaveTemplate = () => {
+  const handleSaveTemplate = async () => {
     setIsSaving(true);
     const templateId = `template-${Date.now()}`;
     const newTemplate = {
-      id: templateId,
-      name: reportConfig.title,
-      config: { ...reportConfig },
-      createdAt: new Date().toISOString(),
+        id: templateId,
+        name: reportConfig.title,
+        config: { ...reportConfig },
+        createdAt: new Date().toISOString(),
     };
 
-    setSavedTemplates([...savedTemplates, newTemplate]);
-
     try {
-      const existingTemplates = JSON.parse(localStorage.getItem("reportTemplates") || "[]");
-      localStorage.setItem("reportTemplates", JSON.stringify([...existingTemplates, newTemplate]));
-      alert("Template saved successfully!");
+        const existingTemplates = await loadTemplates();
+        const updatedTemplates = [...existingTemplates, newTemplate];
+        await saveTemplates(updatedTemplates);
+        alert("Template saved to DHIS2 DataStore!");
     } catch (error) {
-      console.error("Error saving template:", error);
-      alert("Failed to save template. Please try again.");
+        console.error("Error saving template to DHIS2 DataStore:", error);
+        alert("Failed to save template. Check the console for details.");
     } finally {
-      setIsSaving(false);
+        setIsSaving(false);
     }
   };
 
+  // Handler for saving templates
+  // const handleSaveTemplate = () => {
+  //   setIsSaving(true);
+  //   const templateId = `template-${Date.now()}`;
+  //   const newTemplate = {
+  //     id: templateId,
+  //     name: reportConfig.title,
+  //     config: { ...reportConfig },
+  //     createdAt: new Date().toISOString(),
+  //   };
+
+  //   setSavedTemplates([...savedTemplates, newTemplate]);
+
+  //   try {
+  //     const existingTemplates = JSON.parse(
+  //       localStorage.getItem("reportTemplates") || "[]"
+  //     );
+  //     localStorage.setItem(
+  //       "reportTemplates",
+  //       JSON.stringify([...existingTemplates, newTemplate])
+  //     );
+  //     alert("Template saved successfully!");
+  //   } catch (error) {
+  //     console.error("Error saving template:", error);
+  //     alert("Failed to save template. Please try again.");
+  //   } finally {
+  //     setIsSaving(false);
+  //   }
+  // };
+
+  // Handler for loading templates
   const handleLoadTemplate = (templateId) => {
     const template = savedTemplates.find((t) => t.id === templateId);
     if (template) {
@@ -323,4 +356,3 @@ const styles = {
 };
 
 export default ReportBuilderPage;
-
