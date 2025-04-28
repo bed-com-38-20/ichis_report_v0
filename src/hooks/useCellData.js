@@ -1,19 +1,22 @@
+// hooks/useCellData.js
 import { useDataQuery } from '@dhis2/app-runtime';
-
-const ANALYTICS_QUERY = {
-  analytics: {
-    resource: 'analytics',
-    params: ({ dimensionParams, filterParams }) => ({
-      dimension: dimensionParams,
-      filter: filterParams,
-      skipMeta: true,
-      skipData: false,
-      skipRounding: true,
-    }),
-  },
-};
+import { useMemo } from 'react';
 
 export const useCellData = (reportConfig) => {
+  // Define the query outside the component render
+  const ANALYTICS_QUERY = useMemo(() => ({
+    analytics: {
+      resource: 'analytics',
+      params: ({ dimensionParams, filterParams }) => ({
+        dimension: dimensionParams,
+        filter: filterParams,
+        skipMeta: true,
+        skipData: false,
+        skipRounding: true,
+      }),
+    },
+  }), []);
+
   const { loading, error, data, refetch } = useDataQuery(ANALYTICS_QUERY, {
     lazy: true,
   });

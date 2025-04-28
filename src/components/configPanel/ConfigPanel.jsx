@@ -1,13 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { Button, Card,CircularLoader,InputField,
-  SingleSelect,SingleSelectOption, Menu, MenuItem,
-  Tooltip,  Divider } from "@dhis2/ui";
+import {
+  Button,
+  Card,
+  CircularLoader,
+  InputField,
+  SingleSelect,
+  SingleSelectOption,
+  Menu,
+  MenuItem,
+  Tooltip,
+  Divider
+} from "@dhis2/ui";
 import { useDataQuery } from "@dhis2/app-runtime";
+import { PeriodDimension } from '@dhis2/analytics'
 import { useDrag } from "react-dnd";
-import OrgUnitSelector from "./OrgUnitSelector";
+import OrganisationUnitPicker from "./OrganizationUnitTree"; 
 import PeriodSelector from "./PeriodSelector";
 import ReportConfigForm from "./ReportConfigForm";
 import PropTypes from "prop-types";
+import PeriodSelectPopup from "./PeriodDimensions";
 import "./ConfigPanel.css";
 
 const METADATA_QUERY = {
@@ -98,7 +109,7 @@ const ConfigPanel = ({
     data,
     refetch,
   } = useDataQuery(METADATA_QUERY, {
-    variables: { search: searchTerm, categoryComboId },
+    
     lazy: true,
   });
 
@@ -108,7 +119,7 @@ const ConfigPanel = ({
       setIsOpen(true);
     }
   }, [searchTerm, categoryComboId, metadataType, refetch]);
-
+  
   const handleSelect = (item) => {
     handlers.handleSelectDataElement(item);
     setIsOpen(false);
@@ -139,21 +150,18 @@ const ConfigPanel = ({
     ));
   };
 
-  const getPeriodOptions = () => {
-    const currentYear = new Date().getFullYear();
-    return [
-      { label: "Last 3 months", value: "LAST_3_MONTHS" },
-      { label: "Last 6 months", value: "LAST_6_MONTHS" },
-      { label: "Last 12 months", value: "LAST_12_MONTHS" },
-      { label: `This year (${currentYear})`, value: "THIS_YEAR" },
-      { label: `Last year (${currentYear - 1})`, value: "LAST_YEAR" },
-    ];
-  };
-
-  const orgUnitOptions = metadata?.orgUnits?.organisationUnits || [];
-  const isValidSelection = orgUnitOptions.some(
-    (ou) => ou.id === reportConfig.orgUnit
-  );
+  const PeriodSelectTest = () => {
+    const [selectedPeriods, setSelectedPeriods] = useState([]);
+    return (
+        <PeriodDimension
+            selectedPeriods={selectedPeriods}
+            onSelect={(periods) => {
+                setSelectedPeriods(periods);
+                console.log("Selected Periods:", periods);
+            }}
+        />
+    );
+};
 
   return (
     <div className="config-panel">
@@ -161,18 +169,14 @@ const ConfigPanel = ({
         <div className="config-content">
           <h3>Report Configuration</h3>
 
-          <OrgUnitSelector
-            loading={loading}
-            orgUnits={orgUnitOptions}
-            selected={isValidSelection ? reportConfig?.orgUnit : null}
-            onChange={handlers?.handleOrgUnitChange || (() => {})}
+          {/* ✅ Replaced OrgUnitSelector with OrganisationUnitPicker */}
+          <h4>Select Organisation Units</h4>
+          <OrganisationUnitPicker
+            selectedOrgUnits={reportConfig?.orgUnits || []}
+            setSelectedOrgUnits={handlers?.handleOrgUnitChange}
           />
 
-          <PeriodSelector
-            options={getPeriodOptions()}
-            selected={reportConfig?.periodSelection || null}
-            onChange={handlers?.handlePeriodChange || (() => {})}
-          />
+          <PeriodSelectPopup/>
 
           {loading && <CircularLoader small />}
 

@@ -1,7 +1,8 @@
 import { useDataQuery } from "@dhis2/app-runtime";
+import { useMemo } from "react";
 
 export const useDhis2Data = (dataSource) => {
-  const query = {
+  const query = useMemo(() => ({
     analytics: {
       resource: "analytics",
       params: {
@@ -9,7 +10,7 @@ export const useDhis2Data = (dataSource) => {
         filter: `pe:LAST_12_MONTHS`,
       },
     },
-  };
+  }), [dataSource.indicator]);
 
   const { loading, error, data } = useDataQuery(query);
 

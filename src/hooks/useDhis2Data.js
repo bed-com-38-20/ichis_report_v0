@@ -1,31 +1,11 @@
-// import { useDataQuery } from "@dhis2/app-runtime";
-
-// export const useDhis2Data = (dataSource) => {
-//   const query = {
-//     analytics: {
-//       resource: "analytics",
-//       params: {
-//         dimension: `dx:${dataSource.indicator}`,
-//         filter: `pe:LAST_12_MONTHS`,
-//       },
-//     },
-//   };
-
-//   const { loading, error, data } = useDataQuery(query);
-
-//   return { loading, error, data: data?.analytics };
-// };
-
 // hooks/useDhis2Data.js
-
-
-
 import { useEffect } from 'react';
 import { useConfig } from '@dhis2/app-runtime';
 
 export const useDhis2Data = (reportConfig, setReportData) => {
   const { baseUrl } = useConfig();
 
+  // Data transformation function moved outside of useEffect
   const transformDHIS2Data = (dataValueSet) => {
     return dataValueSet?.dataValues?.reduce((acc, dv) => ({
       ...acc,
@@ -33,6 +13,7 @@ export const useDhis2Data = (reportConfig, setReportData) => {
     }), {}) || {};
   };
 
+  // Period label formatting function moved outside of useEffect
   const formatPeriodLabel = (periodType) => {
     const format = (date) => date.toLocaleDateString('default', { month: 'long', year: 'numeric' });
     const now = new Date();
@@ -59,24 +40,33 @@ export const useDhis2Data = (reportConfig, setReportData) => {
     }
   };
 
-  const fetchReportData = async () => {
-    if (!reportConfig.orgUnit || !reportConfig.periodSelection) return;
-
-    try {
-      const response = await fetch(
-        `${baseUrl}/api/dataValueSets?orgUnit=${reportConfig.orgUnit}&period=${reportConfig.periodSelection}`
-      );
-      const data = await response.json();
-      setReportData({
-        data: transformDHIS2Data(data),
-        period: formatPeriodLabel(reportConfig.periodSelection)
-      });
-    } catch (err) {
-      console.error('Failed to fetch DHIS2 data:', err);
-    }
-  };
-
   useEffect(() => {
+    let isMounted = true; // Track if the component is still mounted
+
+    const fetchReportData = async () => {
+      if (!reportConfig.orgUnit || !reportConfig.periodSelection) return;
+  
+      try {
+        const response = await fetch(
+          `${baseUrl}/api/dataValueSets?orgUnit=${reportConfig.orgUnit}&period=${reportConfig.periodSelection}`
+        );
+        const data = await response.json();
+        if (isMounted) { // Only update state if the component is still mounted
+          setReportData({
+            data: transformDHIS2Data(data),
+            period: formatPeriodLabel(reportConfig.periodSelection)
+          });
+        }
+      } catch (err) {
+        console.error('Failed to fetch DHIS2 data:', err);
+      }
+    };
+
     fetchReportData();
-  }, [reportConfig.orgUnit, reportConfig.periodSelection]);
+
+    // Cleanup function to set isMounted to false when the component unmounts
+    return () => {
+      isMounted = false;
+    };
+  }, [reportConfig.orgUnit, reportConfig.periodSelection, baseUrl, setReportData]);
 };

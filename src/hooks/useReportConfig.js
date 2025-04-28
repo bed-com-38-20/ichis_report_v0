@@ -47,7 +47,8 @@
 // export default useReportConfig;
 
 // hooks/useReportConfig.js
-import { useState, useEffect } from 'react';
+// hooks/useReportConfig.js
+import { useState, useEffect, useCallback } from 'react';
 import { useDataQuery } from '@dhis2/app-runtime';
 
 export const useReportConfig = () => {
@@ -67,7 +68,8 @@ export const useReportConfig = () => {
     items: []
   });
 
-  const { data: metadata, loading: metadataLoading } = useDataQuery({
+  // Define the metadata query outside the component render
+  const metadataQuery = {
     orgUnits: {
       resource: 'organisationUnits',
       params: {
@@ -88,64 +90,97 @@ export const useReportConfig = () => {
         fields: 'organisationUnits[id,displayName]'
       }
     }
-  });
+  };
 
-  const handlers = {
-    handlePrint: () => window.print(),
-    handleTitleChange: ({ value }) => setReportConfig(prev => ({ ...prev, title: value })),
-    handleSubtitleChange: ({ value }) => setReportConfig(prev => ({ ...prev, subtitle: value })),
-    handleLogoUpload: (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setReportConfig(prev => ({ ...prev, logo: reader.result }));
-        };
-        reader.readAsDataURL(file);
-      }
-    },
-    handleOrgUnitChange: (orgUnitId) => {
+  const { data: metadata, loading: metadataLoading } = useDataQuery(metadataQuery);
+
+  const handleTitleChange = useCallback(({ value }) => {
+    setReportConfig(prev => ({ ...prev, title: value }));
+  }, []);
+
+  const handleSubtitleChange = useCallback(({ value }) => {
+    setReportConfig(prev => ({ ...prev, subtitle: value }));
+  }, []);
+
+  const handleLogoUpload = useCallback((e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setReportConfig(prev => ({ ...prev, logo: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  }, []);
+
+  const handleOrgUnitChange = useCallback((orgUnitId) => {
+    setReportConfig(prev => {
       const selectedOrgUnit = metadata?.orgUnits?.organisationUnits?.find(ou => ou.id === orgUnitId);
-      setReportConfig(prev => ({
+      return {
         ...prev,
         orgUnit: orgUnitId,
         facility: selectedOrgUnit?.displayName || ''
-      }));
-    },
-    handlePeriodChange: ({ selected }) => {
-      setReportConfig(prev => ({ ...prev, periodSelection: selected }));
-    },
-    handleAddColumn: (column) => {
-      setReportConfig(prev => ({
-        ...prev,
-        columns: [...prev.columns, column]
-      }));
-    },
-    handleAddItem: (item) => {
-      setReportConfig(prev => ({
-        ...prev,
-        items: [...prev.items, item]
-      }));
-    },
-    setReportData: (data) => {
-      setReportConfig(prev => ({
-        ...prev,
-        data
-      }));
-    }
+      };
+    });
+  }, [metadata]);
+
+  const handlePeriodChange = useCallback(({ selected }) => {
+    setReportConfig(prev => ({ ...prev, periodSelection: selected }));
+  }, []);
+
+  const handleAddColumn = useCallback((column) => {
+    setReportConfig(prev => ({
+      ...prev,
+      columns: [...prev.columns, column]
+    }));
+  }, []);
+
+  const handleAddItem = useCallback((item) => {
+    setReportConfig(prev => ({
+      ...prev,
+      items: [...prev.items, item]
+    }));
+  }, []);
+
+  const setReportData = useCallback((data) => {
+    setReportConfig(prev => ({
+      ...prev,
+      data
+    }));
+  }, []);
+
+  const handlePrint = () => {
+    window.print();
   };
 
+  const handlers = {
+    handlePrint,
+    handleTitleChange,
+    handleSubtitleChange,
+    handleLogoUpload,
+    handleOrgUnitChange,
+    handlePeriodChange,
+    handleAddColumn,
+    handleAddItem,
+    setReportData
+  };
+
+  // Fetch metadata and set reportConfig when it's available
   useEffect(() => {
     if (!metadataLoading && metadata) {
-      setReportConfig(prev => ({
-        ...prev,
-        title: metadata.systemSettings.applicationTitle || 'DHIS2 Report',
-        facility: metadata.user.organisationUnits[0]?.displayName || '',
-        orgUnit: metadata.user.organisationUnits[0]?.id || null
-      }));
+      try {
+        setReportConfig(prev => ({
+          ...prev,
+          title: metadata.systemSettings?.applicationTitle || 'DHIS2 Report',
+          facility: metadata.user.organisationUnits[0]?.displayName || '',
+          orgUnit: metadata.user.organisationUnits[0]?.id || null
+        }));
+      } catch (e) {
+        setError('Error processing metadata');
+      }
       setIsLoading(false);
     }
-  }, [metadataLoading, metadata]);
+  }, [metadata, metadataLoading]);
 
   return {
     reportConfig,

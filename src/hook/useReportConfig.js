@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useConfig } from '@dhis2/app-runtime';
-import { useDataQuery } from '@dhis2/app-runtime';
 
 const useReportConfig = () => {
   const [reportConfig, setReportConfig] = useState({
@@ -19,27 +18,29 @@ const useReportConfig = () => {
 
   const { baseUrl } = useConfig();
 
-  const fetchReportData = async () => {
-    if (!reportConfig.orgUnit || !reportConfig.periodSelection) return;
+  const fetchReportData = useCallback(async () => {
+    const { orgUnit, periodSelection } = reportConfig;
+
+    if (!orgUnit || !periodSelection) return;
 
     try {
       const response = await fetch(
-        `${baseUrl}/api/dataValueSets?orgUnit=${reportConfig.orgUnit}&period=${reportConfig.periodSelection}`
+        `${baseUrl}/api/dataValueSets?orgUnit=${orgUnit}&period=${periodSelection}`
       );
       const data = await response.json();
       setReportConfig(prev => ({
         ...prev,
         data: transformDHIS2Data(data),
-        period: formatPeriodLabel(reportConfig.periodSelection)
+        period: formatPeriodLabel(periodSelection)
       }));
     } catch (error) {
       console.error('Failed to fetch report data:', error);
     }
-  };
+  }, [baseUrl, reportConfig.orgUnit, reportConfig.periodSelection]);
 
   useEffect(() => {
     fetchReportData();
-  }, [reportConfig.orgUnit, reportConfig.periodSelection]);
+  }, [fetchReportData]);
 
   return { reportConfig, setReportConfig };
 };

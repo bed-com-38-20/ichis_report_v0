@@ -58,7 +58,7 @@ const ReportPreview = ({ reportConfig = {}, onAddColumn, onAddItem }) => {
         }}
       >
         <ReportHeader
-          title={reportConfig.title || 'DHIS2 Report'}
+          title={reportConfig.titl || 'DHIS2 Report 222'}
           subtitle={reportConfig.subtitle || ''}
           facility={reportConfig.facility || ''}
           date={reportConfig.date || new Date().toLocaleDateString()}
