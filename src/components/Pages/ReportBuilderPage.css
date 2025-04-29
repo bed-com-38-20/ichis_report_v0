@@ -1,0 +1,29 @@
+.custom-stepper {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+}
+
+.step {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #e0e0e0;
+    color: #333;
+    transition: background-color 0.2s;
+}
+
+.step:hover {
+    background-color: #d0d0d0;
+}
+
+.step.active {
+    background-color: #1976d2;
+    color: white;
+}
+
+.step.completed {
+    background-color: #4caf50;
+    color: white;
+}

@@ -94,6 +94,36 @@ const DraggableItem = ({ item, onRemove }) => {
   );
 };
 
+const CellConfigurator = ({ cell, onChange }) => (
+  <div className="cell-config">
+    <SingleSelect
+      label="Content Type"
+      selected={cell.type}
+      onChange={({ selected }) => onChange({ ...cell, type: selected })}
+      items={[
+        { label: "Data", value: "data" },
+        { label: "Text", value: "text" },
+        { label: "Target", value: "target" }
+      ]}
+    />
+    
+    {cell.type === "text" && (
+      <InputField
+        label="Static Value"
+        value={cell.value}
+        onChange={({ value }) => onChange({ ...cell, value })}
+      />
+    )}
+    
+    {cell.type === "data" && (
+      <DataElementPicker 
+        selected={cell.dataElement}
+        onChange={de => onChange({ ...cell, dataElement: de })}
+      />
+    )}
+  </div>
+);
+
 const ConfigPanel = ({ reportConfig = {}, metadata = {}, loading = false, handlers = {} }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryComboId, setCategoryComboId] = useState("");

@@ -55,11 +55,52 @@ import {
   DataTable, 
   DataTableRow, 
   DataTableCell,
+  Select,
   CircularLoader,
   AlertBar
 } from '@dhis2/ui';
 import TableCellDropTarget from './TableCellDropTarget';
 //import './ReportBuilder.css';
+import { 
+  useDataQuery,
+  CircularLoader,
+  AlertBar
+} from '@dhis2/app-runtime';
+import OrgUnitStage from './OrgUnitStage';
+
+const ORG_UNITS_QUERY = {
+  orgUnits: {
+    resource: 'organisationUnits',
+    params: {
+      paging: false,
+      fields: 'id,displayName,level',
+      level: 3,  
+      order: 'displayName:asc'
+    }
+  }
+};
+
+
+const getCellStyle = (value, target) => {
+  if (!target || !value) return {};
+  const percentage = (value / target) * 100;
+  
+  return {
+    backgroundColor: percentage >= 100 ? '#4CAF50' : 
+                    percentage >= 80 ? '#FFC107' : '#F44336',
+    color: percentage >= 80 ? '#000' : '#FFF'
+  };
+};
+
+//  table rendering:
+<DataTableCell 
+  style={getCellStyle(
+    row[column.dataElement], 
+    column.type === 'target' ? column.targetValue : null
+  )}
+>
+  {cellContent}
+</DataTableCell>
 
 const ReportBuilder = ({ 
   reportConfig = {}, 

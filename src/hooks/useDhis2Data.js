@@ -64,53 +64,46 @@ import { useConfig } from '@dhis2/app-runtime';
 
 export const useDhis2Data = (reportConfig) => {
   const { baseUrl } = useConfig();
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const transformData = (dataValues) => {
-    const transformed = {};
-    dataValues?.forEach(dv => {
-      if (!transformed[dv.period]) {
-        transformed[dv.period] = {
-          period: dv.period,
-          orgUnit: reportConfig.orgUnitName || reportConfig.orgUnit
-        };
-      }
-      transformed[dv.period][dv.dataElement] = dv.value;
-    });
-    return Object.values(transformed);
-  };
-
-  const fetchData = async () => {
-    if (!reportConfig?.orgUnit || 
-        !reportConfig?.periods?.length || 
-        !reportConfig?.columns?.length) {
-      setData([]);
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const response = await fetch(
-        `${baseUrl}/api/dataValueSets?` +
-        `orgUnit=${reportConfig.orgUnit}&` +
-        `period=${reportConfig.periods.join(';')}&` +
-        `dataElement=${reportConfig.columns.map(c => c.id).join(';')}`
-      );
-      const result = await response.json();
-      setData(transformData(result.dataValues || []));
-    } catch (err) {
-      setError(err);
-      console.error('Failed to fetch data:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchData = async () => {
+      if (!reportConfig?.orgUnits || 
+          !reportConfig?.periods || 
+          !reportConfig?.columns) {
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const response = await fetch(
+          `${baseUrl}/api/analytics.json?` +
+          `dimension=dx:${reportConfig.columns.map(c => c.id).join(';')}&` +
+          `dimension=ou:${reportConfig.orgUnits.join(';')}&` +
+          `dimension=pe:${reportConfig.periods.join(';')}&` +
+          `displayProperty=NAME&skipMeta=false`
+        );
+        
+        const result = await response.json();
+        
+        // Transform to match table structure
+        const transformed = {
+          metaData: result.metaData,
+          rows: result.rows || []
+        };
+        
+        setData(transformed);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchData();
-  }, [reportConfig.orgUnit, reportConfig.periods, reportConfig.columns]);
+  }, [reportConfig]);
 
   return { data, loading, error };
 };
