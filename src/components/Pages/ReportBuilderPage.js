@@ -220,128 +220,128 @@
 // export default ReportBuilderPage;
 
 
-// // import React, { useState, useEffect } from 'react';
-// // import { DndProvider } from 'react-dnd';
-// // import { HTML5Backend } from 'react-dnd-html5-backend';
-// // import { AlertBar, CircularLoader } from '@dhis2/ui';
-// // import { useReportConfig } from '../../hooks/useReportConfig';
-// // import { useDhis2Data } from '../../hooks/useDhis2Data';
-// // import ConfigPanel from '../configPanel/ConfigPanel';
-// // import ReportBuilder from '../ReportBuilder/ReportBuilder';
-// // import HeaderActions from '../HeaderActions/HeaderActions';
-// // import { useTemplateStore } from '../../hooks/useTemplateStore';
-// // //import './ReportBuilderPage.css';
+// import React, { useState, useEffect } from 'react';
+// import { DndProvider } from 'react-dnd';
+// import { HTML5Backend } from 'react-dnd-html5-backend';
+// import { AlertBar, CircularLoader } from '@dhis2/ui';
+// import { useReportConfig } from '../../hooks/useReportConfig';
+// import { useDhis2Data } from '../../hooks/useDhis2Data';
+// import ConfigPanel from '../configPanel/ConfigPanel';
+// import ReportBuilder from '../ReportBuilder/ReportBuilder';
+// import HeaderActions from '../HeaderActions/HeaderActions';
+// import { useTemplateStore } from '../../hooks/useTemplateStore';
+// //import './ReportBuilderPage.css';
 
-// // const ReportBuilderPage = () => {
-// //   const {
-// //     reportConfig,
-// //     handlers,
-// //     isLoading,
-// //     error,
-// //     metadata
-// //   } = useReportConfig();
+// const ReportBuilderPage = () => {
+//   const {
+//     reportConfig,
+//     handlers,
+//     isLoading,
+//     error,
+//     metadata
+//   } = useReportConfig();
 
-// //   const { data: reportData, loading: dataLoading, error: dataError } = useDhis2Data(reportConfig);
-// //   const { saveTemplate, loadTemplates } = useTemplateStore();
-// //   const [savedTemplates, setSavedTemplates] = useState([]);
-// //   const [isSaving, setIsSaving] = useState(false);
-// //   const [activeTab, setActiveTab] = useState("design");
+//   const { data: reportData, loading: dataLoading, error: dataError } = useDhis2Data(reportConfig);
+//   const { saveTemplate, loadTemplates } = useTemplateStore();
+//   const [savedTemplates, setSavedTemplates] = useState([]);
+//   const [isSaving, setIsSaving] = useState(false);
+//   const [activeTab, setActiveTab] = useState("design");
 
-// //   useEffect(() => {
-// //     const fetchTemplates = async () => {
-// //       try {
-// //         const templates = await loadTemplates();
-// //         setSavedTemplates(templates);
-// //       } catch (error) {
-// //         console.error("Failed to load templates:", error);
-// //       }
-// //     };
-// //     fetchTemplates();
-// //   }, []);
+//   useEffect(() => {
+//     const fetchTemplates = async () => {
+//       try {
+//         const templates = await loadTemplates();
+//         setSavedTemplates(templates);
+//       } catch (error) {
+//         console.error("Failed to load templates:", error);
+//       }
+//     };
+//     fetchTemplates();
+//   }, []);
 
-// //   const handleSaveTemplate = async () => {
-// //     setIsSaving(true);
-// //     try {
-// //       const templateId = `template-${Date.now()}`;
-// //       const newTemplate = {
-// //         id: templateId,
-// //         name: reportConfig.title,
-// //         config: reportConfig,
-// //         createdAt: new Date().toISOString()
-// //       };
-// //       await saveTemplate(newTemplate);
-// //       setSavedTemplates(prev => [...prev, newTemplate]);
-// //     } catch (error) {
-// //       console.error("Failed to save template:", error);
-// //     } finally {
-// //       setIsSaving(false);
-// //     }
-// //   };
+//   const handleSaveTemplate = async () => {
+//     setIsSaving(true);
+//     try {
+//       const templateId = `template-${Date.now()}`;
+//       const newTemplate = {
+//         id: templateId,
+//         name: reportConfig.title,
+//         config: reportConfig,
+//         createdAt: new Date().toISOString()
+//       };
+//       await saveTemplate(newTemplate);
+//       setSavedTemplates(prev => [...prev, newTemplate]);
+//     } catch (error) {
+//       console.error("Failed to save template:", error);
+//     } finally {
+//       setIsSaving(false);
+//     }
+//   };
 
-// //   const handleLoadTemplate = async (templateId) => {
-// //     try {
-// //       const template = savedTemplates.find(t => t.id === templateId);
-// //       if (template) {
-// //         handlers.setReportConfig(template.config);
-// //       }
-// //     } catch (error) {
-// //       console.error("Failed to load template:", error);
-// //     }
-// //   };
+//   const handleLoadTemplate = async (templateId) => {
+//     try {
+//       const template = savedTemplates.find(t => t.id === templateId);
+//       if (template) {
+//         handlers.setReportConfig(template.config);
+//       }
+//     } catch (error) {
+//       console.error("Failed to load template:", error);
+//     }
+//   };
 
-// //   if (isLoading) return <CircularLoader />;
-// //   if (error) return <AlertBar critical>{error.message}</AlertBar>;
+//   if (isLoading) return <CircularLoader />;
+//   if (error) return <AlertBar critical>{error.message}</AlertBar>;
 
-// //   return (
-// //     <DndProvider backend={HTML5Backend}>
-// //       <div className="report-builder-page">
-// //         <HeaderActions
-// //           reportTitle={reportConfig.title}
-// //           onPrint={handlers.handlePrint}
-// //           onSave={handleSaveTemplate}
-// //           onLoadTemplate={handleLoadTemplate}
-// //           savedTemplates={savedTemplates}
-// //           isSaving={isSaving}
-// //           activeTab={activeTab}
-// //           setActiveTab={setActiveTab}
-// //         />
+//   return (
+//     <DndProvider backend={HTML5Backend}>
+//       <div className="report-builder-page">
+//         <HeaderActions
+//           reportTitle={reportConfig.title}
+//           onPrint={handlers.handlePrint}
+//           onSave={handleSaveTemplate}
+//           onLoadTemplate={handleLoadTemplate}
+//           savedTemplates={savedTemplates}
+//           isSaving={isSaving}
+//           activeTab={activeTab}
+//           setActiveTab={setActiveTab}
+//         />
 
-// //         <div className="main-content">
-// //           <div className="config-panel">
-// //             <ConfigPanel
-// //               reportConfig={reportConfig}
-// //               metadata={metadata}
-// //               loading={isLoading}
-// //               handlers={handlers}
-// //             />
-// //           </div>
+//         <div className="main-content">
+//           <div className="config-panel">
+//             <ConfigPanel
+//               reportConfig={reportConfig}
+//               metadata={metadata}
+//               loading={isLoading}
+//               handlers={handlers}
+//             />
+//           </div>
 
-// //           <div className="report-preview">
-// //             <h2>{reportConfig.title}</h2>
-// //             {reportConfig.subtitle && <h4>{reportConfig.subtitle}</h4>}
-// //             {reportConfig.logo && (
-// //               <img 
-// //                 src={reportConfig.logo} 
-// //                 alt="Report Logo" 
-// //                 className="report-logo"
-// //               />
-// //             )}
+//           <div className="report-preview">
+//             <h2>{reportConfig.title}</h2>
+//             {reportConfig.subtitle && <h4>{reportConfig.subtitle}</h4>}
+//             {reportConfig.logo && (
+//               <img 
+//                 src={reportConfig.logo} 
+//                 alt="Report Logo" 
+//                 className="report-logo"
+//               />
+//             )}
 
-// //             <ReportBuilder
-// //               reportConfig={reportConfig}
-// //               reportData={reportData}
-// //               loading={dataLoading}
-// //               error={dataError}
-// //               onAddColumn={handlers.handleAddColumn}
-// //             />
-// //           </div>
-// //         </div>
-// //       </div>
-// //     </DndProvider>
-// //   );
-// // };
+//             <ReportBuilder
+//               reportConfig={reportConfig}
+//               reportData={reportData}
+//               loading={dataLoading}
+//               error={dataError}
+//               onAddColumn={handlers.handleAddColumn}
+//             />
+//           </div>
+//         </div>
+//       </div>
+//     </DndProvider>
+//   );
+// };
 
-// // export default ReportBuilderPage;
+// export default ReportBuilderPage;
 
 
 import React, { useState } from 'react';
