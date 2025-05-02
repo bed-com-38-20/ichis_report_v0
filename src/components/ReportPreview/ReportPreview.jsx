@@ -10,13 +10,11 @@ const ReportPreview = ({ reportConfig = {}, onAddColumn, onAddItem }) => {
     drop: (item, monitor) => {
       const offset = monitor.getClientOffset();
       const tableElement = document.querySelector('.report-table');
-      
       if (tableElement && offset) {
         const tableRect = tableElement.getBoundingClientRect();
         const relativeX = offset.x - tableRect.left;
-        const columnIndex = Math.floor(relativeX / 150); // Approximate column width
-        
-        if (columnIndex >= 2) { // Skip system columns
+        const columnIndex = Math.floor(relativeX / 150);
+        if (columnIndex >= 2) {
           const columnId = reportConfig.columns?.[columnIndex]?.id;
           if (columnId) {
             onAddItem(item, `${columnId}-${Date.now()}`);
@@ -29,43 +27,44 @@ const ReportPreview = ({ reportConfig = {}, onAddColumn, onAddItem }) => {
       }
     },
     collect: (monitor) => ({
-      isOver: !!monitor.isOver()
-    })
+      isOver: !!monitor.isOver(),
+    }),
   }));
 
-  // Safely get columns with default empty array
   const columns = reportConfig.columns || [
-    { id: "period", name: "Period", type: "system" },
-    { id: "orgUnit", name: "Facility", type: "system" }
+    { id: 'period', name: 'Period', type: 'system' },
+    { id: 'orgUnit', name: 'Facility', type: 'system' },
   ];
 
-  // Get periods and orgUnits from reportConfig
-  const periods = reportConfig.periodSelection 
-    ? [reportConfig.periodSelection] 
-    : ['2023Q1', '2023Q2'];
-  const orgUnits = reportConfig.orgUnit 
-    ? [reportConfig.facility] 
-    : ['Facility A', 'Facility B'];
+  const periods = Array.isArray(reportConfig.periods)
+    ? reportConfig.periods
+    : reportConfig.periods
+    ? [reportConfig.periods]
+    : [{ id: '2023Q1', name: '2023 Q1' }, { id: '2023Q2', name: '2023 Q2' }];
+
+  const orgUnits = Array.isArray(reportConfig.orgUnits)
+    ? reportConfig.orgUnits
+    : reportConfig.orgUnits
+    ? [reportConfig.orgUnits]
+    : [{ id: 'facilityA', name: 'Facility A' }, { id: 'facilityB', name: 'Facility B' }];
 
   return (
     <div className="report-preview">
-      <div 
+      <div
         ref={drop}
         className="printable-area"
         style={{
           border: isOver ? '2px dashed #0064d5' : 'none',
-          padding: '10px'
+          padding: '10px',
         }}
       >
         <ReportHeader
-          title={reportConfig.titl || 'DHIS2 Report 222'}
+          title={reportConfig.title || 'DHIS2 Report 222'}
           subtitle={reportConfig.subtitle || ''}
           facility={reportConfig.facility || ''}
           date={reportConfig.date || new Date().toLocaleDateString()}
-          period={reportConfig.periodSelection || ''}
-          logo={reportConfig.logo}
+          period={periods.map(p => p.name || p.id).join(', ') || ''}
         />
-
         <div className="main-area">
           <DataTable className="report-table">
             <DataTableRow>
@@ -80,21 +79,19 @@ const ReportPreview = ({ reportConfig = {}, onAddColumn, onAddItem }) => {
                 </DataTableColumnHeader>
               ))}
             </DataTableRow>
-
-            {periods.map(period => 
+            {periods.map(period =>
               orgUnits.map(orgUnit => (
-                <DataTableRow key={`${period}-${orgUnit}`}>
-                  <DataTableCell>{period}</DataTableCell>
-                  <DataTableCell>{orgUnit}</DataTableCell>
+                <DataTableRow key={`${period.id}-${orgUnit.id}`}>
+                  <DataTableCell>{period.name || period.id}</DataTableCell>
+                  <DataTableCell>{orgUnit.name || orgUnit.id}</DataTableCell>
                   {columns.slice(2).map(column => {
-                    const dataKey = `${column.id}-${period}-${orgUnit}`;
+                    const dataKey = `${column.id}-${period.id}-${orgUnit.id}`;
                     const cellData = reportConfig.data?.[dataKey];
-                    
                     return (
-                      <DataTableCell 
+                      <DataTableCell
                         key={dataKey}
                         style={{
-                          backgroundColor: cellData ? '#f0f7ff' : 'transparent'
+                          backgroundColor: cellData ? '#f0f7ff' : 'transparent',
                         }}
                       >
                         {cellData?.name || '-'}
