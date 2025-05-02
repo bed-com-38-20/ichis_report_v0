@@ -8,27 +8,42 @@ import globalStyles from './styles/global.style';
 import classes from './App.module.css';
 import { TABLES } from './modules/paths';
 import { Tables, NoMatch } from './pages';
+import LandingPage from './pages/LandingPage';
 
 const appConfig = {
-  baseUrl: 'https://project.ccdev.org/ictprojects/api',
-  apiVersion: 39,
+  baseUrl: 'https://play.im.dhis2.org/stable-2-41-3-1',
+  apiVersion: 37,
   pwaEnabled: false,
   headers: {
-    Authorization: `Basic ${btoa('underworld:Evan1234@')}`
+    Authorization: `Basic ${btoa('admin:district')}`
   }
 };
 
 const DATASTORE_NAMESPACE = 'ichis';
 
-// Modified to be a regular component without render props
+// Fixed component with all hooks before conditional returns
 const AppInitializer = ({ children }) => {
   const [initialized, setInitialized] = useState(false);
   const [error, setError] = useState(null);
+  const [showLanding, setShowLanding] = useState(true);
+
+  // All useEffect hooks called before any conditional returns
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowLanding(false);
+    }, 2500); // Show landing screen for 2.5 seconds
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     // Simulate initialization check if needed
     setInitialized(true);
   }, []);
+
+  // Conditional returns after all hooks
+  if (showLanding) {
+    return <LandingPage />;
+  }
 
   if (error) {
     return (

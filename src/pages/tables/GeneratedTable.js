@@ -25,7 +25,7 @@ export function isAllPopulatedInTable(key, table) {
 }
 
 export function GeneratedTable() {
-    const history = useNavigate()
+    const navigate = useNavigate()
     const { id } = useParams()
     const table = useTableState()
 
@@ -98,7 +98,7 @@ export function GeneratedTable() {
                     <Button
                         large
                         icon={<Icon name="table_chart" />}
-                        onClick={() => history.push(getPath(EDIT_TABLE, id))}
+                        onClick={() => navigate(getPath(EDIT_TABLE, id))}
                     >
                         {i18n.t('View Template')}
                     </Button>

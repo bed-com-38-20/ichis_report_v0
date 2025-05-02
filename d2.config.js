@@ -1,7 +1,7 @@
 const config = {
     type: 'app',
-    title: 'Custom Report Builder',
-    name: 'custom-report-builder',
+    title: 'ichis-reports',
+    name: 'ichis_reports',
     entryPoints: {
         app: './src/App',
     },
