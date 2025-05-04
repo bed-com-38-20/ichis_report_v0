@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { CircularLoader, Tooltip, Button } from '@dhis2/ui';
+import { CircularLoader, Tooltip, Button, NoticeBox } from '@dhis2/ui';
 import { useDataQuery } from '@dhis2/app-runtime';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
@@ -18,6 +18,25 @@ const PERIOD_FALLBACKS = [
   { regex: /^LAST_3_MONTHS$/, fallback: 'LAST_MONTH' },
   { regex: /;LAST_3_MONTHS$/, fallback: match => match.split(';')[0] }
 ];
+
+// Error types mapping
+const ERROR_TYPES = {
+  TABLE_NOT_EXISTS: {
+    pattern: /referenced table does not exist|SqlState: 42P01/i,
+    userMessage: 'Analytics table missing. Run analytics generation job before viewing this data.',
+    isCritical: true
+  },
+  DIMENSION_NOT_FOUND: {
+    pattern: /dimension.+not found/i, 
+    userMessage: 'A requested dimension was not found in analytics',
+    isCritical: false
+  },
+  NETWORK_ERROR: {
+    pattern: /network|timeout|connection/i,
+    userMessage: 'Network connection issue',
+    isCritical: false
+  }
+};
 
 const ANALYTICS_QUERY = {
     result: {
@@ -58,6 +77,7 @@ function CellData({ cell, selectedOrgUnits, selectedPeriods }) {
     const [useFallbackPeriod, setUseFallbackPeriod] = useState(false);
     const [manualRefreshTrigger, setManualRefreshTrigger] = useState(0);
     const [errorDetails, setErrorDetails] = useState(null);
+    const [errorType, setErrorType] = useState(null);
 
     // Get original period ID
     const originalPeId = cell.data.periods?.length
@@ -89,6 +109,23 @@ function CellData({ cell, selectedOrgUnits, selectedPeriods }) {
         peId: effectivePeId,
     };
 
+    // Helper to identify specific error types
+    const identifyErrorType = useCallback((err) => {
+        if (!err) return null;
+        
+        const errorMessage = (err.message || '') + 
+            (err.details?.response?.statusText || '') + 
+            (JSON.stringify(err.details?.response?.data) || '');
+            
+        for (const [key, errorDef] of Object.entries(ERROR_TYPES)) {
+            if (errorDef.pattern.test(errorMessage)) {
+                return key;
+            }
+        }
+        
+        return 'UNKNOWN_ERROR';
+    }, []);
+
     const { data, loading, error, refetch } = useDataQuery(ANALYTICS_QUERY, {
         variables: queryVars,
         onError: (err) => {
@@ -97,16 +134,24 @@ function CellData({ cell, selectedOrgUnits, selectedPeriods }) {
             console.error('Query parameters:', queryVars);
             console.error('Full error response:', err.details?.response);
             
+            // Identify specific error type
+            const currentErrorType = identifyErrorType(err);
+            setErrorType(currentErrorType);
+            
             setErrorDetails({
                 item: cell.data.item.name,
                 params: { ...queryVars },
                 message: err.message || 'Unknown error',
                 httpStatus: err.details?.response?.status,
-                responseText: err.details?.response?.statusText
+                responseText: err.details?.response?.statusText,
+                errorType: currentErrorType
             });
             
+            // Don't retry for critical errors that won't resolve with retries
+            const isCriticalError = ERROR_TYPES[currentErrorType]?.isCritical;
+            
             // Implement retry and fallback logic
-            if (retryCount < MAX_RETRIES && !isRetrying) {
+            if (!isCriticalError && retryCount < MAX_RETRIES && !isRetrying) {
                 setIsRetrying(true);
                 setTimeout(() => {
                     setRetryCount(prev => prev + 1);
@@ -115,7 +160,7 @@ function CellData({ cell, selectedOrgUnits, selectedPeriods }) {
                 }, RETRY_DELAY);
             } 
             // After max retries, try fallback period strategy if not already using it
-            else if (!useFallbackPeriod && originalPeId !== getFallbackPeriodId(originalPeId)) {
+            else if (!isCriticalError && !useFallbackPeriod && originalPeId !== getFallbackPeriodId(originalPeId)) {
                 setUseFallbackPeriod(true);
                 setRetryCount(0);
             }
@@ -126,6 +171,7 @@ function CellData({ cell, selectedOrgUnits, selectedPeriods }) {
     useEffect(() => {
         // Reset retry counter when parameters change
         setRetryCount(0);
+        setErrorType(null);
         refetch(queryVars);
     }, [cell, selectedOrgUnits, selectedPeriods, useFallbackPeriod, manualRefreshTrigger, refetch]);
 
@@ -134,7 +180,15 @@ function CellData({ cell, selectedOrgUnits, selectedPeriods }) {
         setRetryCount(0);
         setUseFallbackPeriod(false);
         setErrorDetails(null);
+        setErrorType(null);
         setManualRefreshTrigger(prev => prev + 1);
+    };
+
+    // Navigate user to analytics generation page
+    const handleRunAnalytics = (e) => {
+        e.stopPropagation();
+        // Open in new tab, replace with actual path in your DHIS2 instance
+        window.open('/dhis-web-data-administration/index.html#/analytics', '_blank');
     };
 
     function getTooltipContent() {
@@ -148,18 +202,25 @@ function CellData({ cell, selectedOrgUnits, selectedPeriods }) {
         
         // Add error information to tooltip if applicable
         if (error) {
-            content += '\nError: Failed to load data';
+            const errorTypeDef = ERROR_TYPES[errorType] || {};
+            content += `\nError: ${errorTypeDef.userMessage || 'Failed to load data'}`;
+            
             if (retryCount > 0) {
                 content += ` (Retry ${retryCount}/${MAX_RETRIES})`;
             }
+            
             if (errorDetails) {
                 content += `\nItem: ${errorDetails.item}`;
                 content += `\nParameters: dx:${errorDetails.params.dxId}, ou:${errorDetails.params.ouId}, pe:${errorDetails.params.peId}`;
-                if (errorDetails.message) {
-                    content += `\nError message: ${errorDetails.message}`;
+                
+                // Don't include technical details for critical errors to avoid confusing users
+                if (!errorTypeDef.isCritical && errorDetails.message) {
+                    content += `\nTechnical details: ${errorDetails.message}`;
                 }
-                if (errorDetails.httpStatus) {
-                    content += `\nHTTP Status: ${errorDetails.httpStatus} ${errorDetails.responseText || ''}`;
+                
+                // Add action suggestion for table not exists error
+                if (errorType === 'TABLE_NOT_EXISTS') {
+                    content += `\n\nAction needed: Run analytics generation in Data Administration`;
                 }
             }
         }
@@ -210,9 +271,24 @@ function CellData({ cell, selectedOrgUnits, selectedPeriods }) {
                 {props => (
                     <div {...props} className="error-cell">
                         <span className="error-value">
-                            {useFallbackPeriod ? '∼' : '-'}
+                            {errorType === 'TABLE_NOT_EXISTS' ? '!' : useFallbackPeriod ? '∼' : '-'}
                         </span>
-                        {retryCount >= MAX_RETRIES && (
+                        
+                        {/* Special handling for table_not_exists errors */}
+                        {errorType === 'TABLE_NOT_EXISTS' && (
+                            <span 
+                                className="analytics-button"
+                                onClick={handleRunAnalytics}
+                                role="button"
+                                tabIndex={0}
+                                title="Run Analytics Generation"
+                            >
+                                ⚙️
+                            </span>
+                        )}
+                        
+                        {/* Show refresh button for regular errors after max retries */}
+                        {errorType !== 'TABLE_NOT_EXISTS' && retryCount >= MAX_RETRIES && (
                             <span 
                                 className="refresh-button"
                                 onClick={e => {
@@ -225,16 +301,18 @@ function CellData({ cell, selectedOrgUnits, selectedPeriods }) {
                                 ⟳
                             </span>
                         )}
+                        
                         <FootnoteRefs cell={cell} />
                         <style jsx>{`
                             .error-cell {
-                                color: #888;
+                                color: ${errorType === 'TABLE_NOT_EXISTS' ? '#d14' : '#888'};
                                 display: flex;
                                 align-items: center;
                                 gap: 4px;
                             }
                             .error-value {
                                 cursor: help;
+                                font-weight: ${errorType === 'TABLE_NOT_EXISTS' ? 'bold' : 'normal'};
                             }
                             .refresh-button {
                                 cursor: pointer;
@@ -243,6 +321,14 @@ function CellData({ cell, selectedOrgUnits, selectedPeriods }) {
                                 opacity: 0.7;
                             }
                             .refresh-button:hover {
+                                opacity: 1;
+                            }
+                            .analytics-button {
+                                cursor: pointer;
+                                font-size: 12px;
+                                opacity: 0.8;
+                            }
+                            .analytics-button:hover {
                                 opacity: 1;
                             }
                         `}</style>
