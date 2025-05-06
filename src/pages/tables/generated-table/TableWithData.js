@@ -9,7 +9,6 @@ import {
     TableRow,
 } from '@dhis2/ui'
 import i18n from '../../../locales'
-
 import styles from './styles/TableWithData.styles'
 import { GeneratedTableCell } from './GeneratedTableCell'
 import { useTableState } from '../../../context/tableContext'
@@ -74,6 +73,7 @@ export function TableWithData({
     periodParamNeeded,
     selectedOrgUnits,
     selectedPeriods,
+    suppressTitle = false
 }) {
     const table = useTableState()
     const footnotes = useFootnotes()
@@ -118,7 +118,11 @@ export function TableWithData({
 
     return (
         <>
-            <h2 className="title">{table.name}</h2>
+             {!suppressTitle && <h2 className="title">{table.name}</h2>}
+             {/* <p>
+                {i18n.t('Date - ')}
+                {new Date().toLocaleDateString()}
+            </p> */}
 
             {selectedOrgUnits.length ? (
                 <p>
@@ -138,11 +142,7 @@ export function TableWithData({
                 </p>
             ) : null}
 
-            <p>
-                {i18n.t('Date - ')}
-                {new Date().toLocaleDateString()}
-            </p>
-
+            
             <Table>
                 <TableHead>{tableHeader()}</TableHead>
                 <TableBody>{tableBody()}</TableBody>

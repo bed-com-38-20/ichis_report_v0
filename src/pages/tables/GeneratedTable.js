@@ -12,6 +12,7 @@ import { DATA } from '../../modules/contentTypes';
 import { useTableState } from '../../context/tableContext';
 import HelpButton from '../../components/HelpButton';
 import { FootnotesProvider } from '../../context/footnotesContext';
+import { getSelectedNames } from './generated-table';
 
 export function isAllPopulatedInTable(key, table) {
     return table.rows.every(row =>
@@ -29,14 +30,27 @@ export function GeneratedTable() {
     const [isPrinting, setIsPrinting] = useState(false);
 
     const [logo, setLogo] = useState(null);
+
+    const fileInputRef = useRef(null);
+
+    const triggerFileInput = () => {
+        fileInputRef.current?.click();
+    };
+
     const handleLogoUpload = (event) => {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = (e) => setLogo(e.target.result);
+            reader.onload = (e) => {
+                setLogo(e.target.result); // Store in logo state
+                setReportParams(prev => ({
+                    ...prev,
+                    logo: e.target.result
+                }));
+            };
             reader.readAsDataURL(file);
         }
-    }; 
+    };
 
     const [reportParams, setReportParams] = useState({
         selectedOrgUnits: [],
@@ -55,7 +69,16 @@ export function GeneratedTable() {
         }
 
         setIsPrinting(true);
-        
+
+        const printContent = printRef.current.cloneNode(true);
+
+        // Force image dimensions for print
+        const logos = printContent.querySelectorAll('.printLogo');
+        logos.forEach(logo => {
+            logo.style.maxWidth = '200px';
+            logo.style.height = 'auto';
+        });
+
         // Create a clone of the content to print
         const contentClone = printRef.current.cloneNode(true);
         contentClone.id = "print-content-clone";
@@ -157,7 +180,7 @@ export function GeneratedTable() {
                         icon={<Icon name="edit" />}
                         onClick={toggleReportParamsDialog}
                     >
-                        {i18n.t('Change Report Parameters')}
+                        {i18n.t('Change Parameters')}
                     </Button>
                     <Button
                         large
@@ -170,16 +193,17 @@ export function GeneratedTable() {
                     <Button
                         large
                         icon={<Icon name="image" />}
-                        component="label"
+                        onClick={triggerFileInput}
                     >
                         {i18n.t('Add Logo')}
-                        <input 
-                            type="file" 
-                            accept="image/*" 
-                            onChange={handleLogoUpload}
-                            hidden 
-                        />
                     </Button>
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleLogoUpload}
+                        style={{ display: 'none' }}
+                    />
 
                     <Button
                         large
@@ -190,36 +214,49 @@ export function GeneratedTable() {
                         {isPrinting ? i18n.t('Printing...') : i18n.t('Print')}
                     </Button>
 
-                    
+
                 </ButtonStrip>
             </header>
 
-
-        <Card className={utils.card}>
-            <div 
-                ref={printRef} 
-                className={classes.print}
-                style={{ display: 'block' }}
-            >
-        {/* Printable Header with Logo */}
+            <Card className={utils.card}>
+    <div ref={printRef} className={classes.print}>
+        {/* Combined Header with Logo, Title and Date */}
         <div className={classes.printHeader}>
-            {reportParams.logo && (
-                <img 
-                    src={reportParams.logo} 
-                    className={classes.printLogo} 
-                    alt="Organization Logo"
-                />
+            {/* Logo Section (Left) */}
+            {logo && (
+                <div className={classes.logoContainer}>
+                    <img 
+                        src={logo} 
+                        className={classes.printLogo} 
+                        alt="Organization Logo" 
+                    />
+                </div>
             )}
+            
+            {/* Title & Date Section (Right) */}
+            <div className={classes.titleContainer}>
+                <h1 className={classes.reportTitle}>{table.name}</h1>
+                <div className={classes.metadata}>
+                    <p className={classes.reportDate}>
+                        {new Date().toLocaleDateString()}
+                    </p>
+                    {reportParams.selectedOrgUnits?.length > 0 && (
+                        <p className={classes.orgUnit}>
+                            {i18n.t('For: ')}{getSelectedNames(reportParams.selectedOrgUnits)}
+                        </p>
+                    )}
+                </div>
+            </div>
         </div>
 
-        {/* Main Report Content */}
+        {/* Main Table Content */}
         <FootnotesProvider>
             <TableWithData
                 {...reportParams}
                 periodParamNeeded={periodParamNeeded}
+                suppressTitle={true}
             />
         </FootnotesProvider>
-
     </div>
 </Card>
         </div>

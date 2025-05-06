@@ -36,7 +36,6 @@ export function EditTableTemplate() {
     const navigate = useNavigate()
 
     // Save table to datastore in response to changes
-    // TODO: Move to TableProvider?
     useEffect(() => {
         dataStoreActions.update({ ...table })
     }, [table])
