@@ -1,0 +1,27 @@
+.dnd-table {
+  margin-top: 20px;
+}
+
+.draggable-item {
+  padding: 8px;
+  margin-bottom: 8px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  cursor: move;
+}
+
+.draggable-item:hover {
+  background-color: #e0e0e0;
+}
+
+.droppable-area {
+  min-height: 300px;
+  border: 2px dashed #ccc;
+  padding: 20px;
+  border-radius: 4px;
+}
+
+.droppable-area.active {
+  border-color: #0064d5;
+  background-color: #f0f7ff;
+}

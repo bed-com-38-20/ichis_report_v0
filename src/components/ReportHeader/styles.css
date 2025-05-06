@@ -1,0 +1,41 @@
+.report-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .report-header .logo {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .header-content {
+    flex: 1;
+  }
+  
+  .report-header h1 {
+    margin: 0;
+    color: #212934;
+    font-size: 24px;
+  }
+  
+  .report-header h2 {
+    margin: 8px 0;
+    color: #565656;
+    font-size: 18px;
+    font-weight: normal;
+  }
+  
+  .metadata {
+    display: flex;
+    gap: 16px;
+    color: #666;
+    font-size: 14px;
+    margin-top: 8px;
+  }

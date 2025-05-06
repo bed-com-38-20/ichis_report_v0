@@ -1,0 +1,67 @@
+@media print {
+    body * {
+      visibility: hidden;
+    }
+    
+    .printable-area, 
+    .printable-area *,
+    .print-only,
+    .print-only * {
+      visibility: visible;
+    }
+    
+    .no-print,
+    .no-print * {
+      display: none !important;
+    }
+    
+    .printable-area {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      padding: 0;
+      margin: 0;
+      box-shadow: none;
+      background: white;
+    }
+    
+    .print-only {
+      display: table !important;
+      width: 100%;
+      margin-top: 20px;
+      page-break-inside: avoid;
+    }
+    
+    @page {
+      size: A4 landscape;
+      margin: 10mm;
+    }
+    
+    body {
+      padding: 0;
+      margin: 0;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10pt;
+    }
+    
+    th, td {
+      border: 1px solid #ddd;
+      padding: 4px;
+      text-align: center;
+    }
+    
+    th {
+      background-color: #f2f2f2 !important;
+    }
+    
+    .report-header {
+      margin-bottom: 10mm;
+    }
+  }

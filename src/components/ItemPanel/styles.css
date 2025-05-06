@@ -1,0 +1,26 @@
+.components-panel {
+    margin-top: 16px;
+    padding: 16px;
+  }
+  
+  .panel-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .drag-item {
+    padding: 8px;
+    border-radius: 4px;
+    cursor: move;
+    transition: all 0.2s ease;
+  }
+  
+  .drag-item.dragging {
+    opacity: 0.5;
+    background-color: #f0f7ff;
+  }
+  
+  .drag-item button {
+    width: 100%;
+  }
