@@ -1899,7 +1899,7 @@
     react-beautiful-dnd "^10.1.1"
     resize-observer-polyfill "^1.5.1"
 
-"@dhis2/app-adapter@12.5.1":
+"@dhis2/app-adapter@12.5.1", "@dhis2/app-adapter@^12.5.1":
   version "12.5.1"
   resolved "https://registry.yarnpkg.com/@dhis2/app-adapter/-/app-adapter-12.5.1.tgz#f289d40e3415b86bc581001d0373c6e910f91cf0"
   integrity sha512-b3r86rIylBdvS19/fR/H1gy3gDwRCWNyIprx7+r9KQrElWxyTC3o//092lhuGUi6qVJSla716lNAmgP9hFCgAw==
