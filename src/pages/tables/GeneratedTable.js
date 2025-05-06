@@ -219,10 +219,8 @@ export function GeneratedTable() {
             </header>
 
             <Card className={utils.card}>
-    <div ref={printRef} className={classes.print}>
-        {/* Combined Header with Logo, Title and Date */}
-        <div className={classes.printHeader}>
-            {/* Logo Section (Left) */}
+    <div ref={printRef} className={classes.print}>         
+        <div className={classes.printHeader}>             
             {logo && (
                 <div className={classes.logoContainer}>
                     <img 
