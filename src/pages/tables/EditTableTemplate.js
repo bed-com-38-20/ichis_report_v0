@@ -33,10 +33,9 @@ export function EditTableTemplate() {
     const params = useParams()
     const table = useTableState()
     const dataStoreActions = useTableActions()
-    const history = useNavigate()
+    const navigate = useNavigate()
 
     // Save table to datastore in response to changes
-    // TODO: Move to TableProvider?
     useEffect(() => {
         dataStoreActions.update({ ...table })
     }, [table])
@@ -47,7 +46,7 @@ export function EditTableTemplate() {
     }
 
     function onGenerate() {
-        history.push(getPath(GENERATED_TABLE, params.id))
+        navigate(getPath(GENERATED_TABLE, params.id))
     }
 
     function renameTable(name) {

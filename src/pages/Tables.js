@@ -32,7 +32,7 @@ const GeneratedTableWrapper = () => {
 export function Tables() {
     return (
         <DataStoreProvider namespace="tableTemplates">
-            <Routes> {/* ✅ Use Routes instead of Switch */}
+            <Routes> 
                 <Route path="edit/:id" element={<EditTableWrapper />} /> 
                 <Route path="generated/:id" element={<GeneratedTableWrapper />} />
                 <Route path="/" element={<SavedTableTemplates />} />

@@ -1,110 +1,51 @@
 import { useState, useEffect } from 'react';
 import { useDataQuery } from '@dhis2/app-runtime';
 
+const METADATA_QUERY = {
+  indicators: {
+    resource: 'indicators',
+    params: {
+      fields: 'id,displayName,indicatorType[name]',
+      paging: false
+    }
+  },
+  orgUnits: {
+    resource: 'organisationUnits',
+    params: {
+      fields: 'id,displayName',
+      //level: 3,
+      paging: false
+    }
+  }
+};
+
 export const useReportConfig = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [reportConfig, setReportConfig] = useState({
-    title: '',
-    subtitle: '',
-    logo: null,
-    date: new Date().toLocaleDateString(),
-    facility: '',
-    period: '',
-    data: {},
-    orgUnit: null,
-    periodSelection: null,
+    name: '',
     columns: [],
-    items: []
+    orgUnits: [],
+    periods: [],
+    targets: {}
   });
 
-  const { data: metadata, loading: metadataLoading } = useDataQuery({
-    orgUnits: {
-      resource: 'organisationUnits',
-      params: {
-        paging: false,
-        fields: 'id,displayName,level',
-        level: 3
-      }
-    },
-    systemSettings: {
-      resource: 'systemSettings',
-      params: {
-        key: ['applicationTitle']
-      }
-    },
-    user: {
-      resource: 'me',
-      params: {
-        fields: 'organisationUnits[id,displayName]'
-      }
-    }
-  });
+  const { data: metadata, loading, error } = useDataQuery(METADATA_QUERY);
 
   const handlers = {
+    setReportConfig,
     handlePrint: () => window.print(),
-    handleTitleChange: ({ value }) => setReportConfig(prev => ({ ...prev, title: value })),
-    handleSubtitleChange: ({ value }) => setReportConfig(prev => ({ ...prev, subtitle: value })),
-    handleLogoUpload: (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setReportConfig(prev => ({ ...prev, logo: reader.result }));
-        };
-        reader.readAsDataURL(file);
-      }
+    handleSaveTemplate: async () => {
+      // save logic
     },
-    handleOrgUnitChange: (orgUnitId) => {
-      const selectedOrgUnit = metadata?.orgUnits?.organisationUnits?.find(ou => ou.id === orgUnitId);
-      setReportConfig(prev => ({
-        ...prev,
-        orgUnit: orgUnitId,
-        facility: selectedOrgUnit?.displayName || ''
-      }));
-    },
-    handlePeriodChange: ({ selected }) => {
-      setReportConfig(prev => ({ ...prev, periodSelection: selected }));
-    },
-    handleAddColumn: (column) => {
-      setReportConfig(prev => ({
-        ...prev,
-        columns: [...prev.columns, column]
-      }));
-    },
-    handleAddItem: (item) => {
-      setReportConfig(prev => ({
-        ...prev,
-        items: [...prev.items, item]
-      }));
-    },
-    setReportData: (data) => {
-      setReportConfig(prev => ({
-        ...prev,
-        data
-      }));
+    handleTitleChange: (title) => {
+      setReportConfig(prev => ({ ...prev, name: title }));
     }
   };
-
-  useEffect(() => {
-    if (!metadataLoading && metadata) {
-      setReportConfig(prev => ({
-        ...prev,
-        title: metadata.systemSettings.applicationTitle || 'DHIS2 Report',
-        facility: metadata.user.organisationUnits[0]?.displayName || '',
-        orgUnit: metadata.user.organisationUnits[0]?.id || null
-      }));
-      setIsLoading(false);
-    }
-  }, [metadataLoading, metadata]);
 
   return {
     reportConfig,
     handlers,
-    isLoading,
+    isLoading: loading,
     error,
-    metadata,
-    metadataLoading,
-    setReportConfig
+    metadata 
   };
 };

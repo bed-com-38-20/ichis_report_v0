@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Card, colors } from '@dhis2/ui'
 import { Link } from 'react-router-dom'
-
 import Icon from '../../components/Icon'
 import styles from './styles/NavCard.style'
 

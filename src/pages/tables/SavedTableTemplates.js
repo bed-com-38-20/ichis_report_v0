@@ -81,7 +81,7 @@ export function SavedTableTemplates() {
                                     )
                                 }
                                 onEdit={() =>
-                                    history.push(
+                                    navigate(
                                         getPath(EDIT_TABLE, template.id)
                                     )
                                 }
@@ -99,7 +99,7 @@ export function SavedTableTemplates() {
     return (
         <section className={classes.sectionContainer}>
             <header className={classes.header}>
-                <h1>{i18n.t('Saved Tables')}</h1>
+                <h1>{i18n.t('Saved Reports')}</h1>
                 <HelpButton subsection="#saved-tables" />
                 <CreateNewTableTemplate createNew={createNew} />
             </header>

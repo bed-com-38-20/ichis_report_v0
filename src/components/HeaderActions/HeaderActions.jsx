@@ -35,7 +35,7 @@ const HeaderActions = ({
           className={`tab-button ${activeTab === 'preview' ? 'active' : ''}`}
           onClick={() => setActiveTab('preview')}
         >
-          Templates
+          Preview
         </button>
       </div>
       
