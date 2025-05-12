@@ -13,7 +13,7 @@ function IconTooltipButton({ size, color, icon, tooltip, className, onClick }) {
                     className={className}
                     style={{
                         borderRadius: '100%',
-                        color: color || colors.grey800,
+                        color: color || colors.blue050,
                         fontSize: size || '24px',
                     }}
                 >

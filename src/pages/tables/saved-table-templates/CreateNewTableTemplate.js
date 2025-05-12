@@ -20,12 +20,12 @@ export function CreateNewTableTemplate({ createNew }) {
                 onClick={() => setModalOpen(true)}
                 primary
             >
-                {i18n.t('Create new')}
+                {i18n.t('Create new report')}
             </Button>
             {modalOpen && (
                 <InputDialog
-                    title={i18n.t('Create new table template')}
-                    inputLabel={i18n.t('Table name')}
+                    title={i18n.t('Create new report template')}
+                    inputLabel={i18n.t('Report name')}
                     inputPlaceholder={i18n.t('Enter a name')}
                     initialValue={''}
                     confirmText={i18n.t('Create')}

@@ -19,7 +19,7 @@ function AutosaveStatus() {
     return (
         <Help>
             {i18n.t(
-                'Changes are saved automatically. Last saved at {{time}}.',
+                'Relax!!! Changes are saved automatically. Last saved at {{time}}.',
                 { time }
             )}
         </Help>

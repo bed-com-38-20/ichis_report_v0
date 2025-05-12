@@ -19,7 +19,7 @@ export function DeleteTableTemplate({ onDeleteConfirmation, onCancel }) {
             {modalIsOpen && (
                 <ConfirmModal
                     destructive
-                    title={i18n.t('Confirm delete')}
+                    title={i18n.t('Confirm report deletion')}
                     text={i18n.t(
                         'Are you sure you want to delete this template?'
                     )}

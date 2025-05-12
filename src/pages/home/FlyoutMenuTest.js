@@ -40,7 +40,7 @@ export default function FlyoutMenuTest() {
                         <MenuItem
                             dense
                             icon={<Icon name="play_arrow" dense />}
-                            label={i18n.t('Generate Table')}
+                            label={i18n.t('Generate Report')}
                         />
                         <MenuItem
                             dense

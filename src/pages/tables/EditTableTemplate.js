@@ -102,7 +102,7 @@ export function EditTableTemplate() {
                 <div>
                     <BackButton
                         to={TABLES}
-                        text={i18n.t('Back to Saved Tables')}
+                        text={i18n.t('Back to Saved Reports')}
                     />
                     <div className="pageTitle">
                         <h1>{i18n.t('Edit Table')}</h1>
@@ -117,7 +117,7 @@ export function EditTableTemplate() {
             <section className="controls">
                 <div>
                     <div className="container">
-                        <h6 className="label">{i18n.t('Table name')}</h6>
+                        <h6 className="label">{i18n.t('Report name')}</h6>
                         <div className="tableName">
                             <div>{table.name}</div>
                             <RenameTable

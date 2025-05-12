@@ -42,7 +42,7 @@ export function SavedTableTemplates() {
     async function createDemo(exampleTable) {
         const { id } = await tableTemplateActions.add({
             ...exampleTable,
-            name: 'Demo Table',
+            name: 'Sample Configurable Report',
         })
         history.push(getPath(EDIT_TABLE, id))
     }
@@ -100,7 +100,7 @@ export function SavedTableTemplates() {
         <section className={classes.sectionContainer}>
             <header className={classes.header}>
                 <h1>{i18n.t('Saved Reports')}</h1>
-                <HelpButton subsection="#saved-tables" />
+                <HelpButton subsection="#saved-reports" />
                 <CreateNewTableTemplate createNew={createNew} />
             </header>
             <Card className={utils.card}>

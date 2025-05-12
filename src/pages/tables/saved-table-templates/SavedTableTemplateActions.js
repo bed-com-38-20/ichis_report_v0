@@ -19,7 +19,7 @@ export function SavedTableTemplateActions({ onGenerate, onEdit, onDelete }) {
             <Button icon={<Icon name="edit" size="18px" />} onClick={onEdit}>
                 {i18n.t('Edit')}
             </Button>
-            <PopoverButton tooltip={i18n.t('Table actions')}>
+            <PopoverButton tooltip={i18n.t('Report actions')}>
                 {togglePopover => (
                     <FlyoutMenu>
                         <DeleteTableTemplate

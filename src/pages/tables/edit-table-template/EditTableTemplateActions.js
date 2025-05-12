@@ -15,7 +15,7 @@ export function EditTableTemplateActions({ onGenerate, onDelete }) {
                 <Button
                     secondary
                     large
-                    icon={<Icon name="delete" />}
+                    icon={<Icon name="delete report" />}
                     onClick={toggleModal}
                 >
                     {i18n.t('Delete')}
@@ -32,8 +32,8 @@ export function EditTableTemplateActions({ onGenerate, onDelete }) {
             {deleteModalIsOpen && (
                 <ConfirmModal
                     confirmText={i18n.t('Delete')}
-                    text={i18n.t('Really delete this template?')}
-                    title={i18n.t('Confirm deletion')}
+                    text={i18n.t('Do you really want to delete this template?')}
+                    title={i18n.t('Confirm report deletion')}
                     onCancel={toggleModal}
                     onConfirm={() => {
                         onDelete()

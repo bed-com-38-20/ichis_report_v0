@@ -28,8 +28,8 @@ NavigationItem.propTypes = {
 export const Navigation = () => (
     <Menu>
         {/* <NavigationItem label={i18n.t('Home')} path="/" /> */}
-        <NavigationItem label={i18n.t('Custom tables')} path={TABLES} />
-        <NavigationItem label={i18n.t('Custom reports')} path={REPORTS} />
+        <NavigationItem label={i18n.t('Configurable reports')} path={TABLES} />
+        <NavigationItem label={i18n.t('reports')} path={REPORTS} />
         <NavigationItem label={i18n.t('Help')} path={HELP} />
     </Menu>
 )
