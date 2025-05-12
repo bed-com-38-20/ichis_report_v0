@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-05-04T15:38:26.292Z\n"
-"PO-Revision-Date: 2025-05-04T15:38:26.294Z\n"
+"POT-Creation-Date: 2025-05-12T05:19:25.211Z\n"
+"PO-Revision-Date: 2025-05-12T05:19:25.213Z\n"
 
 msgid "Back"
 msgstr "Back"
@@ -353,6 +353,57 @@ msgstr "Back to Saved Tables"
 msgid "Edit Table"
 msgstr "Edit Table"
 
+msgid "No data items available"
+msgstr "No data items available"
+
+msgid "Add data items to your table to enable advanced visualizations."
+msgstr "Add data items to your table to enable advanced visualizations."
+
+msgid "Advanced Visualizations"
+msgstr "Advanced Visualizations"
+
+msgid "Trend Analysis"
+msgstr "Trend Analysis"
+
+msgid "Data Comparison"
+msgstr "Data Comparison"
+
+msgid "Select data item"
+msgstr "Select data item"
+
+msgid "Period type"
+msgstr "Period type"
+
+msgid "Days"
+msgstr "Days"
+
+msgid "Weeks"
+msgstr "Weeks"
+
+msgid "Months"
+msgstr "Months"
+
+msgid "Quarters"
+msgstr "Quarters"
+
+msgid "Years"
+msgstr "Years"
+
+msgid "Number of periods"
+msgstr "Number of periods"
+
+msgid "Update"
+msgstr "Update"
+
+msgid "Loading visualization data..."
+msgstr "Loading visualization data..."
+
+msgid "Error loading visualization data"
+msgstr "Error loading visualization data"
+
+msgid "An unknown error occurred while fetching data."
+msgstr "An unknown error occurred while fetching data."
+
 msgid "{{id}}{{c}} {{description}}"
 msgstr "{{id}}{{c}} {{description}}"
 
@@ -374,6 +425,38 @@ msgstr ""
 
 msgid "Generate"
 msgstr "Generate"
+
+msgid "No data to visualize"
+msgstr "No data to visualize"
+
+msgid "Please select at least one period to generate visualizations."
+msgstr "Please select at least one period to generate visualizations."
+
+msgid ""
+"No data items found in this table. Visualizations will appear when data "
+"items are present."
+msgstr ""
+"No data items found in this table. Visualizations will appear when data "
+"items are present."
+
+msgid ""
+"No data found for the selected parameters. Try changing the period or "
+"organization unit."
+msgstr ""
+"No data found for the selected parameters. Try changing the period or "
+"organization unit."
+
+msgid "Data Visualizations"
+msgstr "Data Visualizations"
+
+msgid "Bar Chart"
+msgstr "Bar Chart"
+
+msgid "Pie Chart"
+msgstr "Pie Chart"
+
+msgid "Value"
+msgstr "Value"
 
 msgid "Waiting for parameters..."
 msgstr "Waiting for parameters..."
@@ -404,6 +487,9 @@ msgstr "View Template"
 
 msgid "Print"
 msgstr "Print"
+
+msgid "Show visualizations"
+msgstr "Show visualizations"
 
 msgid "Create example table"
 msgstr "Create example table"
