@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-05-12T05:19:25.211Z\n"
-"PO-Revision-Date: 2025-05-12T05:19:25.213Z\n"
+"POT-Creation-Date: 2025-05-22T14:46:36.533Z\n"
+"PO-Revision-Date: 2025-05-22T14:46:36.535Z\n"
 
 msgid "Back"
 msgstr "Back"
@@ -429,9 +429,6 @@ msgstr "Generate"
 msgid "No data to visualize"
 msgstr "No data to visualize"
 
-msgid "Please select at least one period to generate visualizations."
-msgstr "Please select at least one period to generate visualizations."
-
 msgid ""
 "No data items found in this table. Visualizations will appear when data "
 "items are present."
@@ -446,14 +443,14 @@ msgstr ""
 "No data found for the selected parameters. Try changing the period or "
 "organization unit."
 
-msgid "Data Visualizations"
-msgstr "Data Visualizations"
+msgid "Download"
+msgstr "Download"
 
-msgid "Bar Chart"
-msgstr "Bar Chart"
+msgid "Fullscreen"
+msgstr "Fullscreen"
 
-msgid "Pie Chart"
-msgstr "Pie Chart"
+msgid "Period"
+msgstr "Period"
 
 msgid "Value"
 msgstr "Value"
@@ -476,20 +473,41 @@ msgstr "One or more periods are required to query data for this table."
 msgid "Report"
 msgstr "Report"
 
-msgid "Tip - hover the mouse over a data cell to see its information."
-msgstr "Tip - hover the mouse over a data cell to see its information."
+msgid "Generated on"
+msgstr "Generated on"
 
-msgid "Change Report Parameters"
-msgstr "Change Report Parameters"
+msgid "Parameters"
+msgstr "Parameters"
 
-msgid "View Template"
-msgstr "View Template"
+msgid "Template"
+msgstr "Template"
+
+msgid "Preparing..."
+msgstr "Preparing..."
 
 msgid "Print"
 msgstr "Print"
 
+msgid "Report Parameters"
+msgstr "Report Parameters"
+
+msgid "Organization Units"
+msgstr "Organization Units"
+
+msgid "Periods"
+msgstr "Periods"
+
 msgid "Show visualizations"
 msgstr "Show visualizations"
+
+msgid "Loading data..."
+msgstr "Loading data..."
+
+msgid "Data Visualizations"
+msgstr "Data Visualizations"
+
+msgid "Tip - hover the mouse over a data cell to see its information."
+msgstr "Tip - hover the mouse over a data cell to see its information."
 
 msgid "Create example table"
 msgstr "Create example table"
