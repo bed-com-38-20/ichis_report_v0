@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-05-22T14:46:36.533Z\n"
-"PO-Revision-Date: 2025-05-22T14:46:36.535Z\n"
+"POT-Creation-Date: 2025-05-25T18:02:34.000Z\n"
+"PO-Revision-Date: 2025-05-25T18:02:34.002Z\n"
 
 msgid "Back"
 msgstr "Back"
@@ -347,11 +347,17 @@ msgstr ""
 msgid "Clear"
 msgstr "Clear"
 
+msgid "Table template deleted successfully"
+msgstr "Table template deleted successfully"
+
 msgid "Back to Saved Tables"
 msgstr "Back to Saved Tables"
 
 msgid "Edit Table"
 msgstr "Edit Table"
+
+msgid "Success"
+msgstr "Success"
 
 msgid "No data items available"
 msgstr "No data items available"
@@ -467,14 +473,14 @@ msgstr "Period{{s}} - {{pe}}"
 msgid "Date - "
 msgstr "Date - "
 
+msgid "Please upload a valid image file (PNG, JPG, etc.)."
+msgstr "Please upload a valid image file (PNG, JPG, etc.)."
+
 msgid "One or more periods are required to query data for this table."
 msgstr "One or more periods are required to query data for this table."
 
-msgid "Report"
-msgstr "Report"
-
-msgid "Generated on"
-msgstr "Generated on"
+msgid "Actions"
+msgstr "Actions"
 
 msgid "Parameters"
 msgstr "Parameters"
@@ -488,6 +494,18 @@ msgstr "Preparing..."
 msgid "Print"
 msgstr "Print"
 
+msgid "Add Logo"
+msgstr "Add Logo"
+
+msgid "Dark Mode"
+msgstr "Dark Mode"
+
+msgid "Report"
+msgstr "Report"
+
+msgid "Generated on"
+msgstr "Generated on"
+
 msgid "Report Parameters"
 msgstr "Report Parameters"
 
@@ -497,8 +515,8 @@ msgstr "Organization Units"
 msgid "Periods"
 msgstr "Periods"
 
-msgid "Show visualizations"
-msgstr "Show visualizations"
+msgid "Show Visualizations"
+msgstr "Show Visualizations"
 
 msgid "Loading data..."
 msgstr "Loading data..."
@@ -530,11 +548,11 @@ msgstr "Are you sure you want to delete this template?"
 msgid "Table actions"
 msgstr "Table actions"
 
+msgid "No tables have been created yet."
+msgstr "No tables have been created yet."
+
 msgid "Saved Reports"
 msgstr "Saved Reports"
-
-msgid "Name"
-msgstr "Name"
 
 msgctxt "Application title"
 msgid "__MANIFEST_APP_TITLE"
