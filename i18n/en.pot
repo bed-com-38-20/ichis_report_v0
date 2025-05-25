@@ -5,8 +5,20 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-04-23T03:42:19.345Z\n"
-"PO-Revision-Date: 2025-04-23T03:42:19.347Z\n"
+"POT-Creation-Date: 2025-05-25T18:02:34.000Z\n"
+"PO-Revision-Date: 2025-05-25T18:02:34.002Z\n"
+
+msgid "Back"
+msgstr "Back"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Help"
+msgstr "Help"
+
+msgid "Menu"
+msgstr "Menu"
 
 msgid "Data"
 msgstr "Data"
@@ -83,9 +95,6 @@ msgstr "Custom tables"
 msgid "Custom reports"
 msgstr "Custom reports"
 
-msgid "Help"
-msgstr "Help"
-
 msgid "Menu header"
 msgstr "Menu header"
 
@@ -97,9 +106,6 @@ msgstr "View & Edit"
 
 msgid "Delete"
 msgstr "Delete"
-
-msgid "Welcome to DHIS2 Report Builder"
-msgstr "Welcome to DHIS2 Report Builder"
 
 msgid "Custom Tables"
 msgstr "Custom Tables"
@@ -195,9 +201,6 @@ msgstr "Configure highlighting intervals for this cell"
 
 msgid "Choose data for cell"
 msgstr "Choose data for cell"
-
-msgid "Cancel"
-msgstr "Cancel"
 
 msgid "Save"
 msgstr "Save"
@@ -344,20 +347,68 @@ msgstr ""
 msgid "Clear"
 msgstr "Clear"
 
+msgid "Table template deleted successfully"
+msgstr "Table template deleted successfully"
+
 msgid "Back to Saved Tables"
 msgstr "Back to Saved Tables"
 
 msgid "Edit Table"
 msgstr "Edit Table"
 
-msgid "No data available"
-msgstr "No data available"
+msgid "Success"
+msgstr "Success"
 
-msgid "Error loading data"
-msgstr "Error loading data"
+msgid "No data items available"
+msgstr "No data items available"
 
-msgid "No data item configured"
-msgstr "No data item configured"
+msgid "Add data items to your table to enable advanced visualizations."
+msgstr "Add data items to your table to enable advanced visualizations."
+
+msgid "Advanced Visualizations"
+msgstr "Advanced Visualizations"
+
+msgid "Trend Analysis"
+msgstr "Trend Analysis"
+
+msgid "Data Comparison"
+msgstr "Data Comparison"
+
+msgid "Select data item"
+msgstr "Select data item"
+
+msgid "Period type"
+msgstr "Period type"
+
+msgid "Days"
+msgstr "Days"
+
+msgid "Weeks"
+msgstr "Weeks"
+
+msgid "Months"
+msgstr "Months"
+
+msgid "Quarters"
+msgstr "Quarters"
+
+msgid "Years"
+msgstr "Years"
+
+msgid "Number of periods"
+msgstr "Number of periods"
+
+msgid "Update"
+msgstr "Update"
+
+msgid "Loading visualization data..."
+msgstr "Loading visualization data..."
+
+msgid "Error loading visualization data"
+msgstr "Error loading visualization data"
+
+msgid "An unknown error occurred while fetching data."
+msgstr "An unknown error occurred while fetching data."
 
 msgid "{{id}}{{c}} {{description}}"
 msgstr "{{id}}{{c}} {{description}}"
@@ -381,6 +432,38 @@ msgstr ""
 msgid "Generate"
 msgstr "Generate"
 
+msgid "No data to visualize"
+msgstr "No data to visualize"
+
+msgid ""
+"No data items found in this table. Visualizations will appear when data "
+"items are present."
+msgstr ""
+"No data items found in this table. Visualizations will appear when data "
+"items are present."
+
+msgid ""
+"No data found for the selected parameters. Try changing the period or "
+"organization unit."
+msgstr ""
+"No data found for the selected parameters. Try changing the period or "
+"organization unit."
+
+msgid "Download"
+msgstr "Download"
+
+msgid "Fullscreen"
+msgstr "Fullscreen"
+
+msgid "Period"
+msgstr "Period"
+
+msgid "Value"
+msgstr "Value"
+
+msgid "Waiting for parameters..."
+msgstr "Waiting for parameters..."
+
 msgid "Organisation Unit{{s}} - {{ou}}"
 msgstr "Organisation Unit{{s}} - {{ou}}"
 
@@ -390,23 +473,59 @@ msgstr "Period{{s}} - {{pe}}"
 msgid "Date - "
 msgstr "Date - "
 
+msgid "Please upload a valid image file (PNG, JPG, etc.)."
+msgstr "Please upload a valid image file (PNG, JPG, etc.)."
+
 msgid "One or more periods are required to query data for this table."
 msgstr "One or more periods are required to query data for this table."
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Parameters"
+msgstr "Parameters"
+
+msgid "Template"
+msgstr "Template"
+
+msgid "Preparing..."
+msgstr "Preparing..."
+
+msgid "Print"
+msgstr "Print"
+
+msgid "Add Logo"
+msgstr "Add Logo"
+
+msgid "Dark Mode"
+msgstr "Dark Mode"
 
 msgid "Report"
 msgstr "Report"
 
+msgid "Generated on"
+msgstr "Generated on"
+
+msgid "Report Parameters"
+msgstr "Report Parameters"
+
+msgid "Organization Units"
+msgstr "Organization Units"
+
+msgid "Periods"
+msgstr "Periods"
+
+msgid "Show Visualizations"
+msgstr "Show Visualizations"
+
+msgid "Loading data..."
+msgstr "Loading data..."
+
+msgid "Data Visualizations"
+msgstr "Data Visualizations"
+
 msgid "Tip - hover the mouse over a data cell to see its information."
 msgstr "Tip - hover the mouse over a data cell to see its information."
-
-msgid "Change Report Parameters"
-msgstr "Change Report Parameters"
-
-msgid "View Template"
-msgstr "View Template"
-
-msgid "Print"
-msgstr "Print"
 
 msgid "Create example table"
 msgstr "Create example table"
@@ -429,15 +548,15 @@ msgstr "Are you sure you want to delete this template?"
 msgid "Table actions"
 msgstr "Table actions"
 
-msgid "Saved Tables"
-msgstr "Saved Tables"
+msgid "No tables have been created yet."
+msgstr "No tables have been created yet."
 
-msgid "Name"
-msgstr "Name"
+msgid "Saved Reports"
+msgstr "Saved Reports"
 
 msgctxt "Application title"
 msgid "__MANIFEST_APP_TITLE"
-msgstr "ichis_reports"
+msgstr "ichis-reports"
 
 msgctxt "Application description"
 msgid "__MANIFEST_APP_DESCRIPTION"
