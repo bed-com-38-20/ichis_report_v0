@@ -42,7 +42,7 @@ export function SavedTableTemplates() {
     async function createDemo(exampleTable) {
         const { id } = await tableTemplateActions.add({
             ...exampleTable,
-            name: 'Demo Table',
+            name: 'Sample Configurable Report',
         })
         history.push(getPath(EDIT_TABLE, id))
     }
@@ -53,7 +53,7 @@ export function SavedTableTemplates() {
                 <TableRow>
                     <TableCell className={classes.tableCell}>
                         <div className={classes.noTables}>
-                            <em>No tables have been created yet.</em>
+                            <em>No reports have been created yet.</em>
                             <CreateExampleTable onCreate={createDemo} />
                         </div>
                     </TableCell>
@@ -81,7 +81,7 @@ export function SavedTableTemplates() {
                                     )
                                 }
                                 onEdit={() =>
-                                    history.push(
+                                    navigate(
                                         getPath(EDIT_TABLE, template.id)
                                     )
                                 }
@@ -99,8 +99,8 @@ export function SavedTableTemplates() {
     return (
         <section className={classes.sectionContainer}>
             <header className={classes.header}>
-                <h1>{i18n.t('Saved Tables')}</h1>
-                <HelpButton subsection="#saved-tables" />
+                <h1>{i18n.t('Saved Reports')}</h1>
+                <HelpButton subsection="#saved-reports" />
                 <CreateNewTableTemplate createNew={createNew} />
             </header>
             <Card className={utils.card}>

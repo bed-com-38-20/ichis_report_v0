@@ -213,10 +213,10 @@ export class DataSelectorDialog extends Component {
                 <ModalActions>
                     <ButtonStrip end>
                         <Button onClick={this.props.onClose}>
-                            {i18n.t('Cancel')}
+                            {i18n.t('Cancel and Exit')}
                         </Button>
                         <Button primary onClick={this.onSave}>
-                            {i18n.t('Save')}
+                            {i18n.t('Confirm and Save')}
                         </Button>
                     </ButtonStrip>
                 </ModalActions>

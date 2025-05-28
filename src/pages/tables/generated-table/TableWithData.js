@@ -10,7 +10,6 @@ import {
 } from '@dhis2/ui'
 import i18n from '../../../locales'
 
-import styles from './styles/TableWithData.styles'
 import { GeneratedTableCell } from './GeneratedTableCell'
 import { useTableState } from '../../../context/tableContext'
 import { useFootnotes } from '../../../context/footnotesContext'
@@ -29,38 +28,25 @@ function populateFootnotes(table, footnotes) {
     const orgUnitFootnotes = new Map()
     const periodFootnotes = new Map()
 
-    // For each cell, add footnotes for any unique org unit(s) or period(s)
     table.rows.forEach(row => {
         row.cells.forEach(cell => {
             if (cell.data.orgUnits.length > 0) {
-                // get key as list of ids
                 const key = getSelectedIds(cell.data.orgUnits)
-
-                // check map for existing footnote; add if absent
                 if (orgUnitFootnotes.get(key) === undefined) {
-                    const newFootnote = {
+                    orgUnitFootnotes.set(key, {
                         id: `ou${orgUnitFootnotes.size + 1}`,
                         description: getSelectedNames(cell.data.orgUnits),
-                    }
-                    // TODO: replace with map.set(...)
-                    // addOrgUnitFootnote(key, newFootnote)
-                    orgUnitFootnotes.set(key, newFootnote)
+                    })
                 }
             }
 
             if (cell.data.periods.length > 0) {
-                // get key as list of ids
                 const key = getSelectedIds(cell.data.periods)
-
-                // check map for existing footnote; add if absent
                 if (periodFootnotes.get(key) === undefined) {
-                    const newFootnote = {
+                    periodFootnotes.set(key, {
                         id: `p${periodFootnotes.size + 1}`,
                         description: getSelectedNames(cell.data.periods),
-                    }
-
-                    // addPeriodFootnote(key, newFootnote)
-                    periodFootnotes.set(key, newFootnote)
+                    })
                 }
             }
         })
@@ -118,30 +104,38 @@ export function TableWithData({
 
     return (
         <>
-            <h2 className="title">{table.name}</h2>
+            <div className="report-header">
+                <h2 className="report-title">{table.name}</h2>
 
-            {selectedOrgUnits.length ? (
-                <p>
-                    {i18n.t('Organisation Unit{{s}} - {{ou}}', {
-                        s: selectedOrgUnits.length > 1 ? 's' : '',
-                        ou: getSelectedNames(selectedOrgUnits),
-                    })}
-                </p>
-            ) : null}
+                {selectedOrgUnits.length > 0 && (
+                    <div className="meta-block">
+                        <span className="meta-label">
+                            {i18n.t('Organisation Unit(s)')}:
+                        </span>
+                        <span className="meta-value">
+                            {getSelectedNames(selectedOrgUnits)}
+                        </span>
+                    </div>
+                )}
 
-            {selectedPeriods.length ? (
-                <p>
-                    {i18n.t('Period{{s}} - {{pe}}', {
-                        s: selectedPeriods.length > 1 ? 's' : '',
-                        pe: getSelectedNames(selectedPeriods),
-                    })}
-                </p>
-            ) : null}
+                {selectedPeriods.length > 0 && (
+                    <div className="meta-block">
+                        <span className="meta-label">
+                            {i18n.t('Period(s)')}:
+                        </span>
+                        <span className="meta-value">
+                            {getSelectedNames(selectedPeriods)}
+                        </span>
+                    </div>
+                )}
 
-            <p>
-                {i18n.t('Date - ')}
-                {new Date().toLocaleDateString()}
-            </p>
+                <div className="meta-block">
+                    <span className="meta-label">{i18n.t('Date')}:</span>
+                    <span className="meta-value">
+                        {new Date().toLocaleDateString()}
+                    </span>
+                </div>
+            </div>
 
             <Table>
                 <TableHead>{tableHeader()}</TableHead>
@@ -150,7 +144,37 @@ export function TableWithData({
 
             <Footnotes />
 
-            <style jsx>{styles}</style>
+            <style jsx>{`
+                .report-header {
+                    margin-bottom: 24px;
+                    padding: 16px;
+                    background: #f5f8fa;
+                    border-radius: 8px;
+                    border: 1px solid #dde6ed;
+                }
+
+                .report-title {
+                    font-size: 1.6rem;
+                    font-weight: 700;
+                    margin-bottom: 16px;
+                    color: #1c3d5a;
+                }
+
+                .meta-block {
+                    margin-bottom: 10px;
+                }
+
+                .meta-label {
+                    font-weight: 600;
+                    color: #333;
+                    margin-right: 4px;
+                }
+
+                .meta-value {
+                    font-weight: 400;
+                    color: #555;
+                }
+            `}</style>
         </>
     )
 }

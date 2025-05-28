@@ -1,60 +1,34 @@
 {
-  "name": "ichis_reports",
-  "version": "1.0.0",
-  "description": "",
-  "license": "BSD-3-Clause",
-  "private": true,
-  "scripts": {
-    "start": "d2-app-scripts start --allowJsxInJs --proxy https://play.im.dhis2.org/stable-2-41-3-1",
-    "apiVersion": "37",
-    "build": "d2-app-scripts build",
-    "test": "d2-app-scripts test",
-    "deploy": "d2-app-scripts deploy"
-  },
-  "devDependencies": {
-    "@dhis2/cli-app-scripts": "^12.3.0"
-  },
-  "dependencies": {
-    "@dhis2/analytics": "^26.13.3",
-    "@dhis2/app-adapter": "^12.5.1",
-    "@dhis2/app-runtime": "^3.14.1",
-    "@dhis2/app-service-datastore": "^1.0.0-beta.3",
-    "@dhis2/app-shell": "^12.5.1",
-    "@dhis2/ui": "^10.5.1",
-    "@dhis2/ui-icons": "^10.5.1",
-    "@dnd-kit/core": "^6.0.0",
-    "@dnd-kit/modifiers": "^6.0.0",
-    "@dnd-kit/sortable": "^7.0.0",
-    "@dnd-kit/utilities": "^3.2.2",
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
-    "@material-ui/core": "^4.12.4",
-    "@mui/icons-material": "^7.0.1",
-    "@mui/material": "^7.0.1",
-    "@mui/system": "^7.0.1",
-    "@mui/x-data-grid": "^7.28.3",
-    "@shadcn/ui": "^0.0.4",
-    "axios": "^1.8.3",
-    "chart.js": "^4.4.8",
-    "jspdf": "^3.0.1",
-    "prop-types": "^15.8.1",
-    "react": "^18.3.1",
-    "react-chartjs-2": "^5.3.0",
-    "react-dnd": "^16.0.1",
-    "react-dnd-html5-backend": "^16.0.1",
-    "react-dom": "^18.3.1",
-    "react-grid-layout": "^1.5.1",
-    "react-router-dom": "^7.4.1",
-    "react-to-print": "^3.0.5",
-    "recharts": "^2.15.1",
-    "vite": "^6.2.3"
-  },
-  "resolutions": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "styled-jsx": "^4.0.1",
-    "@dhis2/d2-i18n": "^1.0.0",
-    "acorn": "^8.0.0"
-  },
-  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
-}
+    "name": "ichis_reports",
+    "version": "1.0.0",
+    "description": "",
+    "license": "BSD-3-Clause",
+    "private": true,
+    "scripts": {
+      "start": "d2-app-scripts start --allowJsxInJs --proxy  https://play.im.dhis2.org/dev/",
+      "build": "d2-app-scripts build",
+      "test": "d2-app-scripts test",
+      "deploy": "d2-app-scripts deploy"
+    },
+    "devDependencies": {
+      "@dhis2/cli-app-scripts": "^12.3.0",
+      "autoprefixer": "^10.4.21",
+      "postcss": "^8.5.3",
+      "tailwindcss": "3"
+    },
+    "dependencies": {
+      "@dhis2/analytics": "^26.13.3",
+      "@dhis2/app-runtime": "^3.14.1",
+      "@dhis2/app-service-datastore": "^1.0.0-beta.3",
+      "@dhis2/prop-types": "^3.1.2",
+      "@dhis2/ui": "^10.5.1",
+      "@material-ui/core": "^4.12.4",
+      "axios": "^1.8.4",
+      "prop-types": "^15.8.1",
+      "react": "^18.2.0",
+      "react-dom": "^18.2.0",
+      "react-router-dom": "^7.4.1",
+      "react-to-print": "^3.0.5"
+    }
+  }
+  

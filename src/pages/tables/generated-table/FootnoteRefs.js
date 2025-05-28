@@ -32,7 +32,7 @@ function FootnoteRefs({ cell }) {
             <style jsx>{`
                 sup {
                     margin-left: 0.375rem;
-                    color: ${colors.grey700};
+                    color: ${colors.blue800};
                 }
             `}</style>
         </sup>

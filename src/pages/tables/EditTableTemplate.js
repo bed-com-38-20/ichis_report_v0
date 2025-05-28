@@ -33,7 +33,7 @@ export function EditTableTemplate() {
     const params = useParams()
     const table = useTableState()
     const dataStoreActions = useTableActions()
-    const history = useNavigate()
+    const navigate = useNavigate()
 
     // Save table to datastore in response to changes
     // TODO: Move to TableProvider?
@@ -47,7 +47,7 @@ export function EditTableTemplate() {
     }
 
     function onGenerate() {
-        history.push(getPath(GENERATED_TABLE, params.id))
+        navigate(getPath(GENERATED_TABLE, params.id))
     }
 
     function renameTable(name) {
@@ -102,11 +102,11 @@ export function EditTableTemplate() {
                 <div>
                     <BackButton
                         to={TABLES}
-                        text={i18n.t('Back to Saved Tables')}
+                        text={i18n.t('Back to Saved Reports')}
                     />
                     <div className="pageTitle">
-                        <h1>{i18n.t('Edit Table')}</h1>
-                        <HelpButton subsection="#editing-a-table-template" />
+                        <h1>{i18n.t('Edit Report')}</h1>
+                        <HelpButton subsection="#editing-a-report-template" />
                     </div>
                 </div>
                 <EditTableTemplateActions
@@ -117,7 +117,7 @@ export function EditTableTemplate() {
             <section className="controls">
                 <div>
                     <div className="container">
-                        <h6 className="label">{i18n.t('Table name')}</h6>
+                        <h6 className="label">{i18n.t('Report name')}</h6>
                         <div className="tableName">
                             <div>{table.name}</div>
                             <RenameTable
