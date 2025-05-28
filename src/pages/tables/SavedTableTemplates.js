@@ -53,7 +53,7 @@ export function SavedTableTemplates() {
                 <TableRow>
                     <TableCell className={classes.tableCell}>
                         <div className={classes.noTables}>
-                            <em>No tables have been created yet.</em>
+                            <em>No reports have been created yet.</em>
                             <CreateExampleTable onCreate={createDemo} />
                         </div>
                     </TableCell>

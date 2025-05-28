@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-05-12T17:13:44.147Z\n"
-"PO-Revision-Date: 2025-05-12T17:13:44.149Z\n"
+"POT-Creation-Date: 2025-05-15T06:00:53.594Z\n"
+"PO-Revision-Date: 2025-05-15T06:00:53.597Z\n"
 
 msgid "Back"
 msgstr "Back"
@@ -244,6 +244,15 @@ msgstr "Enter text"
 msgid "Enter static text for cell"
 msgstr "Enter static text for cell"
 
+msgid "An error occurred during deletion."
+msgstr "An error occurred during deletion."
+
+msgid "Template successfully deleted, Go back to saved reports."
+msgstr "Template successfully deleted, Go back to saved reports."
+
+msgid "Feedback"
+msgstr "Feedback"
+
 msgid "Do you really want to delete this template?"
 msgstr "Do you really want to delete this template?"
 
@@ -356,8 +365,8 @@ msgstr "Clear"
 msgid "Back to Saved Reports"
 msgstr "Back to Saved Reports"
 
-msgid "Edit Table"
-msgstr "Edit Table"
+msgid "Edit Report"
+msgstr "Edit Report"
 
 msgid "{{id}}{{c}} {{description}}"
 msgstr "{{id}}{{c}} {{description}}"
@@ -381,38 +390,35 @@ msgstr ""
 msgid "Generate"
 msgstr "Generate"
 
-msgid "Organisation Unit{{s}} - {{ou}}"
-msgstr "Organisation Unit{{s}} - {{ou}}"
-
-msgid "Period{{s}} - {{pe}}"
-msgstr "Period{{s}} - {{pe}}"
-
-msgid "Date - "
-msgstr "Date - "
+msgid "Date"
+msgstr "Date"
 
 msgid "One or more periods are required to query data for this table."
 msgstr "One or more periods are required to query data for this table."
 
-msgid "Back to Saved Tables"
-msgstr "Back to Saved Tables"
+msgid "Generated Report"
+msgstr "Generated Report"
 
-msgid "Report"
-msgstr "Report"
+msgid "Hover over a cell to see more information."
+msgstr "Hover over a cell to see more information."
 
-msgid "Tip - hover the mouse over a data cell to see its information."
-msgstr "Tip - hover the mouse over a data cell to see its information."
-
-msgid "Change Report Parameters"
-msgstr "Change Report Parameters"
+msgid "Change Parameters"
+msgstr "Change Parameters"
 
 msgid "View Template"
 msgstr "View Template"
 
-msgid "Print"
-msgstr "Print"
+msgid "Print Report"
+msgstr "Print Report"
 
 msgid "Create sample report"
 msgstr "Create sample report"
+
+msgid "Create a New Report"
+msgstr "Create a New Report"
+
+msgid "Start building your report template from scratch."
+msgstr "Start building your report template from scratch."
 
 msgid "Create new report"
 msgstr "Create new report"

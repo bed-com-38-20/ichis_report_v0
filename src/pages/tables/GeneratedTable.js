@@ -1,5 +1,12 @@
 import React, { useRef, useState } from 'react'
-import { Button, ButtonStrip, Card, Help } from '@dhis2/ui'
+import {
+    Button,
+    ButtonStrip,
+    Card,
+    Help,
+    IconInfo16,
+    colors
+} from '@dhis2/ui'
 import i18n from '../../locales'
 import { useReactToPrint } from 'react-to-print'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -31,7 +38,7 @@ export function GeneratedTable() {
 
     const [reportParams, setReportParams] = useState({
         selectedOrgUnits: [],
-        selectedPeriods: [], // Could be root OUs as default
+        selectedPeriods: [],
     })
     const [reportParamsDialogOpen, setReportParamsDialogOpen] = useState(true)
     const [reportParamsErrors, setReportParamsErrors] = useState([])
@@ -40,7 +47,7 @@ export function GeneratedTable() {
     const handlePrint = useReactToPrint({ content: () => printRef.current })
 
     const toggleReportParamsDialog = () =>
-        setReportParamsDialogOpen(state => !state)
+        setReportParamsDialogOpen((state) => !state)
 
     const orgUnitParamNeeded = !isAllPopulatedInTable('orgUnits', table)
     const periodParamNeeded = !isAllPopulatedInTable('periods', table)
@@ -60,7 +67,7 @@ export function GeneratedTable() {
     }
 
     return (
-        <div id="generated-table">
+        <div id="generated-table" className={classes.container}>
             {(orgUnitParamNeeded || periodParamNeeded) && (
                 <ReportParameters
                     open={reportParamsDialogOpen}
@@ -71,32 +78,39 @@ export function GeneratedTable() {
                     onGenerate={onGenerate}
                 />
             )}
+
             <header className={classes.header}>
-                <div>
+                <div className={classes.headerContent}>
                     <BackButton
                         to={TABLES}
-                        text={i18n.t('Back to Saved Tables')}
+                        text={i18n.t('Back to Saved Reports')}
                     />
-                    <div className={classes.title}>
-                        <h1 className={classes.h1}>{i18n.t('Report')}</h1>
+                    <div className={classes.titleRow}>
+                        <h1 className={classes.reportTitle}>
+                            {i18n.t('Generated Report')}
+                        </h1>
                         <HelpButton subsection="#generating-a-table-from-a-template" />
                     </div>
                     <Help>
-                        {i18n.t(
-                            'Tip - hover the mouse over a data cell to see its information.'
-                        )}
+                        <div style={{ display: 'flex', alignItems: 'center', color: colors.grey800 }}>
+                            <IconInfo16 style={{ marginRight: 8 }} />
+                            {i18n.t('Hover over a cell to see more information.')}
+                        </div>
                     </Help>
                 </div>
-                <ButtonStrip>
+
+                <ButtonStrip end className={classes.buttonStrip}>
                     <Button
                         large
+                        primary
                         icon={<Icon name="edit" />}
                         onClick={toggleReportParamsDialog}
                     >
-                        {i18n.t('Change Report Parameters')}
+                        {i18n.t('Change Parameters')}
                     </Button>
                     <Button
                         large
+                        secondary
                         icon={<Icon name="table_chart" />}
                         onClick={() => navigate(getPath(EDIT_TABLE, id))}
                     >
@@ -104,23 +118,27 @@ export function GeneratedTable() {
                     </Button>
                     <Button
                         large
+                        destructive
                         icon={<Icon name="print" />}
                         onClick={handlePrint}
                     >
-                        {i18n.t('Print')}
+                        {i18n.t('Print Report')}
                     </Button>
                 </ButtonStrip>
             </header>
-            <Card className={utils.card}>
-                <div ref={printRef} className={classes.print}>
-                    <FootnotesProvider>
-                        <TableWithData
-                            {...reportParams}
-                            periodParamNeeded={periodParamNeeded}
-                        />
-                    </FootnotesProvider>
-                </div>
-            </Card>
+
+            <main>
+                <Card className={classes.card}>
+                    <div ref={printRef} className={classes.printSection}>
+                        <FootnotesProvider>
+                            <TableWithData
+                                {...reportParams}
+                                periodParamNeeded={periodParamNeeded}
+                            />
+                        </FootnotesProvider>
+                    </div>
+                </Card>
+            </main>
         </div>
     )
 }
