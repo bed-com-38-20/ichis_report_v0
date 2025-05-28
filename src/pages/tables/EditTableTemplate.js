@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-// import PropTypes from 'prop-types'
+import React, { useEffect, useState } from 'react';
 import {
     ButtonStrip,
     Card,
@@ -9,13 +8,10 @@ import {
     TableCellHead,
     TableBody,
     TableRow,
-    InputField,
-    FileInputField,
-    Button,
-} from '@dhis2/ui'
-import { useParams, useNavigate } from 'react-router-dom'
-
-import styles from './styles/EditTableTemplate.style'
+    NoticeBox,
+} from '@dhis2/ui';
+import { useParams, useNavigate } from 'react-router-dom';
+import styles from './styles/EditTableTemplate.style';
 import {
     EditTableCell,
     AddTableDimension,
@@ -23,79 +19,56 @@ import {
     RowColControls,
     RenameTable,
     EditTableTemplateActions,
-} from './edit-table-template'
-import BackButton from '../../components/BackButton'
-import utils from '../../styles/utils.module.css'
-import i18n from '../../locales'
-import { TABLES, getPath, GENERATED_TABLE } from '../../modules/paths'
-import { useTableActions, useTableState, useTableDispatch } from '../../context/tableContext'
-import HelpButton from '../../components/HelpButton'
-import AutosaveStatus from './edit-table-template/AutosaveStatus'
+} from './edit-table-template';
+import BackButton from '../../components/BackButton';
+import utils from '../../styles/utils.module.css';
+import i18n from '../../locales';
+import { TABLES, getPath, GENERATED_TABLE } from '../../modules/paths';
+import { useTableActions, useTableState } from '../../context/tableContext';
+import HelpButton from '../../components/HelpButton';
+import AutosaveStatus from './edit-table-template/AutosaveStatus';
+import classes from './DeleteTableTemplate.module.css'; // Reuse CSS from DeleteTableTemplate
 
 export function EditTableTemplate() {
-    const params = useParams()
-    const table = useTableState()
-    const dataStoreActions = useTableActions()
-    const navigate = useNavigate()
-    const dispatch = useTableDispatch()
-    const tableActions = useTableActions()
+    const params = useParams();
+    const table = useTableState();
+    const dataStoreActions = useTableActions();
+    const navigate = useNavigate();
+    const [notification, setNotification] = useState({
+        isVisible: false,
+        message: '',
+    });
 
     // Save table to datastore in response to changes
     useEffect(() => {
-        dataStoreActions.update({ ...table })
-    }, [table])
+        dataStoreActions.update({ ...table });
+    }, [table]);
+
+    // Auto-dismiss notification after 3 seconds
+    useEffect(() => {
+        if (notification.isVisible) {
+            const timer = setTimeout(() => {
+                setNotification({ isVisible: false, message: '' });
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [notification.isVisible]);
 
     function onDelete() {
-        dataStoreActions.remove()
-        history.push(TABLES)
+        dataStoreActions.remove();
+        setNotification({
+            isVisible: true,
+            message: i18n.t('report template deleted successfully'),
+        });
+        setTimeout(() => navigate(TABLES), 500); // Delay navigation to show notification
     }
 
     function onGenerate() {
-        navigate(getPath(GENERATED_TABLE, params.id))
+        navigate(getPath(GENERATED_TABLE, params.id));
     }
 
     function renameTable(name) {
-        dispatch({ type: 'SET_NAME', payload: name })
-        dataStoreActions.update({ ...table, name })
-    }
-
-
-    const [logo, setLogo] = useState(table.logo || '')
-    const [description, setDescription] = useState(table.description || '')
-
-    const handleLogoChange = (e) => {
-        const file = e.target.files[0]
-        if (file) {
-            const reader = new FileReader()
-            reader.onloadend = () => {
-                setLogo(reader.result)
-
-                // Dispatch to context
-                dispatch({ type: 'SET_LOGO', payload: reader.result })
-
-                // Persist to datastore
-                tableActions.update({ ...table, logo: reader.result })
-            }
-            reader.readAsDataURL(file)
-        }
-    }
-
-    const handleDescriptionChange = (e) => {
-        const value = e.target.value
-        setDescription(value)
-
-        // Dispatch to context
-        dispatch({ type: 'SET_DESCRIPTION', payload: value })
-
-        // Persist to datastore
-        tableActions.update({ ...table, description: value })
-    }
-
-    function handleRemoveLogo() {
-        dataStoreActions.update({
-            ...table,
-            logo: null
-        });
+        dataStoreActions.update({ name });
     }
 
     function tableColumns() {
@@ -112,7 +85,7 @@ export function EditTableTemplate() {
                     />
                 ))}
             </TableRowHead>
-        )
+        );
     }
 
     function mapCellsToJsx(cells, rowIdx) {
@@ -123,7 +96,7 @@ export function EditTableTemplate() {
                 cell={cell}
                 key={idx}
             />
-        ))
+        ));
     }
 
     function tableRows() {
@@ -137,20 +110,20 @@ export function EditTableTemplate() {
                 />
                 {mapCellsToJsx(row.cells, idx)}
             </TableRow>
-        ))
+        ));
     }
 
     return (
-        <>
+        <div className={classes.container}>
             <header className="header">
                 <div>
                     <BackButton
                         to={TABLES}
-                        text={i18n.t('Back to Saved Tables')}
+                        text={i18n.t('Back to Saved Reports')}
                     />
                     <div className="pageTitle">
-                        <h1>{i18n.t('Edit Table')}</h1>
-                        <HelpButton subsection="#editing-a-table-template" />
+                        <h1>{i18n.t('Edit Report')}</h1>
+                        <HelpButton subsection="#editing-a-report-template" />
                     </div>
                 </div>
                 <EditTableTemplateActions
@@ -158,11 +131,10 @@ export function EditTableTemplate() {
                     onDelete={onDelete}
                 />
             </header>
-
             <section className="controls">
                 <div>
                     <div className="container">
-                        <h6 className="label">{i18n.t('Template name')}</h6>
+                        <h6 className="label">{i18n.t('Report name')}</h6>
                         <div className="tableName">
                             <div>{table.name}</div>
                             <RenameTable
@@ -171,74 +143,6 @@ export function EditTableTemplate() {
                             />
                         </div>
                     </div>
-
-                    {/* logo upload field */}
-                    <div>
-                        <label>Upload Logo:</label>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleLogoChange}
-                        />
-                        {
-                            logo &&
-                            <img src={logo}
-                                alt="Uploaded Logo"
-                                style={{
-                                    maxHeight: 100,
-                                    marginTop: 10
-                                }} />
-                        }
-                    </div>
-
-                    {/* <div className="container">
-                        <FileInputField
-
-                            onChange={handleLogoChange}
-                            accept="image/*"
-                            buttonLabel={i18n.t('Upload Logo')}
-                            disabled={false}
-                            name="logoUpload"
-                            key={table.logo ? 'has-logo' : 'no-logo'}
-                        />
-                        {table.logo && (
-                            <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center' }}>
-                                <img
-                                    src={table.logo}
-                                    alt="Preview"
-                                    style={{ maxHeight: '50px', marginRight: '8px' }}
-                                />
-                                <Button small onClick={handleRemoveLogo}>
-                                    {i18n.t('Remove')}
-                                </Button>
-                            </div>
-                        )}
-                    </div> */}
-
-                    {/* description field */}
-
-                    <div>
-                        <label>Description:</label>
-                        <textarea
-                            value={description}
-                            onChange={handleDescriptionChange}
-                            rows={3}
-                            style={{
-                                width: '100%'
-                            }}
-                        />
-                    </div>
-                    {/* <div className="container">
-                        <InputField
-                            label={i18n.t('Description (optional)')}
-                            value={table.description || ''}
-                            onChange={handleDescriptionChange}
-                            placeholder={i18n.t('Enter table description...')}
-                            name="tableDescription"
-                            type="text"
-                        />
-                    </div> */}
-
                     <HighlightingEditor />
                 </div>
                 <ButtonStrip end>
@@ -246,8 +150,6 @@ export function EditTableTemplate() {
                     <AddTableDimension type="Column" />
                 </ButtonStrip>
             </section>
-
-
             <section>
                 <Card className={utils.card}>
                     <Table className={utils.noBorder}>
@@ -259,11 +161,18 @@ export function EditTableTemplate() {
             <footer>
                 <AutosaveStatus />
             </footer>
+            {notification.isVisible && (
+                <div className={classes.notification}>
+                    <NoticeBox title={i18n.t('Success')}>
+                        {notification.message}
+                    </NoticeBox>
+                </div>
+            )}
             <style jsx>{styles}</style>
-        </>
-    )
+        </div>
+    );
 }
 
-EditTableTemplate.propTypes = {}
+EditTableTemplate.propTypes = {};
 
-export default EditTableTemplate
+export default EditTableTemplate;

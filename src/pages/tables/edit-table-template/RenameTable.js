@@ -12,16 +12,16 @@ export function RenameTable({ name, onRename }) {
         <>
             <IconTooltipButton
                 icon="edit"
-                tooltip="Rename table"
+                tooltip="Rename Report"
                 size="18px"
                 onClick={toggleModal}
             />
             {modalIsOpen && (
                 <InputDialog
                     confirmText={i18n.t('Save')}
-                    inputLabel={i18n.t('Table name')}
+                    inputLabel={i18n.t('Report name')}
                     inputPlaceholder={i18n.t('Enter a name')}
-                    title={i18n.t('Rename table')}
+                    title={i18n.t('Rename the Report')}
                     onCancel={toggleModal}
                     onConfirm={inputText => {
                         onRename(inputText)

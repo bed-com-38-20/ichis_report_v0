@@ -1,307 +1,249 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Button,
   Card,
   CircularLoader,
   InputField,
-  SingleSelect,
-  SingleSelectOption,
-  MenuItem,
-  Tooltip,
+  ButtonStrip,
+  Box,
   Divider,
-} from "@dhis2/ui";
-import { useDataQuery } from "@dhis2/app-runtime";
-import { useDrag } from "react-dnd";
-import OrgUnitSelector from "./OrgUnitSelector";
-import PeriodSelector from "./PeriodSelector";
-import ReportConfigForm from "./ReportConfigForm";
-import PropTypes from "prop-types";
-import "./ConfigPanel.css";
+} from '@dhis2/ui';
+import DataEngine from './DataEngine';
+import OrganisationUnitTree from './OrganizationUnitTree';
+import ReportConfigForm from './ReportConfigForm';
+import DataSelector from './dataSelector';
+import PeriodSelector from './piri';
+import OrganisationUnitSelector from './ogg';
+import { fetchGroups, fetchAlternatives } from '../../api/dimensions';
+import './ConfigPanel.css';
 
-const METADATA_QUERY = {
-  dataElements: {
-    resource: "dataElements",
-    params: ({ search, categoryComboId }) => ({
-      fields: ["id", "displayName", "categoryCombo[id,displayName]"],
-      filter: [
-        search ? `displayName:ilike:${search}` : undefined,
-        categoryComboId ? `categoryCombo.id:eq:${categoryComboId}` : undefined,
-      ].filter(Boolean),
-      paging: false,
-    }),
-  },
-  indicators: {
-    resource: "indicators",
-    params: ({ search }) => ({
-      fields: ["id", "displayName", "indicatorType[id,displayName]"],
-      filter: search ? `displayName:ilike:${search}` : undefined,
-      paging: false,
-    }),
-  },
-  categoryCombos: {
-    resource: "categoryCombos",
-    params: {
-      fields: ["id", "displayName"],
-      paging: false,
-    },
-  },
-};
+const ConfigPanel = ({
+  reportConfig = {},
+  loading = false,
+  handlers = {},
+  engine, // Receive engine prop
+}) => {
+  const [dimensionSearchTerm, setDimensionSearchTerm] = useState('');
+  const [dataModalOpen, setDataModalOpen] = useState(false);
+  const [periodModalOpen, setPeriodModalOpen] = useState(false);
+  const [orgUnitModalOpen, setOrgUnitModalOpen] = useState(false);
+  const [selectedItems, setSelectedItems] = useState(reportConfig.items || []);
+  const [selectedPeriods, setSelectedPeriods] = useState(reportConfig.periods || []);
+  const [indicatorGroups, setIndicatorGroups] = useState([]);
+  const [selectedGroup, setSelectedGroup] = useState('ALL');
+  const [availableItems, setAvailableItems] = useState([]);
+  const [metadataLoading, setMetadataLoading] = useState(false);
+  const [fetchError, setFetchError] = useState(null);
 
-// Draggable wrapper
-const DraggableItem = ({ item, onRemove }) => {
-  const [{ isDragging }, drag] = useDrag(() => ({
-    type: "ITEM",
-    item: {
-      id: item.id,
-      name: item.name,
-      type: item.type,
-      metadata: item.metadata,
-    },
-    collect: (monitor) => ({
-      isDragging: !!monitor.isDragging(),
-    }),
-  }));
-
-  return (
-    <div
-      ref={drag}
-      style={{
-        opacity: isDragging ? 0.5 : 1,
-        cursor: "move",
-        marginBottom: "8px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        background: "#f0f0f0",
-        padding: "6px",
-        borderRadius: "4px",
-      }}
-    >
-      <Tooltip
-        content={`${
-          item.type === "indicator" ? "Indicator" : "Data Element"
-        }: ${
-          item.metadata?.indicatorType?.displayName ||
-          item.metadata?.categoryCombo?.displayName
-        }`}
-      >
-        <span>{item.name}</span>
-      </Tooltip>
-      <Button small destructive onClick={() => onRemove(item.id)}>
-        Remove
-      </Button>
-    </div>
-  );
-};
-
-const CellConfigurator = ({ cell, onChange }) => (
-  <div className="cell-config">
-    <SingleSelect
-      label="Content Type"
-      selected={cell.type}
-      onChange={({ selected }) => onChange({ ...cell, type: selected })}
-      items={[
-        { label: "Data", value: "data" },
-        { label: "Text", value: "text" },
-        { label: "Target", value: "target" }
-      ]}
-    />
-    
-    {cell.type === "text" && (
-      <InputField
-        label="Static Value"
-        value={cell.value}
-        onChange={({ value }) => onChange({ ...cell, value })}
-      />
-    )}
-    
-    {cell.type === "data" && (
-      <DataElementPicker 
-        selected={cell.dataElement}
-        onChange={de => onChange({ ...cell, dataElement: de })}
-      />
-    )}
-  </div>
-);
-
-const ConfigPanel = ({ reportConfig = {}, metadata = {}, loading = false, handlers = {} }) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [categoryComboId, setCategoryComboId] = useState("");
-  const [metadataType, setMetadataType] = useState("dataElements");
-  const [isOpen, setIsOpen] = useState(false);
-
-  const { loading: queryLoading, error, data, refetch } = useDataQuery(METADATA_QUERY, {
-    variables: { search: searchTerm, categoryComboId },
-    lazy: true,
-  });
-
+  // Log engine prop
   useEffect(() => {
-    if (searchTerm.length > 2) {
-      refetch({ search: searchTerm, categoryComboId });
-      setIsOpen(true);
+    console.log('ConfigPanel engine prop:', engine);
+    if (!engine) {
+      setFetchError('DataEngine is missing. Ensure DataEngine is provided in ReportBuilderPage.');
     }
-  }, [searchTerm, categoryComboId, metadataType]);
+  }, [engine]);
 
-  const handleSelect = (item) => {
-    handlers.handleSelectDataElement({
-      id: item.id,
-      name: item.displayName,
-      type: metadataType === "dataElements" ? "dataElement" : "indicator",
-      metadata: item,
-    });
-    setIsOpen(false);
-    setSearchTerm("");
-  };
+  // Fetch indicator groups on mount
+  useEffect(() => {
+    if (!engine) {
+      console.warn('DataEngine is not provided for fetching indicator groups');
+      return;
+    }
 
-  const renderItems = () => {
-    const items = data?.[metadataType]?.[metadataType] || [];
+    setMetadataLoading(true);
+    console.log('Fetching indicator groups...');
+    fetchGroups(engine, 'indicators', 'displayName')
+      .then(groups => {
+        console.log('Indicator groups fetched:', groups);
+        setIndicatorGroups(groups);
+        setMetadataLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching indicator groups:', error);
+        setFetchError(`Failed to fetch indicator groups: ${error.message}`);
+        setMetadataLoading(false);
+      });
+  }, [engine]);
 
-    if (queryLoading) return <MenuItem label="Loading..." />;
-    if (error) return <MenuItem label={`Error: ${error.message}`} />;
-    if (items.length === 0) return <MenuItem label="No results found" />;
+  // Fetch all data types when group or search term changes
+  useEffect(() => {
+    if (!engine) {
+      console.warn('DataEngine is not provided for fetching data types');
+      return;
+    }
 
-    return items.map((item) => (
-      <MenuItem
-        key={item.id}
-        label={
-          <div>
-            <div>{item.displayName}</div>
-            <div style={{ fontSize: "0.8em", color: "#666" }}>
-              {item.categoryCombo?.displayName || item.indicatorType?.displayName}
-            </div>
-          </div>
-        }
-        onClick={() => handleSelect(item)}
-      />
-    ));
-  };
-
-  const getPeriodOptions = () => {
-    const currentYear = new Date().getFullYear();
-    return [
-      { label: "Last 3 months", value: "LAST_3_MONTHS" },
-      { label: "Last 6 months", value: "LAST_6_MONTHS" },
-      { label: "Last 12 months", value: "LAST_12_MONTHS" },
-      { label: `This year (${currentYear})`, value: "THIS_YEAR" },
-      { label: `Last year (${currentYear - 1})`, value: "LAST_YEAR" },
+    setMetadataLoading(true);
+    setFetchError(null);
+    console.log('Fetching data types with search term:', dimensionSearchTerm);
+    const dataTypes = [
+      'indicators',
+      'dataElements',
+      'dataSets',
+      'eventDataItems',
+      'programIndicators',
     ];
+
+    Promise.all(
+      dataTypes.map(dataType =>
+        fetchAlternatives({
+          engine,
+          dataType,
+          groupId: dataType === 'indicators' ? selectedGroup : 'ALL',
+          filterText: dimensionSearchTerm || undefined,
+          nameProp: 'displayName',
+        })
+          .then(({ dimensionItems }) => {
+            console.log(`Fetched ${dataType}:`, dimensionItems);
+            return dimensionItems.map(item => ({
+              ...item,
+              type: dataType === 'indicators' ? 'indicator' :
+                    dataType === 'dataElements' ? 'dataElement' :
+                    dataType === 'dataSets' ? 'dataSet' :
+                    dataType === 'eventDataItems' ? 'eventDataItem' :
+                    'programIndicator',
+            }));
+          })
+          .catch(error => {
+            console.error(`Error fetching ${dataType}:`, error);
+            setFetchError(`Failed to fetch ${dataType}: ${error.message}`);
+            return [];
+          })
+      )
+    )
+      .then(results => {
+        const combinedItems = results.flat();
+        console.log('Combined availableItems:', combinedItems);
+        setAvailableItems(combinedItems);
+        setMetadataLoading(false);
+      })
+      .catch(error => {
+        console.error('Error combining items:', error);
+        setFetchError(`Failed to combine data items: ${error.message}`);
+        setMetadataLoading(false);
+      });
+  }, [engine, selectedGroup, dimensionSearchTerm]);
+
+  const handleDataSave = (items) => {
+    console.log('Saving selected items:', items);
+    setSelectedItems(items);
+    handlers.handleItemsChange && handlers.handleItemsChange(items);
+    setDataModalOpen(false);
   };
 
-  const orgUnitOptions = metadata?.orgUnits?.organisationUnits || [];
-  const isValidSelection = orgUnitOptions.some((ou) => ou.id === reportConfig.orgUnit);
+  const handlePeriodSave = (periods) => {
+    setSelectedPeriods(periods);
+    handlers.handlePeriodsChange && handlers.handlePeriodsChange(periods);
+    setPeriodModalOpen(false);
+  };
 
-  const validCategoryComboId = data?.categoryCombos?.categoryCombos?.some(
-    (cc) => cc.id === categoryComboId
-  )
-    ? categoryComboId
-    : "";
+  const handleOrgUnitSave = (orgUnits) => {
+    handlers.handleOrgUnitChange && handlers.handleOrgUnitChange(orgUnits);
+    setOrgUnitModalOpen(false);
+  };
 
   return (
     <div className="config-panel">
       <Card>
         <div className="config-content">
           <h3>Report Configuration</h3>
-
-          <OrgUnitSelector
-            loading={loading}
-            orgUnits={orgUnitOptions}
-            selected={isValidSelection ? reportConfig?.orgUnit : null}
-            onChange={handlers?.handleOrgUnitChange || (() => {})}
-          />
-
-          <PeriodSelector
-            options={getPeriodOptions()}
-            selected={reportConfig?.periodSelection || null}
-            onChange={handlers?.handlePeriodChange || (() => {})}
-          />
-
-          {loading && <CircularLoader small />}
-
+          
+          {fetchError && (
+            <Box mb={16}>
+              <p style={{ color: 'red' }}>{fetchError}</p>
+            </Box>
+          )}
+          
+          <Box mb={16}>
+            <select
+              value={selectedGroup}
+              onChange={(e) => setSelectedGroup(e.target.value)}
+              style={{ width: '100%', padding: '8px' }}
+            >
+              <option value="ALL">All Indicators</option>
+              {indicatorGroups.map(group => (
+                <option key={group.id} value={group.id}>
+                  {group.name}
+                </option>
+              ))}
+            </select>
+          </Box>
+          
+          <Box mb={16}>
+            <InputField
+              value={dimensionSearchTerm}
+              onChange={({ value }) => setDimensionSearchTerm(value)}
+              placeholder="Search for data items..."
+              style={{ width: '100%' }}
+            />
+          </Box>
+          
+          <Box mb={16}>
+            <Button onClick={() => setDataModalOpen(true)} disabled={metadataLoading}>
+              🔍 Data {selectedItems.length > 0 && `(${selectedItems.length} selected)`}
+            </Button>
+            {metadataLoading && <CircularLoader small />}
+          </Box>
+          
+          <Box mb={16}>
+            <Button onClick={() => setPeriodModalOpen(true)}>
+              📅 Period {selectedPeriods.length > 0 && `(${selectedPeriods.length} selected)`}
+            </Button>
+          </Box>
+          
+          <Box mb={16}>
+            <Button onClick={() => setOrgUnitModalOpen(true)}>
+              🏢 Organisation Unit {reportConfig?.orgUnits?.length > 0 && `(${reportConfig.orgUnits.length} selected)`}
+            </Button>
+          </Box>
+          
+          <Divider margin="16px 0" />
+          
           <ReportConfigForm
-            title={reportConfig?.title || ""}
-            subtitle={reportConfig?.subtitle || ""}
+            title={reportConfig?.title || ''}
+            subtitle={reportConfig?.subtitle || ''}
             logo={reportConfig?.logo || null}
             onTitleChange={handlers?.handleTitleChange}
             onSubtitleChange={handlers?.handleSubtitleChange}
             onLogoUpload={handlers?.handleLogoUpload}
           />
-
-          <Divider />
-
-          <h3>Data Elements / Indicators</h3>
-          <div style={{ marginBottom: "16px" }}>
-            <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
-              <SingleSelect
-                selected={metadataType}
-                onChange={({ selected }) => setMetadataType(selected)}
-                label="Metadata type"
-                style={{ width: "180px" }}
-              >
-                <SingleSelectOption label="Data Elements" value="dataElements" />
-                <SingleSelectOption label="Indicators" value="indicators" />
-              </SingleSelect>
-
-              {metadataType === "dataElements" && (
-                <SingleSelect
-                  selected={validCategoryComboId}
-                  onChange={({ selected }) => setCategoryComboId(selected)}
-                  label="Filter by category"
-                  placeholder="Select category"
-                  style={{ width: "200px" }}
-                >
-                  <SingleSelectOption label="All categories" value="" />
-                  {data?.categoryCombos?.categoryCombos?.map((cc) => (
-                    <SingleSelectOption key={cc.id} label={cc.displayName} value={cc.id} />
-                  ))}
-                </SingleSelect>
-              )}
-            </div>
-
-            <InputField
-              value={searchTerm}
-              onChange={({ value }) => setSearchTerm(value)}
-              placeholder="Type to search..."
-              style={{ width: "100%" }}
-            />
-
-            {isOpen && (
-              <div
-                style={{
-                  position: "relative",
-                  zIndex: 1000,
-                  width: "100%",
-                  maxHeight: "300px",
-                  overflowY: "auto",
-                  backgroundColor: "white",
-                  boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
-                  marginTop: "8px",
-                }}
-              >
-                {renderItems()}
-              </div>
-            )}
-          </div>
-
-          <Divider />
-
-          <h4>Selected Items</h4>
-          {reportConfig.items?.length === 0 ? (
-            <p>No items selected yet</p>
-          ) : (
-            <div style={{ maxHeight: "300px", overflowY: "auto" }}>
-              {reportConfig.items.map((item) => (
-                <DraggableItem key={item.id} item={item} onRemove={handlers.handleRemoveItem} />
-              ))}
-            </div>
-          )}
-
-          <Divider />
-
-          <div className="button-group">
-            <Button primary onClick={handlers.handlePrint}>
-              Print Report
-            </Button>
-          </div>
+          
+          <Divider margin="16px 0" />
+          
+          <Box>
+            <ButtonStrip>
+              <Button primary onClick={handlers.handlePrint}>
+                Generate Report
+              </Button>
+              <Button onClick={handlers.handleSave}>
+                Save Configuration
+              </Button>
+            </ButtonStrip>
+          </Box>
+          
+          <DataSelector
+            isOpen={dataModalOpen}
+            onClose={() => setDataModalOpen(false)}
+            availableItems={availableItems}
+            selectedItems={selectedItems}
+            onSave={handleDataSave}
+          />
+          
+          <PeriodSelector
+            isOpen={periodModalOpen}
+            onClose={() => setPeriodModalOpen(false)}
+            selectedPeriods={selectedPeriods}
+            onSave={handlePeriodSave}
+          />
+          
+          <OrganisationUnitSelector
+            isOpen={orgUnitModalOpen}
+            onClose={() => setOrgUnitModalOpen(false)}
+            selectedOrgUnits={reportConfig?.orgUnits || []}
+            onSave={handleOrgUnitSave}
+            OrganisationUnitTree={OrganisationUnitTree}
+          />
+          
+          {loading && <CircularLoader />}
         </div>
       </Card>
     </div>

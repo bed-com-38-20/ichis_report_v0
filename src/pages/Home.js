@@ -16,7 +16,7 @@ export const Home = () => {
                 title={i18n.t('Custom Tables')}
                 icon="table_view"
                 content={i18n.t(
-                    'Create, view, and edit custom tables. Text and data contents of the table can be chosen on a cell-by-cell basis.'
+                    'Create, view, and edit custom reports. Text and data contents of the reports can be chosen on a cell-by-cell basis.'
                 )}
                 action={i18n.t('View Tables')}
                 path={TABLES}
@@ -34,7 +34,7 @@ export const Home = () => {
                 title={i18n.t('Help')}
                 icon="help"
                 content={i18n.t(
-                    'View instructions for using the Custom Tables and Custom Reports tools.'
+                    'View instructions for using the Configurable Reports tools.'
                 )}
                 action={i18n.t('View Instructions')}
                 path={HELP}

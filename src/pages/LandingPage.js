@@ -4,7 +4,7 @@ import './LandingPage.css';
 const LandingPage = () => {
     return (
         <div className="landing-container">
-            <h1 className="animated-text">ICHIS Reports</h1>
+            <h1 className="animated-text">ICHIS Configurable Report Generator</h1>
         </div>
     );
 };

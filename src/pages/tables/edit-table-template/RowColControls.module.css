@@ -1,0 +1,259 @@
+/* RowColControls.module.css */
+.cell {
+    background: #f3f4f6;
+    padding: 6px;
+    font-family: 'Arial', sans-serif;
+    position: relative;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #111827;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.toggle {
+    background: none;
+    border: none;
+    color: #2563eb;
+    cursor: pointer;
+    padding: 2px;
+    border-radius: 4px;
+    transition: background 0.2s ease;
+}
+
+.toggle:hover {
+    background: #e5e7eb;
+}
+
+.panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    width: 200px;
+    padding: 8px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sectionTitle {
+    font-size: 12px;
+    font-weight: 600;
+    color: #374151;
+    margin: 0;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #d1d5db;
+}
+
+.action {
+    background: none;
+    border: none;
+    color: #2563eb;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: background 0.2s ease, color 0.2s ease;
+    text-align: left;
+}
+
+.action:hover:enabled {
+    background: #e5e7eb;
+    color: #1e40af;
+}
+
+.action:disabled {
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.actionDelete {
+    background: none;
+    border: none;
+    color: #dc2626;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: background 0.2s ease;
+    text-align: left;
+}
+
+.actionDelete:hover {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.selector {
+    font-size: 11px;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 4px;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.selector > span {
+    cursor: pointer;
+}
+
+.selector > span:hover {
+    color: #2563eb;
+}
+
+.clearIcon {
+    font-size: 11px;
+    color: #6b7280;
+    cursor: pointer;
+}
+
+.clearIcon:hover {
+    color: #2563eb;
+}
+
+.confirmButton {
+    background: #dc2626 !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    transition: background 0.2s ease !important;
+}
+
+.confirmButton:hover {
+    background: #b91c1c !important;
+}
+
+.cancelButton {
+    background: #f3f4f6 !important;
+    color: #374151 !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 4px !important;
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    transition: background 0.2s ease !important;
+}
+
+.cancelButton:hover {
+    background: #e5e7eb !important;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    .cell {
+        background: #222222;
+    }
+    .panel {
+        background: #222222;
+        border-color: #4b5563;
+    }
+    .title {
+        color: #e5e7eb;
+    }
+    .toggle {
+        color: #60a5fa;
+    }
+    .toggle:hover {
+        background: #374151;
+    }
+    .sectionTitle {
+        color: #d1d5db;
+        border-bottom-color: #4b5563;
+    }
+    .action {
+        color: #60a5fa;
+    }
+    .action:hover:enabled {
+        background: #374151;
+        color: #93c5fd;
+    }
+    .action:disabled {
+        color: #6b7280;
+    }
+    .actionDelete {
+        color: #ef4444;
+    }
+    .actionDelete:hover {
+        background: #7f1d1d;
+        color: #fecaca;
+    }
+    .selector {
+        color: #d1d5db;
+    }
+    .selector > span:hover {
+        color: #60a5fa;
+    }
+    .clearIcon {
+        color: #9ca3af;
+    }
+    .clearIcon:hover {
+        color: #60a5fa;
+    }
+    .confirmButton {
+        background: #ef4444 !important;
+    }
+    .confirmButton:hover {
+        background: #dc2626 !important;
+    }
+    .cancelButton {
+        background: #374151 !important;
+        color: #e5e7eb !important;
+        border-color: #4b5563 !important;
+    }
+    .cancelButton:hover {
+        background: #4b5563 !important;
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .panel {
+        width: 160px;
+        padding: 6px;
+    }
+    .title, .sectionTitle, .action, .actionDelete {
+        font-size: 11px;
+    }
+    .selector {
+        font-size: 10px;
+        max-width: 140px;
+    }
+    .clearIcon {
+        font-size: 10px;
+    }
+}

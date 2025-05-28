@@ -1,0 +1,57 @@
+/* DeleteTableTemplate.module.css */
+.container {
+    position: relative;
+}
+
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    max-width: 300px;
+    padding: 10px;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    animation: slideIn 0.3s ease-in-out;
+}
+
+.notification .ui-notice-box {
+    background: #e6ffed;
+    color: #2e7d32;
+    border: 1px solid #4caf50;
+}
+
+.notification .ui-notice-box__title {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.notification .ui-notice-box__content {
+    font-size: 13px;
+}
+
+/* Dark mode styling */
+@media (prefers-color-scheme: dark) {
+    .notification {
+        background: #2a2a3e;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
+    .notification .ui-notice-box {
+        background: #1a4a2a;
+        color: #b3e1b8;
+        border: 1px solid #4caf50;
+    }
+}
+
+/* Animation for notification slide-in */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}

@@ -94,7 +94,7 @@ export function DataContentSelector({ cell, rowIdx, cellIdx }) {
             !cell.highlightingIntervals ||
             isEqual(cell.highlightingIntervals, table.highlightingIntervals)
         )
-            return i18n.t('Same as table')
+            return i18n.t('Same as report')
         if (
             isEqual(
                 cell.highlightingIntervals,
