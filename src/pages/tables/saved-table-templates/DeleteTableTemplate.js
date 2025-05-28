@@ -11,25 +11,36 @@ export function DeleteTableTemplate({ onDeleteConfirmation, onCancel }) {
     const [notification, setNotification] = useState({
         isVisible: false,
         message: '',
+        isError: false,
     });
 
     // Auto-dismiss notification after 3 seconds
     useEffect(() => {
         if (notification.isVisible) {
             const timer = setTimeout(() => {
-                setNotification({ isVisible: false, message: '' });
-            }, 60000);
-            return () => clearTimeout(timer); // Cleanup timer on unmount
+                setNotification({ isVisible: false, message: '', isError: false });
+            }, 3000); // Reduced to 3 seconds for better UX
+            return () => clearTimeout(timer);
         }
     }, [notification.isVisible]);
 
-    const handleDeleteConfirmation = () => {
-        onDeleteConfirmation(); // Call the provided delete handler
-        setModalIsOpen(false); // Close the modal
-        setNotification({
-            isVisible: true,
-            message: i18n.t('report template deleted successfully'),
-        }); // Show notification
+    const handleDeleteConfirmation = async () => {
+        try {
+            await onDeleteConfirmation(); // Await deletion
+            setModalIsOpen(false);
+            setNotification({
+                isVisible: true,
+                message: i18n.t('Report template deleted successfully'),
+                isError: false,
+            });
+        } catch (error) {
+            console.error('Deletion failed:', error);
+            setNotification({
+                isVisible: true,
+                message: i18n.t('Failed to delete report template'),
+                isError: true,
+            });
+        }
     };
 
     return (
@@ -54,7 +65,7 @@ export function DeleteTableTemplate({ onDeleteConfirmation, onCancel }) {
             )}
             {notification.isVisible && (
                 <div className={classes.notification}>
-                    <NoticeBox title={i18n.t('Success')}>
+                    <NoticeBox title={notification.isError ? i18n.t('Error') : i18n.t('Success')} error={notification.isError}>
                         {notification.message}
                     </NoticeBox>
                 </div>
