@@ -12,7 +12,9 @@ import LandingPage from './pages/LandingPage';
 import HomePage from './pages/home/homePage';
 
 const appConfig = {
-  baseUrl: 'https://play.im.dhis2.org/stable-2-41-3-1',
+  baseUrl: 'https://play.im.dhis2.org/dev/',
+
+
   apiVersion: 37,
   pwaEnabled: false,
   headers: {
@@ -81,7 +83,7 @@ const MyApp = () => (
           <div className={classes.container}>
             <main className={classes.right}>
               <Routes>
-                {/* Set HomePage as the default route */}
+                 
                 <Route path="/" element={<HomePage />} />
                 <Route path="/home" element={<HomePage />} />
                 <Route path={`${TABLES}/*`} element={<Tables />} />

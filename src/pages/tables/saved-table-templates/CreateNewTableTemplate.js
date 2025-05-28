@@ -24,8 +24,8 @@ export function CreateNewTableTemplate({ createNew }) {
             </Button>
             {modalOpen && (
                 <InputDialog
-                    title={i18n.t('Create new table template')}
-                    inputLabel={i18n.t('Table name')}
+                    title={i18n.t('Create a new template')}
+                    inputLabel={i18n.t('Template name')}
                     inputPlaceholder={i18n.t('Enter a name')}
                     initialValue={''}
                     confirmText={i18n.t('Create')}

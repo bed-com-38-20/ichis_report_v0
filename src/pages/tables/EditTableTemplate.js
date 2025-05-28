@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 // import PropTypes from 'prop-types'
 import {
     ButtonStrip,
@@ -9,6 +9,9 @@ import {
     TableCellHead,
     TableBody,
     TableRow,
+    InputField,
+    FileInputField,
+    Button,
 } from '@dhis2/ui'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -25,7 +28,7 @@ import BackButton from '../../components/BackButton'
 import utils from '../../styles/utils.module.css'
 import i18n from '../../locales'
 import { TABLES, getPath, GENERATED_TABLE } from '../../modules/paths'
-import { useTableActions, useTableState } from '../../context/tableContext'
+import { useTableActions, useTableState, useTableDispatch } from '../../context/tableContext'
 import HelpButton from '../../components/HelpButton'
 import AutosaveStatus from './edit-table-template/AutosaveStatus'
 
@@ -34,6 +37,8 @@ export function EditTableTemplate() {
     const table = useTableState()
     const dataStoreActions = useTableActions()
     const navigate = useNavigate()
+    const dispatch = useTableDispatch()
+    const tableActions = useTableActions()
 
     // Save table to datastore in response to changes
     useEffect(() => {
@@ -50,7 +55,47 @@ export function EditTableTemplate() {
     }
 
     function renameTable(name) {
-        dataStoreActions.update({ name })
+        dispatch({ type: 'SET_NAME', payload: name })
+        dataStoreActions.update({ ...table, name })
+    }
+
+
+    const [logo, setLogo] = useState(table.logo || '')
+    const [description, setDescription] = useState(table.description || '')
+
+    const handleLogoChange = (e) => {
+        const file = e.target.files[0]
+        if (file) {
+            const reader = new FileReader()
+            reader.onloadend = () => {
+                setLogo(reader.result)
+
+                // Dispatch to context
+                dispatch({ type: 'SET_LOGO', payload: reader.result })
+
+                // Persist to datastore
+                tableActions.update({ ...table, logo: reader.result })
+            }
+            reader.readAsDataURL(file)
+        }
+    }
+
+    const handleDescriptionChange = (e) => {
+        const value = e.target.value
+        setDescription(value)
+
+        // Dispatch to context
+        dispatch({ type: 'SET_DESCRIPTION', payload: value })
+
+        // Persist to datastore
+        tableActions.update({ ...table, description: value })
+    }
+
+    function handleRemoveLogo() {
+        dataStoreActions.update({
+            ...table,
+            logo: null
+        });
     }
 
     function tableColumns() {
@@ -113,10 +158,11 @@ export function EditTableTemplate() {
                     onDelete={onDelete}
                 />
             </header>
+
             <section className="controls">
                 <div>
                     <div className="container">
-                        <h6 className="label">{i18n.t('Table name')}</h6>
+                        <h6 className="label">{i18n.t('Template name')}</h6>
                         <div className="tableName">
                             <div>{table.name}</div>
                             <RenameTable
@@ -125,6 +171,74 @@ export function EditTableTemplate() {
                             />
                         </div>
                     </div>
+
+                    {/* logo upload field */}
+                    <div>
+                        <label>Upload Logo:</label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleLogoChange}
+                        />
+                        {
+                            logo &&
+                            <img src={logo}
+                                alt="Uploaded Logo"
+                                style={{
+                                    maxHeight: 100,
+                                    marginTop: 10
+                                }} />
+                        }
+                    </div>
+
+                    {/* <div className="container">
+                        <FileInputField
+
+                            onChange={handleLogoChange}
+                            accept="image/*"
+                            buttonLabel={i18n.t('Upload Logo')}
+                            disabled={false}
+                            name="logoUpload"
+                            key={table.logo ? 'has-logo' : 'no-logo'}
+                        />
+                        {table.logo && (
+                            <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center' }}>
+                                <img
+                                    src={table.logo}
+                                    alt="Preview"
+                                    style={{ maxHeight: '50px', marginRight: '8px' }}
+                                />
+                                <Button small onClick={handleRemoveLogo}>
+                                    {i18n.t('Remove')}
+                                </Button>
+                            </div>
+                        )}
+                    </div> */}
+
+                    {/* description field */}
+
+                    <div>
+                        <label>Description:</label>
+                        <textarea
+                            value={description}
+                            onChange={handleDescriptionChange}
+                            rows={3}
+                            style={{
+                                width: '100%'
+                            }}
+                        />
+                    </div>
+                    {/* <div className="container">
+                        <InputField
+                            label={i18n.t('Description (optional)')}
+                            value={table.description || ''}
+                            onChange={handleDescriptionChange}
+                            placeholder={i18n.t('Enter table description...')}
+                            name="tableDescription"
+                            type="text"
+                        />
+                    </div> */}
+
                     <HighlightingEditor />
                 </div>
                 <ButtonStrip end>
@@ -132,6 +246,8 @@ export function EditTableTemplate() {
                     <AddTableDimension type="Column" />
                 </ButtonStrip>
             </section>
+
+
             <section>
                 <Card className={utils.card}>
                     <Table className={utils.noBorder}>

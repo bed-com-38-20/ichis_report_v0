@@ -66,21 +66,22 @@
 /* Logo Container */
 .logoContainer {
     flex: 0 0 auto;
-    padding: 5px;
+    padding-bottom: 10px;
     border: 1px solid #eee; 
     background: white;  
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     max-width: 120px;  
     height: 60px;  
 }
 
 .printLogo {
-    max-height: 100%;
-    max-width: 100%;
+    width: 180px;
+    height: auto;
     object-fit: contain;
-    object-position: center;
+    display: block;
+    margin-bottom: 16px;
 }
 
 /* Title Section */

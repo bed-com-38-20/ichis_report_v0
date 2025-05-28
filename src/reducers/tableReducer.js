@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import reorderArray from '../modules/reorderArray'
 import { defaultCell } from '../modules/defaultTable'
 
@@ -15,14 +16,32 @@ export const UPDATE_ROW_DIMENSIONS = 'UPDATE_ROW_DIMENSIONS'
 export const UPDATE_COLUMN_DIMENSIONS = 'UPDATE_COLUMN_DIMENSIONS'
 export const UPDATE_ROW_HIGHLIGHTING = 'UPDATE_ROW_HIGHLIGHTING'
 export const UPDATE_COLUMN_HIGHLIGHTING = 'UPDATE_COLUMN_HIGHLIGHTING'
+export const SET_LOGO = 'SET_LOGO'
+export const SET_DESCRIPTION = 'SET_DESCRIPTION'
+export const SET_NAME = 'SET_NAME'
+
 
 export default function tableReducer(table, { type, payload }) {
     switch (type) {
+
+        case SET_LOGO:
+            return { ...table, logo: payload }
+        case SET_DESCRIPTION:
+            return { ...table, description: payload }
+
+        case SET_NAME :
+            return {
+                ...table,
+                name: payload
+            }
+
         case UPDATE_TABLE:
             return {
                 ...table,
                 ...payload,
             }
+
+
         case ADD_ROW:
             return {
                 ...table,

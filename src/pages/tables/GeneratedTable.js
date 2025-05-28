@@ -29,28 +29,8 @@ export function GeneratedTable() {
     const table = useTableState();
     const [isPrinting, setIsPrinting] = useState(false);
 
-    const [logo, setLogo] = useState(null);
 
-    const fileInputRef = useRef(null);
-
-    const triggerFileInput = () => {
-        fileInputRef.current?.click();
-    };
-
-    const handleLogoUpload = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                setLogo(e.target.result); // Store in logo state
-                setReportParams(prev => ({
-                    ...prev,
-                    logo: e.target.result
-                }));
-            };
-            reader.readAsDataURL(file);
-        }
-    };
+ 
 
     const [reportParams, setReportParams] = useState({
         selectedOrgUnits: [],
@@ -192,21 +172,6 @@ export function GeneratedTable() {
 
                     <Button
                         large
-                        icon={<Icon name="image" />}
-                        onClick={triggerFileInput}
-                    >
-                        {i18n.t('Add Logo')}
-                    </Button>
-                    <input
-                        ref={fileInputRef}
-                        type="file"
-                        accept="image/*"
-                        onChange={handleLogoUpload}
-                        style={{ display: 'none' }}
-                    />
-
-                    <Button
-                        large
                         icon={<Icon name="print" />}
                         onClick={handlePrint}
                         disabled={isPrinting}
@@ -219,44 +184,50 @@ export function GeneratedTable() {
             </header>
 
             <Card className={utils.card}>
-    <div ref={printRef} className={classes.print}>         
-        <div className={classes.printHeader}>             
-            {logo && (
-                <div className={classes.logoContainer}>
-                    <img 
-                        src={logo} 
-                        className={classes.printLogo} 
-                        alt="Organization Logo" 
-                    />
-                </div>
-            )}
-            
-            {/* Title & Date Section (Right) */}
-            <div className={classes.titleContainer}>
-                <h1 className={classes.reportTitle}>{table.name}</h1>
-                <div className={classes.metadata}>
-                    <p className={classes.reportDate}>
-                        {new Date().toLocaleDateString()}
-                    </p>
-                    {reportParams.selectedOrgUnits?.length > 0 && (
-                        <p className={classes.orgUnit}>
-                            {i18n.t('For: ')}{getSelectedNames(reportParams.selectedOrgUnits)}
-                        </p>
-                    )}
-                </div>
-            </div>
-        </div>
+                <div ref={printRef} className={classes.print}>         
+                    <div className={classes.printHeader}>             
+                       
+                        {table.logo && (
+                            <div className={classes.logoContainer}>
+                                <img 
+                                    src={table.logo} 
+                                    className={classes.printLogo} 
+                                    alt="Organization Logo" 
+                                />
+                            </div>
+                        )}
+                        
+                        
+                        <div className={classes.titleContainer}>
+                            <h1 className={classes.reportTitle}>{table.name}</h1>
+                            {table.description && (
+                                <p className={classes.reportDescription}>
+                                    {table.description}
+                                </p>
+                            )}
+                            <div className={classes.metadata}>
+                                <p className={classes.reportDate}>
+                                    {new Date().toLocaleDateString()}
+                                </p>
+                                {reportParams.selectedOrgUnits?.length > 0 && (
+                                    <p className={classes.orgUnit}>
+                                        {i18n.t('For: ')}{getSelectedNames(reportParams.selectedOrgUnits)}
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
 
-        {/* Main Table Content */}
-        <FootnotesProvider>
-            <TableWithData
-                {...reportParams}
-                periodParamNeeded={periodParamNeeded}
-                suppressTitle={true}
-            />
-        </FootnotesProvider>
-    </div>
-</Card>
+                    {/* Main Table Content */}
+                    <FootnotesProvider>
+                        <TableWithData
+                            {...reportParams}
+                            periodParamNeeded={periodParamNeeded}
+                            suppressTitle={true}
+                        />
+                    </FootnotesProvider>
+                </div>
+            </Card>
         </div>
     );
 }
