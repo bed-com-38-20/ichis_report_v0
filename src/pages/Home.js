@@ -25,7 +25,7 @@ export const Home = () => {
                 title={i18n.t('Custom Reports')}
                 icon="article"
                 content={i18n.t(
-                    'Create, view, and edit custom reports. Add text, images, and DHIS assets to a printable and downloadable report document.'
+                    ', view, and edit custom reports. Add text, images, and DHIS assets to a printable and downloadable report document.'
                 )}
                 action={i18n.t('View Reports')}
                 path={REPORTS}
