@@ -28,7 +28,7 @@ export function DeleteTableTemplate({ onDeleteConfirmation, onCancel }) {
         setModalIsOpen(false); // Close the modal
         setNotification({
             isVisible: true,
-            message: i18n.t('Table template deleted successfully'),
+            message: i18n.t('report template deleted successfully'),
         }); // Show notification
     };
 

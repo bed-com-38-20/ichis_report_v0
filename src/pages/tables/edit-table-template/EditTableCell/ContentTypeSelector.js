@@ -5,10 +5,11 @@ import i18n from '../../../../locales';
 import contentTypes from '../../../../modules/contentTypes';
 import classes from './ContentTypeSelector.module.css';
 import Icon from '../../../../components/Icon';
+import cx from 'classnames';
 
-export function ContentTypeSelector({ currentContentType, onChange }) {
+export function ContentTypeSelector({ currentContentType, onChange, className }) {
     return (
-        <div className={classes.container}>
+        <div className={cx(classes.container, className)}>
             <div className={classes.labelWrapper}>
                 <Icon name="list" className={classes.icon} />
                 <label className={classes.label}>
@@ -37,6 +38,7 @@ export function ContentTypeSelector({ currentContentType, onChange }) {
 ContentTypeSelector.propTypes = {
     onChange: PropTypes.func.isRequired,
     currentContentType: PropTypes.string,
+    className: PropTypes.string,
 };
 
 export default ContentTypeSelector;

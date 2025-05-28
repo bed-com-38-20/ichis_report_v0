@@ -58,7 +58,7 @@ export function EditTableTemplate() {
         dataStoreActions.remove();
         setNotification({
             isVisible: true,
-            message: i18n.t('Table template deleted successfully'),
+            message: i18n.t('report template deleted successfully'),
         });
         setTimeout(() => navigate(TABLES), 500); // Delay navigation to show notification
     }
@@ -119,11 +119,11 @@ export function EditTableTemplate() {
                 <div>
                     <BackButton
                         to={TABLES}
-                        text={i18n.t('Back to Saved Tables')}
+                        text={i18n.t('Back to Saved Reports')}
                     />
                     <div className="pageTitle">
-                        <h1>{i18n.t('Edit Table')}</h1>
-                        <HelpButton subsection="#editing-a-table-template" />
+                        <h1>{i18n.t('Edit Report')}</h1>
+                        <HelpButton subsection="#editing-a-report-template" />
                     </div>
                 </div>
                 <EditTableTemplateActions
