@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 import {
     Table,
     TableHead,
@@ -7,53 +7,19 @@ import {
     TableCellHead,
     TableBody,
     TableRow,
-} from '@dhis2/ui'
-import i18n from '../../../locales'
-
-import { GeneratedTableCell } from './GeneratedTableCell'
-import { useTableState } from '../../../context/tableContext'
-import { useFootnotes } from '../../../context/footnotesContext'
-import Footnotes from './Footnotes'
+} from '@dhis2/ui';
+import i18n from '../../../locales';
+import styles from './styles/TableWithData.styles';
+import { GeneratedTableCell } from './GeneratedTableCell';
+import { useTableState } from '../../../context/tableContext';
+import Footnotes from './Footnotes';
 
 export function getSelectedIds(selectedItems) {
-    return selectedItems.map(({ id }) => id).join(';')
+    return selectedItems.map(({ id }) => id).join(';');
 }
 
 export function getSelectedNames(selectedItems) {
-    return selectedItems.map(({ name }) => name).join(', ')
-}
-
-function populateFootnotes(table, footnotes) {
-    const { setOrgUnitFootnotes, setPeriodFootnotes } = footnotes
-    const orgUnitFootnotes = new Map()
-    const periodFootnotes = new Map()
-
-    table.rows.forEach(row => {
-        row.cells.forEach(cell => {
-            if (cell.data.orgUnits.length > 0) {
-                const key = getSelectedIds(cell.data.orgUnits)
-                if (orgUnitFootnotes.get(key) === undefined) {
-                    orgUnitFootnotes.set(key, {
-                        id: `ou${orgUnitFootnotes.size + 1}`,
-                        description: getSelectedNames(cell.data.orgUnits),
-                    })
-                }
-            }
-
-            if (cell.data.periods.length > 0) {
-                const key = getSelectedIds(cell.data.periods)
-                if (periodFootnotes.get(key) === undefined) {
-                    periodFootnotes.set(key, {
-                        id: `p${periodFootnotes.size + 1}`,
-                        description: getSelectedNames(cell.data.periods),
-                    })
-                }
-            }
-        })
-    })
-
-    setOrgUnitFootnotes(orgUnitFootnotes)
-    setPeriodFootnotes(periodFootnotes)
+    return selectedItems.map(({ name }) => name).join(', ');
 }
 
 export function TableWithData({
@@ -61,15 +27,11 @@ export function TableWithData({
     selectedOrgUnits,
     selectedPeriods,
 }) {
-    const table = useTableState()
-    const footnotes = useFootnotes()
+    const table = useTableState();
 
-    useEffect(() => {
-        populateFootnotes(table, footnotes)
-    }, [])
-
-    if (periodParamNeeded && !selectedPeriods.length)
-        return <p>Waiting for parameters...</p>
+    if (periodParamNeeded && !selectedPeriods.length) {
+        return <p>{i18n.t('Waiting for parameters...')}</p>;
+    }
 
     function tableHeader() {
         return (
@@ -79,7 +41,7 @@ export function TableWithData({
                     <TableCellHead key={idx}>{col.name}</TableCellHead>
                 ))}
             </TableRowHead>
-        )
+        );
     }
 
     function mapCellValues(cell, idx) {
@@ -90,7 +52,7 @@ export function TableWithData({
                 selectedOrgUnits={selectedOrgUnits}
                 selectedPeriods={selectedPeriods}
             />
-        )
+        );
     }
 
     function tableBody() {
@@ -99,84 +61,47 @@ export function TableWithData({
                 <TableCellHead>{row.name}</TableCellHead>
                 {row.cells.map(mapCellValues)}
             </TableRow>
-        ))
+        ));
     }
 
     return (
         <>
-            <div className="report-header">
-                <h2 className="report-title">{table.name}</h2>
+            <div>
+                <h2 className="title">{table.name}</h2>
 
-                {selectedOrgUnits.length > 0 && (
-                    <div className="meta-block">
-                        <span className="meta-label">
-                            {i18n.t('Organisation Unit(s)')}:
-                        </span>
-                        <span className="meta-value">
-                            {getSelectedNames(selectedOrgUnits)}
-                        </span>
-                    </div>
-                )}
+                {selectedOrgUnits.length ? (
+                    <p>
+                        {i18n.t('Organisation Unit{{s}} - {{ou}}', {
+                            s: selectedOrgUnits.length > 1 ? 's' : '',
+                            ou: getSelectedNames(selectedOrgUnits),
+                        })}
+                    </p>
+                ) : null}
 
-                {selectedPeriods.length > 0 && (
-                    <div className="meta-block">
-                        <span className="meta-label">
-                            {i18n.t('Period(s)')}:
-                        </span>
-                        <span className="meta-value">
-                            {getSelectedNames(selectedPeriods)}
-                        </span>
-                    </div>
-                )}
+                {selectedPeriods.length ? (
+                    <p>
+                        {i18n.t('Period{{s}} - {{pe}}', {
+                            s: selectedPeriods.length > 1 ? 's' : '',
+                            pe: getSelectedNames(selectedPeriods),
+                        })}
+                    </p>
+                ) : null}
 
-                <div className="meta-block">
-                    <span className="meta-label">{i18n.t('Date')}:</span>
-                    <span className="meta-value">
-                        {new Date().toLocaleDateString()}
-                    </span>
-                </div>
+                <p>
+                    {i18n.t('Date - ')}
+                    {new Date().toLocaleDateString()}
+                </p>
+
+                <Table>
+                    <TableHead>{tableHeader()}</TableHead>
+                    <TableBody>{tableBody()}</TableBody>
+                </Table>
+
+                <Footnotes />
             </div>
-
-            <Table>
-                <TableHead>{tableHeader()}</TableHead>
-                <TableBody>{tableBody()}</TableBody>
-            </Table>
-
-            <Footnotes />
-
-            <style jsx>{`
-                .report-header {
-                    margin-bottom: 24px;
-                    padding: 16px;
-                    background: #f5f8fa;
-                    border-radius: 8px;
-                    border: 1px solid #dde6ed;
-                }
-
-                .report-title {
-                    font-size: 1.6rem;
-                    font-weight: 700;
-                    margin-bottom: 16px;
-                    color: #1c3d5a;
-                }
-
-                .meta-block {
-                    margin-bottom: 10px;
-                }
-
-                .meta-label {
-                    font-weight: 600;
-                    color: #333;
-                    margin-right: 4px;
-                }
-
-                .meta-value {
-                    font-weight: 400;
-                    color: #555;
-                }
-            `}</style>
+            <style jsx>{styles}</style>
         </>
-    )
+    );
 }
 
 TableWithData.propTypes = {
@@ -193,6 +118,6 @@ TableWithData.propTypes = {
             name: PropTypes.string,
         })
     ).isRequired,
-}
+};
 
-export default TableWithData
+export default TableWithData;

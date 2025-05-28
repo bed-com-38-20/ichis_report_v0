@@ -5,7 +5,7 @@
     "license": "BSD-3-Clause",
     "private": true,
     "scripts": {
-      "start": "d2-app-scripts start --allowJsxInJs --proxy  https://play.im.dhis2.org/dev/",
+      "start": "d2-app-scripts start --allowJsxInJs --proxy   https://play.im.dhis2.org/dev/",
       "build": "d2-app-scripts build",
       "test": "d2-app-scripts test",
       "deploy": "d2-app-scripts deploy"

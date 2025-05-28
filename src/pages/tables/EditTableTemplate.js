@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react'
-// import PropTypes from 'prop-types'
+import React, { useEffect, useState } from 'react';
 import {
     ButtonStrip,
     Card,
@@ -9,10 +8,10 @@ import {
     TableCellHead,
     TableBody,
     TableRow,
-} from '@dhis2/ui'
-import { useParams, useNavigate } from 'react-router-dom'
-
-import styles from './styles/EditTableTemplate.style'
+    NoticeBox,
+} from '@dhis2/ui';
+import { useParams, useNavigate } from 'react-router-dom';
+import styles from './styles/EditTableTemplate.style';
 import {
     EditTableCell,
     AddTableDimension,
@@ -20,38 +19,56 @@ import {
     RowColControls,
     RenameTable,
     EditTableTemplateActions,
-} from './edit-table-template'
-import BackButton from '../../components/BackButton'
-import utils from '../../styles/utils.module.css'
-import i18n from '../../locales'
-import { TABLES, getPath, GENERATED_TABLE } from '../../modules/paths'
-import { useTableActions, useTableState } from '../../context/tableContext'
-import HelpButton from '../../components/HelpButton'
-import AutosaveStatus from './edit-table-template/AutosaveStatus'
+} from './edit-table-template';
+import BackButton from '../../components/BackButton';
+import utils from '../../styles/utils.module.css';
+import i18n from '../../locales';
+import { TABLES, getPath, GENERATED_TABLE } from '../../modules/paths';
+import { useTableActions, useTableState } from '../../context/tableContext';
+import HelpButton from '../../components/HelpButton';
+import AutosaveStatus from './edit-table-template/AutosaveStatus';
+import classes from './DeleteTableTemplate.module.css'; // Reuse CSS from DeleteTableTemplate
 
 export function EditTableTemplate() {
-    const params = useParams()
-    const table = useTableState()
-    const dataStoreActions = useTableActions()
-    const navigate = useNavigate()
+    const params = useParams();
+    const table = useTableState();
+    const dataStoreActions = useTableActions();
+    const navigate = useNavigate();
+    const [notification, setNotification] = useState({
+        isVisible: false,
+        message: '',
+    });
 
     // Save table to datastore in response to changes
-    // TODO: Move to TableProvider?
     useEffect(() => {
-        dataStoreActions.update({ ...table })
-    }, [table])
+        dataStoreActions.update({ ...table });
+    }, [table]);
+
+    // Auto-dismiss notification after 3 seconds
+    useEffect(() => {
+        if (notification.isVisible) {
+            const timer = setTimeout(() => {
+                setNotification({ isVisible: false, message: '' });
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [notification.isVisible]);
 
     function onDelete() {
-        dataStoreActions.remove()
-        history.push(TABLES)
+        dataStoreActions.remove();
+        setNotification({
+            isVisible: true,
+            message: i18n.t('report template deleted successfully'),
+        });
+        setTimeout(() => navigate(TABLES), 500); // Delay navigation to show notification
     }
 
     function onGenerate() {
-        navigate(getPath(GENERATED_TABLE, params.id))
+        navigate(getPath(GENERATED_TABLE, params.id));
     }
 
     function renameTable(name) {
-        dataStoreActions.update({ name })
+        dataStoreActions.update({ name });
     }
 
     function tableColumns() {
@@ -68,7 +85,7 @@ export function EditTableTemplate() {
                     />
                 ))}
             </TableRowHead>
-        )
+        );
     }
 
     function mapCellsToJsx(cells, rowIdx) {
@@ -79,7 +96,7 @@ export function EditTableTemplate() {
                 cell={cell}
                 key={idx}
             />
-        ))
+        ));
     }
 
     function tableRows() {
@@ -93,11 +110,11 @@ export function EditTableTemplate() {
                 />
                 {mapCellsToJsx(row.cells, idx)}
             </TableRow>
-        ))
+        ));
     }
 
     return (
-        <>
+        <div className={classes.container}>
             <header className="header">
                 <div>
                     <BackButton
@@ -144,11 +161,18 @@ export function EditTableTemplate() {
             <footer>
                 <AutosaveStatus />
             </footer>
+            {notification.isVisible && (
+                <div className={classes.notification}>
+                    <NoticeBox title={i18n.t('Success')}>
+                        {notification.message}
+                    </NoticeBox>
+                </div>
+            )}
             <style jsx>{styles}</style>
-        </>
-    )
+        </div>
+    );
 }
 
-EditTableTemplate.propTypes = {}
+EditTableTemplate.propTypes = {};
 
-export default EditTableTemplate
+export default EditTableTemplate;
