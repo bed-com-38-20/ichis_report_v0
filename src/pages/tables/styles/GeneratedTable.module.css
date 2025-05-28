@@ -82,7 +82,7 @@
 }
 
 .darkMode .actionButton:hover {
-    background: #80bfff;
+    background: #80bfffca;
 }
 
 .actionButton:disabled {
@@ -365,6 +365,20 @@
 
 .infoIcon {
     font-size: 16px;
+}
+
+.printableArea {
+    display: block; /* Ensure the printable area is always visible in the DOM */
+    width: 100%;
+}
+
+/* Ensure printableArea is not hidden during print */
+@media print {
+    .printableArea {
+        display: block !important;
+        visibility: visible !important;
+        width: 100%;
+    }
 }
 
 /* Responsive Design */

@@ -13,7 +13,6 @@ import HelpButton from '../../components/HelpButton';
 import { FootnotesProvider } from '../../context/footnotesContext';
 import ReportVisualizations from './generated-table/ReportVisualization';
 import classes from './styles/GeneratedTable.module.css';
-import utils from '../../styles/utils.module.css';
 
 export function isAllPopulatedInTable(key, table) {
     return table.rows.every((row) =>
@@ -28,8 +27,8 @@ export function GeneratedTable() {
     const navigate = useNavigate();
     const { id } = useParams();
     const table = useTableState();
-    const printRef = useRef();
-    const fileInputRef = useRef(); // Ref for hidden file input
+    const printRef = useRef(null);
+    const fileInputRef = useRef();
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [reportParams, setReportParams] = useState({
         selectedOrgUnits: [],
@@ -40,7 +39,9 @@ export function GeneratedTable() {
     const [showVisualizations, setShowVisualizations] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [animateInContent, setAnimateInContent] = useState(false);
-    const [logoUrl, setLogoUrl] = useState('https://via.placeholder.com/150x50?text=Logo'); // Default placeholder logo
+    const [logoUrl, setLogoUrl] = useState('https://via.placeholder.com/150x50?text=Logo');
+    const [isPrinting, setIsPrinting] = useState(false);
+    const [printContentReady, setPrintContentReady] = useState(false);
 
     useEffect(() => {
         setTimeout(() => {
@@ -48,34 +49,93 @@ export function GeneratedTable() {
         }, 300);
     }, []);
 
+    useEffect(() => {
+        if (printRef.current) {
+            console.log('printRef is set:', printRef.current);
+            setPrintContentReady(true);
+        } else {
+            console.warn('printRef is not set');
+            setPrintContentReady(false);
+        }
+    }, [printRef]);
+
     const handlePrint = useReactToPrint({
-        content: () => printRef.current || null,
+        content: () => {
+            if (!printRef.current) {
+                console.error('Print content not found');
+                setReportParamsErrors([i18n.t('There is nothing to print')]);
+                return null;
+            }
+            console.log('Printing content:', printRef.current);
+            return printRef.current;
+        },
         documentTitle: table.name || 'Table Report',
         onBeforeGetContent: () => {
+            setIsPrinting(true);
             setIsLoading(true);
-            return new Promise((resolve) => setTimeout(resolve, 500));
+            return new Promise((resolve) => {
+                if (!printRef.current) {
+                    console.warn('Print content not ready');
+                    setReportParamsErrors([i18n.t('There is nothing to print')]);
+                    setIsLoading(false);
+                    setIsPrinting(false);
+                    resolve();
+                    return;
+                }
+                setTimeout(() => {
+                    console.log('Print content ready:', printRef.current);
+                    setIsLoading(false);
+                    resolve();
+                }, 500);
+            });
         },
-        onAfterPrint: () => setIsLoading(false),
+        onAfterPrint: () => {
+            setIsPrinting(false);
+            setIsLoading(false);
+            setReportParamsErrors([]);
+        },
+        pageStyle: `
+            @page {
+                size: auto;
+                margin: 10mm;
+            }
+            body {
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+                background: white !important;
+                color: black !important;
+            }
+            .${classes.darkMode} {
+                background: white !important;
+                color: black !important;
+            }
+            .${classes.table}, .${classes.visualizations} {
+                page-break-inside: avoid;
+            }
+            .no-print {
+                display: none !important;
+            }
+        `,
+        removeAfterPrint: false
     });
 
     const handleLogoUpload = (event) => {
         const file = event.target.files[0];
         if (file) {
-            // Validate file type (only images)
             if (!file.type.startsWith('image/')) {
                 alert(i18n.t('Please upload a valid image file (PNG, JPG, etc.).'));
                 return;
             }
             const reader = new FileReader();
             reader.onload = () => {
-                setLogoUrl(reader.result); // Set logo URL to base64 data URL
+                setLogoUrl(reader.result);
             };
             reader.readAsDataURL(file);
         }
     };
 
     const triggerFileInput = () => {
-        fileInputRef.current.click(); // Trigger hidden file input
+        fileInputRef.current.click();
     };
 
     const toggleReportParamsDialog = () => setReportParamsDialogOpen((state) => !state);
@@ -99,7 +159,7 @@ export function GeneratedTable() {
         }, 800);
     }
 
-    const isPrintDisabled = periodParamNeeded && !reportParams.selectedPeriods.length;
+    const isPrintDisabled = (periodParamNeeded && !reportParams.selectedPeriods.length) || !printContentReady || isLoading || isPrinting;
     const formattedDateTime = new Date().toLocaleString(undefined, {
         year: 'numeric',
         month: 'long',
@@ -111,8 +171,8 @@ export function GeneratedTable() {
 
     return (
         <div id="generated-table" className={`${classes.container} ${isDarkMode ? classes.darkMode : ''}`}>
-            {/* Sidebar for Actions and Parameters */}
-            <div className={classes.sidebar}>
+            {/* Non-printable sidebar */}
+            <div className={`${classes.sidebar} no-print`}>
                 <BackButton to={TABLES} text={i18n.t('Back to Saved Reports')} className={classes.backButton} />
                 <div className={classes.sidebarActions}>
                     <h3 className={classes.sidebarTitle}>{i18n.t('Actions')}</h3>
@@ -135,10 +195,10 @@ export function GeneratedTable() {
                             className={classes.actionButton}
                             primary
                             onClick={handlePrint}
-                            disabled={isPrintDisabled || isLoading}
+                            disabled={isPrintDisabled}
                         >
                             <Icon name="print" className={classes.buttonIcon} />
-                            {isLoading ? i18n.t('Preparing...') : i18n.t('Print')}
+                            {isLoading || isPrinting ? i18n.t('Preparing...') : i18n.t('Print')}
                         </Button>
                         <Button
                             className={classes.actionButton}
@@ -167,126 +227,129 @@ export function GeneratedTable() {
 
             {/* Main Content */}
             <div className={classes.mainContent}>
+                {/* Non-printable parameters dialog */}
                 {(orgUnitParamNeeded || periodParamNeeded) && (
-                    <ReportParameters
-                        open={reportParamsDialogOpen}
-                        errors={reportParamsErrors}
-                        pickOrgUnits={orgUnitParamNeeded}
-                        pickPeriods={periodParamNeeded}
-                        toggleModal={toggleReportParamsDialog}
-                        onGenerate={onGenerate}
-                    />
+                    <div className="no-print">
+                        <ReportParameters
+                            open={reportParamsDialogOpen}
+                            errors={reportParamsErrors}
+                            pickOrgUnits={orgUnitParamNeeded}
+                            pickPeriods={periodParamNeeded}
+                            toggleModal={toggleReportParamsDialog}
+                            onGenerate={onGenerate}
+                        />
+                    </div>
                 )}
 
-                <Card className={classes.reportCard}>
-                    <div className={classes.header}>
-                        <img
-                            src={logoUrl}
-                            alt="Report Logo"
-                            className={classes.logo}
-                        />
-                        <h1 className={classes.title}>{table.name || i18n.t('Report')}</h1>
-                        {table.description && (
-                            <span className={classes.description}>{table.description}</span>
-                        )}
-                        <div className={classes.dateTime}>
-                            <Icon name="today" className={classes.dateIcon} />
-                            {i18n.t('Generated on')} {formattedDateTime}
-                        </div>
-                    </div>
-
-                    {reportParamsErrors.length > 0 && (
-                        <div className={classes.errorBanner}>
-                            <Icon name="error" className={classes.errorIcon} />
-                            {reportParamsErrors.map((error, i) => (
-                                <p key={i}>{error}</p>
-                            ))}
-                        </div>
-                    )}
-
-                    {(reportParams.selectedOrgUnits.length > 0 || reportParams.selectedPeriods.length > 0) && (
-                        <div className={classes.parametersSection}>
-                            <h2 className={classes.parametersTitle}>{i18n.t('Report Parameters')}</h2>
-                            <div className={classes.parametersGrid}>
-                                {reportParams.selectedOrgUnits.length > 0 && (
-                                    <div className={classes.parameterItem}>
-                                        <div className={classes.parameterHeader}>
-                                            <Icon name="location_on" className={classes.parameterIcon} />
-                                            <span>{i18n.t('Organization Units')}</span>
-                                        </div>
-                                        <div className={classes.parameterTags}>
-                                            {reportParams.selectedOrgUnits.map((unit, index) => (
-                                                <span key={index} className={classes.tag}>
-                                                    {unit.displayName}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                                {reportParams.selectedPeriods.length > 0 && (
-                                    <div className={classes.parameterItem}>
-                                        <div className={classes.parameterHeader}>
-                                            <Icon name="calendar_today" className={classes.parameterIcon} />
-                                            <span>{i18n.t('Periods')}</span>
-                                        </div>
-                                        <div className={classes.parameterTags}>
-                                            {reportParams.selectedPeriods.map((period, index) => (
-                                                <span key={index} className={classes.tag}>
-                                                    {period.displayName}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                            <Switch
-                                checked={showVisualizations}
-                                onChange={() => setShowVisualizations(!showVisualizations)}
-                                label={i18n.t('Show Visualizations')}
-                                className={classes.switch}
+                {/* Printable content - must always be rendered */}
+                <div ref={printRef} className={classes.printableArea}>
+                    <Card className={classes.reportCard}>
+                        <div className={classes.header}>
+                            <img
+                                src={logoUrl}
+                                alt="Report Logo"
+                                className={classes.logo}
                             />
-                        </div>
-                    )}
-
-                    <div
-                        ref={printRef}
-                        className={`${classes.content} ${animateInContent ? classes.fadeIn : ''}`}
-                    >
-                        {isLoading ? (
-                            <div className={classes.loadingContainer}>
-                                <CircularLoader />
-                                <p>{i18n.t('Loading data...')}</p>
+                            <h1 className={classes.title}>{table.name || i18n.t('Report')}</h1>
+                            {table.description && (
+                                <span className={classes.description}>{table.description}</span>
+                            )}
+                            <div className={classes.dateTime}>
+                                <Icon name="today" className={classes.dateIcon} />
+                                {i18n.t('Generated on')} {formattedDateTime}
                             </div>
-                        ) : (
-                            <>
-                                <FootnotesProvider>
-                                    <TableWithData
-                                        {...reportParams}
-                                        periodParamNeeded={periodParamNeeded}
-                                        className={classes.table}
-                                    />
-                                </FootnotesProvider>
-                                {showVisualizations && (
-                                    <div className={classes.visualizations}>
-                                        <h2 className={classes.visualizationsTitle}>
-                                            <Icon name="bar_chart" className={classes.sectionIcon} />
-                                            {i18n.t('Data Visualizations')}
-                                        </h2>
-                                        <ReportVisualizations
-                                            selectedOrgUnits={reportParams.selectedOrgUnits}
-                                            selectedPeriods={reportParams.selectedPeriods}
-                                        />
-                                    </div>
-                                )}
-                            </>
-                        )}
-                    </div>
+                        </div>
 
-                    <Help className={classes.help}>
-                        <Icon name="info" className={classes.infoIcon} />
-                        {i18n.t('Tip - hover the mouse over a data cell to see its information.')}
-                    </Help>
-                </Card>
+                        {reportParamsErrors.length > 0 && (
+                            <div className={classes.errorBanner}>
+                                <Icon name="error" className={classes.errorIcon} />
+                                {reportParamsErrors.map((error, i) => (
+                                    <p key={i}>{error}</p>
+                                ))}
+                            </div>
+                        )}
+
+                        {(reportParams.selectedOrgUnits.length > 0 || reportParams.selectedPeriods.length > 0) && (
+                            <div className={classes.parametersSection}>
+                                <h2 className={classes.parametersTitle}>{i18n.t('Report Parameters')}</h2>
+                                <div className={classes.parametersGrid}>
+                                    {reportParams.selectedOrgUnits.length > 0 && (
+                                        <div className={classes.parameterItem}>
+                                            <div className={classes.parameterHeader}>
+                                                <Icon name="location_on" className={classes.parameterIcon} />
+                                                <span>{i18n.t('Organization Units')}</span>
+                                            </div>
+                                            <div className={classes.parameterTags}>
+                                                {reportParams.selectedOrgUnits.map((unit, index) => (
+                                                    <span key={index} className={classes.tag}>
+                                                        {unit.displayName}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                    {reportParams.selectedPeriods.length > 0 && (
+                                        <div className={classes.parameterItem}>
+                                            <div className={classes.parameterHeader}>
+                                                <Icon name="calendar_today" className={classes.parameterIcon} />
+                                                <span>{i18n.t('Periods')}</span>
+                                            </div>
+                                            <div className={classes.parameterTags}>
+                                                {reportParams.selectedPeriods.map((period, index) => (
+                                                    <span key={index} className={classes.tag}>
+                                                        {period.displayName}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                                <Switch
+                                    checked={showVisualizations}
+                                    onChange={() => setShowVisualizations(!showVisualizations)}
+                                    label={i18n.t('Show Visualizations')}
+                                    className={`${classes.switch} no-print`}
+                                />
+                            </div>
+                        )}
+
+                        <div className={`${classes.content} ${animateInContent ? classes.fadeIn : ''}`}>
+                            {isLoading ? (
+                                <div className={classes.loadingContainer}>
+                                    <CircularLoader />
+                                    <p>{i18n.t('Loading data...')}</p>
+                                </div>
+                            ) : (
+                                <>
+                                    <FootnotesProvider>
+                                        <TableWithData
+                                            {...reportParams}
+                                            periodParamNeeded={periodParamNeeded}
+                                            className={classes.table}
+                                        />
+                                    </FootnotesProvider>
+                                    {showVisualizations && (
+                                        <div className={classes.visualizations}>
+                                            <h2 className={classes.visualizationsTitle}>
+                                                <Icon name="bar_chart" className={classes.sectionIcon} />
+                                                {i18n.t('Data Visualizations')}
+                                            </h2>
+                                            <ReportVisualizations
+                                                selectedOrgUnits={reportParams.selectedOrgUnits}
+                                                selectedPeriods={reportParams.selectedPeriods}
+                                            />
+                                        </div>
+                                    )}
+                                </>
+                            )}
+                        </div>
+
+                        <Help className={`${classes.help} no-print`}>
+                            <Icon name="info" className={classes.infoIcon} />
+                            {i18n.t('Tip - hover the mouse over a data cell to see its information.')}
+                        </Help>
+                    </Card>
+                </div>
             </div>
         </div>
     );

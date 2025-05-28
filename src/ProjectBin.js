@@ -92,7 +92,7 @@
 //           <Card>
 //             <div style={styles.configContent}>
 //               <h3>Report Configuration</h3>
-              
+
 //               <InputField
 //                 label="Report Title"
 //                 value={reportConfig.title}
@@ -230,9 +230,9 @@
 import React, { useState, useEffect } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { 
-  Button, 
-  InputField, 
+import {
+  Button,
+  InputField,
   Card,
   AlertBar,
   CircularLoader,
@@ -277,8 +277,8 @@ const DHIS2AppWrapper = ({ children }) => {
   const [initError, setInitError] = useState(null);
 
   return (
-    <AuthProvider 
-      config={{ 
+    <AuthProvider
+      config={{
         baseUrl: dhis2Config.baseUrl,
         auth: dhis2Config.auth
       }}
@@ -372,7 +372,7 @@ const App = () => {
               <Card>
                 <div style={styles.configContent}>
                   <h3>DHIS2 Integration</h3>
-                  
+
                   <div style={{ marginBottom: 16 }}>
                     <label>Select Health Facility:</label>
                     <OrgUnitSelector onSelect={setSelectedOrgUnit} />
@@ -398,7 +398,7 @@ const App = () => {
           {/* Report Preview */}
           <div style={styles.reportPreview}>
             <div className="printable-area" style={styles.printableArea}>
-              <ReportHeader 
+              <ReportHeader
                 title={reportConfig.title}
                 subtitle={reportConfig.subtitle}
                 facility={selectedOrgUnit || reportConfig.facility}
@@ -420,10 +420,10 @@ export default App;
 
 
 
- // "start": "d2-app-scripts start --allowJsxInJs --proxy https://project.ccdev.org/ictprojects",
+// "start": "d2-app-scripts start --allowJsxInJs --proxy https://project.ccdev.org/ictprojects",
 
 
- // import React, { useState, useEffect } from 'react';
+// import React, { useState, useEffect } from 'react';
 // import { DndProvider } from 'react-dnd';
 // import { HTML5Backend } from 'react-dnd-html5-backend';
 // import { 
@@ -544,7 +544,7 @@ export default App;
 //   const formatPeriodLabel = (periodType) => {
 //     const format = (date) => date.toLocaleDateString('default', { month: 'long', year: 'numeric' });
 //     const now = new Date();
-    
+
 //     switch(periodType) {
 //       case 'LAST_3_MONTHS':
 //         const threeMonthsAgo = new Date(now);
@@ -643,7 +643,7 @@ export default App;
 //             <Card>
 //               <div style={styles.configContent}>
 //                 <h3>DHIS2 Integration</h3>
-                
+
 //                 <div style={{ marginBottom: 16 }}>
 //                   <label>Health Facility:</label>
 //                       <SingleSelect
@@ -860,3 +860,43 @@ export default App;
 
 // export default App;
 
+
+<Card className={utils.card}>
+  <div ref={printRef} className={classes.print}>
+    <div className={classes.printHeader}>
+      {logo && (
+        <div className={classes.logoContainer}>
+          <img
+            src={logo}
+            className={classes.printLogo}
+            alt="Organization Logo"
+          />
+        </div>
+      )}
+
+      {/* Title & Date Section (Right) */}
+      <div className={classes.titleContainer}>
+        <h1 className={classes.reportTitle}>{table.name}</h1>
+        <div className={classes.metadata}>
+          <p className={classes.reportDate}>
+            {new Date().toLocaleDateString()}
+          </p>
+          {reportParams.selectedOrgUnits?.length > 0 && (
+            <p className={classes.orgUnit}>
+              {i18n.t('For: ')}{getSelectedNames(reportParams.selectedOrgUnits)}
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
+    {/* Main Table Content */}
+    <FootnotesProvider>
+      <TableWithData
+        {...reportParams}
+        periodParamNeeded={periodParamNeeded}
+        suppressTitle={true}
+      />
+    </FootnotesProvider>
+  </div>
+</Card>
+ 
