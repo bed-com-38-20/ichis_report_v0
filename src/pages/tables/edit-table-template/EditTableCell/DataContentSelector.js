@@ -1,116 +1,115 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
-import isEqual from 'lodash/isEqual'
-import i18n from '../../../../locales'
-
-import { UPDATE_CELL } from '../../../../reducers/tableReducer'
-import DataEngine from '../../../../components/DataEngine'
-import { DataSelectorDialog } from './DataSelectorDialog'
-import { OrgUnitSelectorDialog, PeriodSelectorDialog } from './index'
-import SelectorFrame from '../SelectorFrame'
-import {
-    useTableDispatch,
-    useTableState,
-} from '../../../../context/tableContext'
-import {
-    getIntervalString,
-    HighlightingEditorDialog,
-} from '../HighlightingEditor'
+// src/D2App/components/DataContentSelector.jsx
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import isEqual from 'lodash/isEqual';
+import i18n from '../../../../locales';
+import { UPDATE_CELL } from '../../../../reducers/tableReducer';
+import DataEngine from '../../../../components/DataEngine';
+import { DataSelectorDialog, OrgUnitSelectorDialog, PeriodSelectorDialog } from './index';
+import SelectorFrame from '../SelectorFrame';
+import { useTableDispatch, useTableState } from '../../../../context/tableContext';
+import { getIntervalString, HighlightingEditorDialog } from '../HighlightingEditor';
+import { useProgress } from '../../../../context/ProgressContext';
 
 function getSelectedNames(arr) {
-    return arr.map(({ name }) => name).join(', ')
+    return arr.map(({ name }) => name).join(', ');
 }
 
 export function DataContentSelector({ cell, rowIdx, cellIdx }) {
-    const table = useTableState()
-    const dispatch = useTableDispatch()
-    const [dataDialogOpen, setDataDialogOpen] = useState(false)
-    const [orgUnitDialogOpen, setOrgUnitDialogOpen] = useState(false)
-    const [periodDialogOpen, setPeriodDialogOpen] = useState(false)
-    const [highlightingDialogOpen, setHighlightingDialogOpen] = useState(false)
+    const table = useTableState();
+    const dispatch = useTableDispatch();
+    const { startProcessing, updateProgress, setProgressError } = useProgress();
+    const [dataDialogOpen, setDataDialogOpen] = useState(false);
+    const [orgUnitDialogOpen, setOrgUnitDialogOpen] = useState(false);
+    const [periodDialogOpen, setPeriodDialogOpen] = useState(false);
+    const [highlightingDialogOpen, setHighlightingDialogOpen] = useState(false);
 
-    const toggleDataDialog = () => setDataDialogOpen(state => !state)
-    const toggleOrgUnitDialog = () => setOrgUnitDialogOpen(state => !state)
-    const togglePeriodDialog = () => setPeriodDialogOpen(state => !state)
-    const toggleHighlightingDialog = () =>
-        setHighlightingDialogOpen(state => !state)
+    const toggleDataDialog = () => setDataDialogOpen((state) => !state);
+    const toggleOrgUnitDialog = () => setOrgUnitDialogOpen((state) => !state);
+    const togglePeriodDialog = () => setPeriodDialogOpen((state) => !state);
+    const toggleHighlightingDialog = () => setHighlightingDialogOpen((state) => !state);
 
-    const onDataDialogSave = ({ item, ...metadata }) => {
-        if (!item) return
+    const onDataDialogSave = async ({ item, ...metadata }) => {
+        if (!item) return;
+        startProcessing('selectDataType');
+        try {
+            dispatch({
+                type: UPDATE_CELL,
+                payload: {
+                    cell: { data: { ...cell.data, item, ...metadata } },
+                    rowIdx,
+                    cellIdx,
+                },
+            });
+            updateProgress('selectDataType', 100); // 20% for data type
+        } catch (error) {
+            setProgressError(i18n.t('Failed to save data item'));
+            console.error('Data save error:', error);
+        }
+    };
 
-        dispatch({
-            type: UPDATE_CELL,
-            payload: {
-                cell: { data: { ...cell.data, item, ...metadata } },
-                rowIdx,
-                cellIdx,
-            },
-        })
-    }
+    const onOrgUnitDialogSave = async (orgUnits) => {
+        startProcessing('selectOrgUnit');
+        try {
+            dispatch({
+                type: UPDATE_CELL,
+                payload: {
+                    cell: { data: { ...cell.data, orgUnits } },
+                    rowIdx,
+                    cellIdx,
+                },
+            });
+            updateProgress('selectOrgUnit', 100); // 20% for org units
+        } catch (error) {
+            setProgressError(i18n.t('Failed to save organization units'));
+            console.error('Org unit save error:', error);
+        }
+    };
 
-    const onOrgUnitDialogSave = orgUnits => {
-        dispatch({
-            type: UPDATE_CELL,
-            payload: {
-                cell: { data: { ...cell.data, orgUnits } },
-                rowIdx,
-                cellIdx,
-            },
-        })
-    }
-
-    const onPeriodDialogSave = periods => {
-        dispatch({
-            type: UPDATE_CELL,
-            payload: {
-                cell: { data: { ...cell.data, periods } },
-                rowIdx,
-                cellIdx,
-            },
-        })
-    }
+    const onPeriodDialogSave = async (periods) => {
+        startProcessing('selectPeriods');
+        try {
+            dispatch({
+                type: UPDATE_CELL,
+                payload: {
+                    cell: { data: { ...cell.data, periods } },
+                    rowIdx,
+                    cellIdx,
+                },
+            });
+            updateProgress('selectPeriods', 100); // 20% for periods
+        } catch (error) {
+            setProgressError(i18n.t('Failed to save periods'));
+            console.error('Period save error:', error);
+        }
+    };
 
     const getHighlightingIntervals = () => {
-        // Priority: cell > col > row > table
         return (
             cell.highlightingIntervals ||
             table.columns[cellIdx].highlightingIntervals ||
             table.rows[rowIdx].highlightingIntervals ||
             table.highlightingIntervals
-        )
-    }
+        );
+    };
 
     const getNextIntervalsAfterClear = () => {
-        // Priority: col > row > null
         return (
             table.columns[cellIdx].highlightingIntervals ||
             table.rows[rowIdx].highlightingIntervals ||
             null
-        )
-    }
+        );
+    };
 
     const getHighlightingSelectorContent = () => {
-        if (
-            !cell.highlightingIntervals ||
-            isEqual(cell.highlightingIntervals, table.highlightingIntervals)
-        )
-            return i18n.t('Same as table')
-        if (
-            isEqual(
-                cell.highlightingIntervals,
-                table.columns[cellIdx].highlightingIntervals
-            )
-        )
-            return i18n.t('Same as column')
-        if (
-            isEqual(
-                cell.highlightingIntervals,
-                table.rows[rowIdx].highlightingIntervals
-            )
-        )
-            return i18n.t('Same as row')
-        return getIntervalString(cell.highlightingIntervals)
-    }
+        if (!cell.highlightingIntervals || isEqual(cell.highlightingIntervals, table.highlightingIntervals))
+            return i18n.t('Same as table');
+        if (isEqual(cell.highlightingIntervals, table.columns[cellIdx].highlightingIntervals))
+            return i18n.t('Same as column');
+        if (isEqual(cell.highlightingIntervals, table.rows[rowIdx].highlightingIntervals))
+            return i18n.t('Same as row');
+        return getIntervalString(cell.highlightingIntervals);
+    };
 
     const onHighlightingDialogClear = () => {
         dispatch({
@@ -120,10 +119,10 @@ export function DataContentSelector({ cell, rowIdx, cellIdx }) {
                 rowIdx,
                 cellIdx,
             },
-        })
-    }
+        });
+    };
 
-    const onHighlightingDialogSave = intervals => {
+    const onHighlightingDialogSave = (intervals) => {
         dispatch({
             type: UPDATE_CELL,
             payload: {
@@ -131,10 +130,10 @@ export function DataContentSelector({ cell, rowIdx, cellIdx }) {
                 rowIdx,
                 cellIdx,
             },
-        })
-    }
+        });
+    };
 
-    const { data } = cell
+    const { data } = cell;
     return (
         <>
             <SelectorFrame
@@ -146,11 +145,7 @@ export function DataContentSelector({ cell, rowIdx, cellIdx }) {
             <SelectorFrame
                 title={i18n.t('Organisation unit(s)')}
                 content={
-                    data.orgUnits?.length ? (
-                        getSelectedNames(data.orgUnits)
-                    ) : (
-                        <em>{i18n.t('Select during generation')}</em>
-                    )
+                    data.orgUnits?.length ? getSelectedNames(data.orgUnits) : <em>{i18n.t('Select during generation')}</em>
                 }
                 tooltip={i18n.t('Select organisation unit(s)')}
                 onClick={toggleOrgUnitDialog}
@@ -158,11 +153,7 @@ export function DataContentSelector({ cell, rowIdx, cellIdx }) {
             <SelectorFrame
                 title={i18n.t('Period(s)')}
                 content={
-                    data.periods?.length ? (
-                        getSelectedNames(data.periods)
-                    ) : (
-                        <em>{i18n.t('Select during generation')}</em>
-                    )
+                    data.periods?.length ? getSelectedNames(data.periods) : <em>{i18n.t('Select during generation')}</em>
                 }
                 tooltip={i18n.t('Select period(s)')}
                 onClick={togglePeriodDialog}
@@ -178,7 +169,7 @@ export function DataContentSelector({ cell, rowIdx, cellIdx }) {
             )}
             {dataDialogOpen && (
                 <DataEngine>
-                    {engine => (
+                    {(engine) => (
                         <DataSelectorDialog
                             engine={engine}
                             onClose={toggleDataDialog}
@@ -203,14 +194,12 @@ export function DataContentSelector({ cell, rowIdx, cellIdx }) {
             <HighlightingEditorDialog
                 open={highlightingDialogOpen}
                 toggle={toggleHighlightingDialog}
-                helpText={i18n.t(
-                    'Configure highlighting intervals for this cell'
-                )}
+                helpText={i18n.t('Configure highlighting intervals for this cell')}
                 highlightingIntervals={getHighlightingIntervals()}
                 onSave={onHighlightingDialogSave}
             />
         </>
-    )
+    );
 }
 
 DataContentSelector.propTypes = {
@@ -243,6 +232,6 @@ DataContentSelector.propTypes = {
         highlightingIntervals: PropTypes.array,
         text: PropTypes.string,
     }),
-}
+};
 
-export default DataContentSelector
+export default DataContentSelector;

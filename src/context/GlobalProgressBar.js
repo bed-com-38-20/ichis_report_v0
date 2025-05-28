@@ -1,4 +1,4 @@
-// src/components/GlobalProgressBar.jsx
+
 import React from 'react';
 import { NoticeBox } from '@dhis2/ui';
 import { useProgress } from '../context/ProgressContext';

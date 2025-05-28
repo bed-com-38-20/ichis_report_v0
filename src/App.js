@@ -12,7 +12,7 @@ import { Tables, NoMatch } from './pages';
 import LandingPage from './pages/LandingPage';
 import HomePage from './pages/home/homePage';
 import { ProgressProvider, GlobalProgressBar } from './context/ProgressContext'; 
-//import {  GlobalProgressBar } from './context/ProgressContext'
+
 
 const appConfig = {
     baseUrl: 'https://play.im.dhis2.org/dev/',

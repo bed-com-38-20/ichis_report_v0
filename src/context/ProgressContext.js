@@ -4,47 +4,46 @@ import PropTypes from 'prop-types';
 import { NoticeBox } from '@dhis2/ui';
 import i18n from '../locales';
 
-// Create the Progress Context
 const ProgressContext = createContext();
 
-// Progress Provider Component
 export function ProgressProvider({ children }) {
     const [progress, setProgress] = useState(0);
     const [isProcessing, setIsProcessing] = useState(false);
     const [error, setError] = useState(null);
+    const [currentStep, setCurrentStep] = useState(null);
 
-    // Define steps and their progress weights
     const steps = {
-        createReport: 10, // 10% for report creation
-        addOrgUnit: 30, // 30% for organization unit selection
-        selectPeriods: 30, // 30% for period selection
-        finalizeReport: 30, // 30% for finalizing report
+        createReport: { weight: 10, label: i18n.t('Create Report') },
+        selectDataType: { weight: 20, label: i18n.t('Select Data Type') },
+        selectOrgUnit: { weight: 20, label: i18n.t('Select Organization Units') },
+        selectPeriods: { weight: 20, label: i18n.t('Select Periods') },
+        finalizeReport: { weight: 30, label: i18n.t('Finalize Report') },
     };
 
-    // Update progress for a specific step
     const updateProgress = (step, stepProgress = 100) => {
         if (steps[step]) {
             setProgress((prev) => {
-                const newProgress = prev + (steps[step] * stepProgress) / 100;
-                return Math.min(newProgress, 100); // Cap at 100%
+                const newProgress = prev + (steps[step].weight * stepProgress) / 100;
+                return Math.min(newProgress, 100);
             });
+            setCurrentStep(step);
+            setIsProcessing(true);
         }
     };
 
-    // Reset progress
     const resetProgress = () => {
         setProgress(0);
         setIsProcessing(false);
         setError(null);
+        setCurrentStep(null);
     };
 
-    // Start processing
-    const startProcessing = () => {
+    const startProcessing = (step) => {
         setIsProcessing(true);
         setError(null);
+        setCurrentStep(step);
     };
 
-    // Set error
     const setProgressError = (errorMessage) => {
         setError(errorMessage);
         setIsProcessing(false);
@@ -56,6 +55,8 @@ export function ProgressProvider({ children }) {
                 progress,
                 isProcessing,
                 error,
+                currentStep,
+                steps,
                 updateProgress,
                 resetProgress,
                 startProcessing,
@@ -71,7 +72,6 @@ ProgressProvider.propTypes = {
     children: PropTypes.node.isRequired,
 };
 
-// Hook to use Progress Context
 export const useProgress = () => {
     const context = useContext(ProgressContext);
     if (!context) {
@@ -80,14 +80,24 @@ export const useProgress = () => {
     return context;
 };
 
-// Global Progress Bar Component
 export function GlobalProgressBar() {
-    const { progress, isProcessing, error } = useProgress();
+    const { progress, isProcessing, error, currentStep, steps } = useProgress();
 
     if (!isProcessing && !error) return null;
 
     return (
-        <div style={{ margin: '16px', width: '100%' }}>
+        <div
+            style={{
+                position: 'sticky',
+                top: 0,
+                zIndex: 1000,
+                backgroundColor: '#fff',
+                padding: '8px 16px',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                width: '100%',
+                margin: 0,
+            }}
+        >
             {isProcessing && (
                 <>
                     <div
@@ -108,7 +118,12 @@ export function GlobalProgressBar() {
                             }}
                         />
                     </div>
-                    <p>{i18n.t('Report progress: {{progress}}%', { progress: Math.round(progress) })}</p>
+                    <p>
+                        {i18n.t('Report progress: {{progress}}% (Step: {{step}})', {
+                            progress: Math.round(progress),
+                            step: currentStep ? steps[currentStep].label : i18n.t('Starting...'),
+                        })}
+                    </p>
                 </>
             )}
             {error && (
