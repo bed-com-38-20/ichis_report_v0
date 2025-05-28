@@ -3,10 +3,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Modal, ModalTitle, ModalContent, ModalActions, Button, ButtonStrip } from '@dhis2/ui';
 import { debounce } from 'lodash';
-import i18n from '../../../../../locales';
-import ProgressContext from '../../../../../context/ProgressContext'; // Import ProgressContext
+import i18n from '@dhis2/d2-i18n';
+import ProgressContext from '../../../../../context/ProgressContext';
 import { DataTypes, Groups, FilterField, DimensionItemsMenu } from './index';
 import { modal, modalContent } from './styles/DataSelectorDialog.module.css';
+
 import { ALL_ID, DEFAULT_DATATYPE_ID, dataTypes, defaultGroupId, defaultGroupDetail } from '../../../../../modules/dataTypes'
 import { fetchGroups, fetchAlternatives } from '../../../../../api/dimensions';
 
@@ -18,7 +19,7 @@ const DEFAULT_ALTERNATIVES = {
 };
 
 export class DataSelectorDialog extends Component {
-    static contextType = ProgressContext; // Use imported ProgressContext
+    static contextType = ProgressContext;
 
     state = {
         dataType: this.props.initialValues.dataType || DEFAULT_DATATYPE_ID,
@@ -131,16 +132,23 @@ export class DataSelectorDialog extends Component {
 
     onSave = async () => {
         const { startProcessing, updateProgress, setProgressError } = this.context;
-        startProcessing('selectDataType');
+        const { navigate, onClose, onSave } = this.props;
+
+        startProcessing('selectDataItem');
         try {
-            await this.props.onSave({
+            await onSave({
                 item: this.state.selectedItem,
                 dataType: this.state.dataType,
                 groupId: this.state.groupId,
                 groupDetail: this.state.groupDetail,
             });
-            updateProgress('selectDataType', 100); // 20% for data type selection
-            this.props.onClose();
+            updateProgress('selectDataItem', 100); // 20% for data item (30% total)
+            onClose();
+            if (typeof navigate === 'function') {
+                navigate('/tables/org-units'); // Navigate only if function
+            } else {
+                console.warn('navigate is not a function:', navigate);
+            }
         } catch (error) {
             setProgressError(i18n.t('Failed to save data item'));
             console.error('Data save error:', error);
@@ -200,14 +208,16 @@ DataSelectorDialog.propTypes = {
         dataType: PropTypes.string,
         groupDetail: PropTypes.string,
         groupId: PropTypes.string,
-        selectedItem: PropTypes.shape({ id: PropTypes.string, name: PropTypes.string }),
+        item: PropTypes.shape({ id: PropTypes.string, name: PropTypes.string }),
     }),
     onClose: PropTypes.func,
     onSave: PropTypes.func,
+    navigate: PropTypes.func, // Not required to handle cases where not passed
 };
 
 DataSelectorDialog.defaultProps = {
     displayNameProp: 'displayName',
+    navigate: () => console.warn('navigate prop not provided'),
 };
 
 export default DataSelectorDialog;

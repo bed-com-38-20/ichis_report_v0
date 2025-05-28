@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-05-28T13:12:59.859Z\n"
-"PO-Revision-Date: 2025-05-28T13:12:59.860Z\n"
+"POT-Creation-Date: 2025-05-28T23:18:04.401Z\n"
+"PO-Revision-Date: 2025-05-28T23:18:04.402Z\n"
 
 msgid "Back"
 msgstr "Back"
@@ -22,6 +22,24 @@ msgstr "Menu"
 
 msgid "Error"
 msgstr "Error"
+
+msgid "Create Report"
+msgstr "Create Report"
+
+msgid "Select Data Item"
+msgstr "Select Data Item"
+
+msgid "Select Organization Units"
+msgstr "Select Organization Units"
+
+msgid "Select Periods"
+msgstr "Select Periods"
+
+msgid "Finalize Report"
+msgstr "Finalize Report"
+
+msgid "Starting..."
+msgstr "Starting..."
 
 msgid "Data"
 msgstr "Data"
@@ -159,6 +177,15 @@ msgstr "Changes are saved automatically. Last saved at {{time}}."
 
 msgid "Content type"
 msgstr "Content type"
+
+msgid "Failed to save data item"
+msgstr "Failed to save data item"
+
+msgid "Failed to save organization units"
+msgstr "Failed to save organization units"
+
+msgid "Failed to save periods"
+msgstr "Failed to save periods"
 
 msgid "Same as table"
 msgstr "Same as table"
@@ -536,6 +563,9 @@ msgstr "Tip - hover the mouse over a data cell to see its information."
 msgid "Create sample report"
 msgstr "Create sample report"
 
+msgid "Failed to create report"
+msgstr "Failed to create report"
+
 msgid "Create new"
 msgstr "Create new"
 
@@ -547,9 +577,6 @@ msgstr "report name"
 
 msgid "Create"
 msgstr "Create"
-
-msgid "Creating report... {{progress}}%"
-msgstr "Creating report... {{progress}}%"
 
 msgid "Report template deleted successfully"
 msgstr "Report template deleted successfully"

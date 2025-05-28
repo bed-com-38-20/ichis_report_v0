@@ -11,11 +11,10 @@ import { TABLES } from './modules/paths';
 import { Tables, NoMatch } from './pages';
 import LandingPage from './pages/LandingPage';
 import HomePage from './pages/home/homePage';
-import { ProgressProvider, GlobalProgressBar } from './context/ProgressContext'; 
-
+import { ProgressProvider, GlobalProgressBar } from './context/ProgressContext';
 
 const appConfig = {
-    baseUrl: 'https://play.im.dhis2.org/dev/',
+    baseUrl: 'https://play.im.dhis2.org/stable-2-41-3-1',
     apiVersion: 37,
     pwaEnabled: false,
     headers: {
@@ -33,12 +32,11 @@ const AppInitializer = ({ children }) => {
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowLanding(false);
-        }, 2500); // Show landing screen for 2.5 seconds
+        }, 2500);
         return () => clearTimeout(timer);
     }, []);
 
     useEffect(() => {
-        // Simulate initialization check (replace with actual DHIS2 initialization if needed)
         setInitialized(true);
     }, []);
 
@@ -79,8 +77,8 @@ const MyApp = () => (
             >
                 <ProgressProvider>
                     <HashRouter>
-                        <div className={classes.container}>
-                            <GlobalProgressBar /> {/* Add GlobalProgressBar here */}
+                        <GlobalProgressBar />
+                        <div className={classes.container} style={{ marginTop: '60px' }}>
                             <main className={classes.right}>
                                 <Routes>
                                     <Route path="/" element={<HomePage />} />

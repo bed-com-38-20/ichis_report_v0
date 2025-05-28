@@ -10,15 +10,17 @@ import SelectorFrame from '../SelectorFrame';
 import { useTableDispatch, useTableState } from '../../../../context/tableContext';
 import { getIntervalString, HighlightingEditorDialog } from '../HighlightingEditor';
 import { useProgress } from '../../../../context/ProgressContext';
+import { useNavigate } from 'react-router-dom';
 
 function getSelectedNames(arr) {
-    return arr.map(({ name }) => name).join(', ');
+    return arr.map((item) => item.name).join(', ');
 }
 
 export function DataContentSelector({ cell, rowIdx, cellIdx }) {
     const table = useTableState();
     const dispatch = useTableDispatch();
     const { startProcessing, updateProgress, setProgressError } = useProgress();
+    const navigate = useNavigate();
     const [dataDialogOpen, setDataDialogOpen] = useState(false);
     const [orgUnitDialogOpen, setOrgUnitDialogOpen] = useState(false);
     const [periodDialogOpen, setPeriodDialogOpen] = useState(false);
@@ -31,7 +33,7 @@ export function DataContentSelector({ cell, rowIdx, cellIdx }) {
 
     const onDataDialogSave = async ({ item, ...metadata }) => {
         if (!item) return;
-        startProcessing('selectDataType');
+        startProcessing('selectDataItem');
         try {
             dispatch({
                 type: UPDATE_CELL,
@@ -41,7 +43,8 @@ export function DataContentSelector({ cell, rowIdx, cellIdx }) {
                     cellIdx,
                 },
             });
-            updateProgress('selectDataType', 100); // 20% for data type
+            updateProgress('selectDataItem', 100); // 20% for data item (30% total)
+            navigate('/tables/org-units');
         } catch (error) {
             setProgressError(i18n.t('Failed to save data item'));
             console.error('Data save error:', error);
@@ -59,7 +62,8 @@ export function DataContentSelector({ cell, rowIdx, cellIdx }) {
                     cellIdx,
                 },
             });
-            updateProgress('selectOrgUnit', 100); // 20% for org units
+            updateProgress('selectOrgUnit', 100); // 20% for org units (50% total)
+            navigate('/tables/periods');
         } catch (error) {
             setProgressError(i18n.t('Failed to save organization units'));
             console.error('Org unit save error:', error);
@@ -77,7 +81,8 @@ export function DataContentSelector({ cell, rowIdx, cellIdx }) {
                     cellIdx,
                 },
             });
-            updateProgress('selectPeriods', 100); // 20% for periods
+            updateProgress('selectPeriods', 100); // 20% for periods (70% total)
+            navigate('/tables/finalize');
         } catch (error) {
             setProgressError(i18n.t('Failed to save periods'));
             console.error('Period save error:', error);
@@ -102,12 +107,15 @@ export function DataContentSelector({ cell, rowIdx, cellIdx }) {
     };
 
     const getHighlightingSelectorContent = () => {
-        if (!cell.highlightingIntervals || isEqual(cell.highlightingIntervals, table.highlightingIntervals))
+        if (!cell.highlightingIntervals || isEqual(cell.highlightingIntervals, table.highlightingIntervals)) {
             return i18n.t('Same as table');
-        if (isEqual(cell.highlightingIntervals, table.columns[cellIdx].highlightingIntervals))
+        }
+        if (isEqual(cell.highlightingIntervals, table.columns[cellIdx].highlightingIntervals)) {
             return i18n.t('Same as column');
-        if (isEqual(cell.highlightingIntervals, table.rows[rowIdx].highlightingIntervals))
+        }
+        if (isEqual(cell.highlightingIntervals, table.rows[rowIdx].highlightingIntervals)) {
             return i18n.t('Same as row');
+        }
         return getIntervalString(cell.highlightingIntervals);
     };
 
@@ -175,6 +183,7 @@ export function DataContentSelector({ cell, rowIdx, cellIdx }) {
                             onClose={toggleDataDialog}
                             onSave={onDataDialogSave}
                             initialValues={data?.item ? { ...data } : {}}
+                            navigate={navigate} // Pass navigate prop
                         />
                     )}
                 </DataEngine>
@@ -231,7 +240,7 @@ DataContentSelector.propTypes = {
         }),
         highlightingIntervals: PropTypes.array,
         text: PropTypes.string,
-    }),
+    }).isRequired,
 };
 
 export default DataContentSelector;

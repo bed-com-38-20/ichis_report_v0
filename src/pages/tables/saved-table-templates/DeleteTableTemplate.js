@@ -1,3 +1,4 @@
+// src/D2App/components/DeleteTableTemplate.jsx
 import React, { useState, useEffect } from 'react';
 import { MenuItem, NoticeBox } from '@dhis2/ui';
 import PropTypes from 'prop-types';
@@ -5,28 +6,33 @@ import Icon from '../../../components/Icon';
 import ConfirmModal from '../../../components/ConfirmModal';
 import i18n from '../../../locales';
 import classes from './DeleteTableTemplate.module.css';
+import { useProgress } from '../../../context/ProgressContext';
+import { useDataStore } from '@dhis2/app-service-datastore';
 
 export function DeleteTableTemplate({ onDeleteConfirmation, onCancel }) {
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const { startProcessing, setProgressError } = useProgress();
+    const { refresh } = useDataStore();
     const [notification, setNotification] = useState({
         isVisible: false,
         message: '',
         isError: false,
     });
 
-    // Auto-dismiss notification after 3 seconds
     useEffect(() => {
         if (notification.isVisible) {
             const timer = setTimeout(() => {
                 setNotification({ isVisible: false, message: '', isError: false });
-            }, 3000); // Reduced to 3 seconds for better UX
+            }, 3000);
             return () => clearTimeout(timer);
         }
     }, [notification.isVisible]);
 
     const handleDeleteConfirmation = async () => {
+        startProcessing('deleteReport');
         try {
-            await onDeleteConfirmation(); // Await deletion
+            await onDeleteConfirmation();
+            refresh();
             setModalIsOpen(false);
             setNotification({
                 isVisible: true,
@@ -34,12 +40,13 @@ export function DeleteTableTemplate({ onDeleteConfirmation, onCancel }) {
                 isError: false,
             });
         } catch (error) {
-            console.error('Deletion failed:', error);
+            setProgressError(i18n.t('Failed to delete report template'));
             setNotification({
                 isVisible: true,
                 message: i18n.t('Failed to delete report template'),
                 isError: true,
             });
+            console.error('Deletion failed:', error);
         }
     };
 

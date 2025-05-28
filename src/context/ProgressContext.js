@@ -14,7 +14,7 @@ export function ProgressProvider({ children }) {
 
     const steps = {
         createReport: { weight: 10, label: i18n.t('Create Report') },
-        selectDataType: { weight: 20, label: i18n.t('Select Data Type') },
+        selectDataItem: { weight: 20, label: i18n.t('Select Data Item') },
         selectOrgUnit: { weight: 20, label: i18n.t('Select Organization Units') },
         selectPeriods: { weight: 20, label: i18n.t('Select Periods') },
         finalizeReport: { weight: 30, label: i18n.t('Finalize Report') },
@@ -88,8 +88,9 @@ export function GlobalProgressBar() {
     return (
         <div
             style={{
-                position: 'sticky',
+                position: 'fixed',
                 top: 0,
+                left: 0,
                 zIndex: 1000,
                 backgroundColor: '#fff',
                 padding: '8px 16px',
