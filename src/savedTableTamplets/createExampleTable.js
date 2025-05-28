@@ -24,7 +24,7 @@ export function CreateExampleTable({ onCreate }) {
             onClick={handleCreate}
             disabled={loading || error}
         >
-            {i18n.t('Create example table')}
+            {i18n.t('Create a sample report')}
         </Button>
     )
 }

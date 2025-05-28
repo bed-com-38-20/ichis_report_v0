@@ -1,5 +1,6 @@
 import css from 'styled-jsx/css'
 import { colors } from '@dhis2/ui'
+import { blue } from '@material-ui/core/colors'
 
 export default css`
     .main {
@@ -10,7 +11,7 @@ export default css`
         height: 1px;
         margin-top: 2rem;
         margin-bottom: 2rem;
-        background-color: ${colors.grey500};
+        background-color: ${blue};
     }
 
     ol {

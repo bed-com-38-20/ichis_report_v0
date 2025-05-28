@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import { DataStoreProvider } from '@dhis2/app-service-datastore';
 import { DataProvider } from '@dhis2/app-runtime';
 import './locales';
@@ -9,10 +9,9 @@ import classes from './App.module.css';
 import { TABLES } from './modules/paths';
 import { Tables, NoMatch } from './pages';
 import LandingPage from './pages/LandingPage';
-import HomePage from './pages/home/homePage';
 
 const appConfig = {
-  baseUrl: 'https://play.im.dhis2.org/stable-2-41-3-1',
+  baseUrl: 'https://play.im.dhis2.org/dev/',
   apiVersion: 37,
   pwaEnabled: false,
   headers: {
@@ -27,7 +26,7 @@ const AppInitializer = ({ children }) => {
   const [initialized, setInitialized] = useState(false);
   const [error, setError] = useState(null);
   const [showLanding, setShowLanding] = useState(true);
-  
+
   // All useEffect hooks called before any conditional returns
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -35,17 +34,17 @@ const AppInitializer = ({ children }) => {
     }, 2500); // Show landing screen for 2.5 seconds
     return () => clearTimeout(timer);
   }, []);
-  
+
   useEffect(() => {
     // Simulate initialization check if needed
     setInitialized(true);
   }, []);
-  
+
   // Conditional returns after all hooks
   if (showLanding) {
     return <LandingPage />;
   }
-  
+
   if (error) {
     return (
       <div className={classes.errorContainer}>
@@ -54,7 +53,7 @@ const AppInitializer = ({ children }) => {
       </div>
     );
   }
-  
+
   if (!initialized) {
     return (
       <div className={classes.loadingContainer}>
@@ -62,7 +61,7 @@ const AppInitializer = ({ children }) => {
       </div>
     );
   }
-  
+
   return children;
 };
 
@@ -81,9 +80,6 @@ const MyApp = () => (
           <div className={classes.container}>
             <main className={classes.right}>
               <Routes>
-                {/* Set HomePage as the default route */}
-                <Route path="/" element={<HomePage />} />
-                <Route path="/home" element={<HomePage />} />
                 <Route path={`${TABLES}/*`} element={<Tables />} />
                 <Route path="*" element={<NoMatch />} />
               </Routes>

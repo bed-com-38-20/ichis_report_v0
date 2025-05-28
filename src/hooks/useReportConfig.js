@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useDataQuery } from '@dhis2/app-runtime';
 
-// ✅ Move the query OUTSIDE the hook
+//  Move the query OUTSIDE the hook
 const metadataQuery = {
   orgUnits: {
     resource: 'organisationUnits',

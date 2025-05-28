@@ -113,7 +113,7 @@ export function GeneratedTable() {
         <div id="generated-table" className={`${classes.container} ${isDarkMode ? classes.darkMode : ''}`}>
             {/* Sidebar for Actions and Parameters */}
             <div className={classes.sidebar}>
-                <BackButton to={TABLES} text={i18n.t('Back to Saved Tables')} className={classes.backButton} />
+                <BackButton to={TABLES} text={i18n.t('Back to Saved Reports')} className={classes.backButton} />
                 <div className={classes.sidebarActions}>
                     <h3 className={classes.sidebarTitle}>{i18n.t('Actions')}</h3>
                     <div className={classes.actionButtons}>

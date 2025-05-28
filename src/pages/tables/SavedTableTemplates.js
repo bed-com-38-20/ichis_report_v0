@@ -42,7 +42,7 @@ export function SavedTableTemplates() {
     async function createDemo(exampleTable) {
         const { id } = await tableTemplateActions.add({
             ...exampleTable,
-            name: 'Demo Table',
+            name: 'Sample Practice Report',
         });
         navigate(getPath(EDIT_TABLE, id));
     }
@@ -60,7 +60,7 @@ export function SavedTableTemplates() {
             return (
                 <div className={classes.noTemplates}>
                     <p className={classes.noTemplatesText}>
-                        {i18n.t('No tables have been created yet.')}
+                        {i18n.t('No reports have been created yet. Start by creating a new report to get started.')}
                     </p>
                     <CreateExampleTable onCreate={createDemo} />
                 </div>
