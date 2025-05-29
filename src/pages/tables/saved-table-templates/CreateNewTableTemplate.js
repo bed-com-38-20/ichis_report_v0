@@ -15,17 +15,18 @@ export function CreateNewTableTemplate({ createNew }) {
     const [error, setError] = useState(null);
 
     async function onCreateNew(inputText) {
-        setModalOpen(false);
         startProcessing('createReport');
         setError(null);
 
         try {
             await createNew(inputText);
             updateProgress('createReport', 100); // 10% for report creation
+            setModalOpen(false); // Close after success
             navigate('/tables/data-item');
         } catch (error) {
             setProgressError(i18n.t('Failed to create report'));
             setError(i18n.t('Failed to create report: {{message}}', { message: error.message }));
+            setModalOpen(false); // Close on error
             console.error('Report creation failed:', error);
         }
     }

@@ -183,7 +183,7 @@ export function DataContentSelector({ cell, rowIdx, cellIdx }) {
                             onClose={toggleDataDialog}
                             onSave={onDataDialogSave}
                             initialValues={data?.item ? { ...data } : {}}
-                            navigate={navigate} // Pass navigate prop
+                            navigate={navigate}
                         />
                     )}
                 </DataEngine>

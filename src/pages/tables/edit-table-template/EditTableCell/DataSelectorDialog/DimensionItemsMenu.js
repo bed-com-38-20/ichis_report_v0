@@ -1,7 +1,8 @@
-import React, { useRef } from 'react'
+// src/D2App/pages/tables/edit-table-template/EditTableCell/DataSelectorDialog/DimensionItemsMenu.jsx
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
-import { Menu, MenuItem, colors } from '@dhis2/ui'
-import throttle from 'lodash/throttle'
+import { Menu, MenuItem, colors } from '@dhis2/ui';
+import throttle from 'lodash/throttle';
 
 export const DimensionItemsMenu = ({
     items,
@@ -9,15 +10,15 @@ export const DimensionItemsMenu = ({
     selectedItem,
     setSelectedItem,
 }) => {
-    const scrollRef = useRef()
+    const scrollRef = useRef();
 
     const onScroll = throttle(() => {
-        const node = scrollRef.current
-        if (!node) return
+        const node = scrollRef.current;
+        if (!node) return;
 
-        const bottom = node.scrollHeight - node.scrollTop === node.clientHeight
-        if (bottom) requestMoreItems()
-    }, 1000)
+        const bottom = node.scrollHeight - node.scrollTop === node.clientHeight;
+        if (bottom) requestMoreItems();
+    }, 1000);
 
     const queryResults = () => {
         return items.map(item => (
@@ -27,13 +28,14 @@ export const DimensionItemsMenu = ({
                 key={item.id}
                 active={item.id === selectedItem?.id}
                 onClick={() => setSelectedItem(item)}
+                role="menuitem" // Explicit role
             />
-        )) // TODO: handle selection on save
-    }
+        ));
+    };
 
     return (
         <div ref={scrollRef} onScroll={onScroll} className="container">
-            <Menu>{queryResults()}</Menu>
+            <Menu role="menu">{queryResults()}</Menu>
             <style jsx>{`
                 .container {
                     border: 1px solid ${colors.grey300};
@@ -42,8 +44,8 @@ export const DimensionItemsMenu = ({
                 }
             `}</style>
         </div>
-    )
-}
+    );
+};
 
 DimensionItemsMenu.propTypes = {
     items: PropTypes.arrayOf(
@@ -55,9 +57,9 @@ DimensionItemsMenu.propTypes = {
     setSelectedItem: PropTypes.func.isRequired,
     requestMoreItems: PropTypes.func,
     selectedItem: PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
+        id: PropTypes.string,
+        name: PropTypes.string,
     }),
-}
+};
 
-export default DimensionItemsMenu
+export default DimensionItemsMenu;

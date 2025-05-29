@@ -1,10 +1,10 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { SingleSelectField, SingleSelectOption } from '@dhis2/ui'
-
-import { Detail } from './Detail'
-import { dataTypes } from '../../../../../modules/dataTypes'
-import styles from './styles/Groups.style'
+// src/D2App/pages/tables/edit-table-template/EditTableCell/DataSelectorDialog/Groups.jsx
+import React from 'react';
+import PropTypes from 'prop-types';
+import { SingleSelectField, SingleSelectOption } from '@dhis2/ui';
+import { Detail } from './Detail';
+import { dataTypes } from '../../../../../modules/dataTypes';
+import styles from './styles/Groups.style';
 
 export const Groups = ({
     dataType,
@@ -14,14 +14,14 @@ export const Groups = ({
     onDetailChange,
     onGroupChange,
 }) => {
-    let optionItems = groups
+    let optionItems = groups;
 
     if (dataTypes[dataType].defaultGroup) {
-        const { id, getName } = dataTypes[dataType].defaultGroup
-        optionItems = [{ id, name: getName() }, ...optionItems]
+        const { id, getName } = dataTypes[dataType].defaultGroup;
+        optionItems = [{ id, name: getName() }, ...optionItems];
     }
 
-    const groupDetail = dataTypes[dataType].groupDetail
+    const groupDetail = dataTypes[dataType].groupDetail;
 
     return (
         <div className="container">
@@ -37,6 +37,7 @@ export const Groups = ({
                     }
                     onChange={ref => onGroupChange(ref.selected)}
                     dense
+                    inputProps={{ 'aria-label': dataTypes[dataType].getGroupLabel() }} // Add aria-label
                 >
                     {optionItems.map(item => (
                         <SingleSelectOption
@@ -51,8 +52,8 @@ export const Groups = ({
                 <Detail currentValue={detailValue} onChange={onDetailChange} />
             )}
         </div>
-    )
-}
+    );
+};
 
 Groups.propTypes = {
     dataType: PropTypes.string.isRequired,
@@ -61,6 +62,6 @@ Groups.propTypes = {
     groups: PropTypes.array.isRequired,
     onDetailChange: PropTypes.func.isRequired,
     onGroupChange: PropTypes.func.isRequired,
-}
+};
 
-export default Groups
+export default Groups;

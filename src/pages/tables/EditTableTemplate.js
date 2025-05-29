@@ -1,3 +1,4 @@
+// src/D2App/pages/tables/edit-table-template/EditTableTemplate.jsx
 import React, { useEffect, useState } from 'react';
 import {
     ButtonStrip,
@@ -27,7 +28,7 @@ import { TABLES, getPath, GENERATED_TABLE } from '../../modules/paths';
 import { useTableActions, useTableState } from '../../context/tableContext';
 import HelpButton from '../../components/HelpButton';
 import AutosaveStatus from './edit-table-template/AutosaveStatus';
-import classes from './DeleteTableTemplate.module.css'; // Reuse CSS from DeleteTableTemplate
+import classes from './DeleteTableTemplate.module.css';
 
 export function EditTableTemplate() {
     const params = useParams();
@@ -39,12 +40,10 @@ export function EditTableTemplate() {
         message: '',
     });
 
-    // Save table to datastore in response to changes
     useEffect(() => {
         dataStoreActions.update({ ...table });
     }, [table]);
 
-    // Auto-dismiss notification after 3 seconds
     useEffect(() => {
         if (notification.isVisible) {
             const timer = setTimeout(() => {
@@ -60,7 +59,7 @@ export function EditTableTemplate() {
             isVisible: true,
             message: i18n.t('report template deleted successfully'),
         });
-        setTimeout(() => navigate(TABLES), 500); // Delay navigation to show notification
+        setTimeout(() => navigate(TABLES), 500);
     }
 
     function onGenerate() {
@@ -172,7 +171,5 @@ export function EditTableTemplate() {
         </div>
     );
 }
-
-EditTableTemplate.propTypes = {};
 
 export default EditTableTemplate;

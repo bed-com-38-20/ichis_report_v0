@@ -1,4 +1,3 @@
-// src/D2App/pages/tables/edit-table-template/EditTableCell/DataSelectorDialog/DataSelectorDialog.jsx
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Modal, ModalTitle, ModalContent, ModalActions, Button, ButtonStrip } from '@dhis2/ui';
@@ -7,7 +6,6 @@ import i18n from '@dhis2/d2-i18n';
 import ProgressContext from '../../../../../context/ProgressContext';
 import { DataTypes, Groups, FilterField, DimensionItemsMenu } from './index';
 import { modal, modalContent } from './styles/DataSelectorDialog.module.css';
-
 import { ALL_ID, DEFAULT_DATATYPE_ID, dataTypes, defaultGroupId, defaultGroupDetail } from '../../../../../modules/dataTypes'
 import { fetchGroups, fetchAlternatives } from '../../../../../api/dimensions';
 
@@ -38,6 +36,7 @@ export class DataSelectorDialog extends Component {
         nextPage: null,
         filter: {},
         selectedItem: this.props.initialValues.item || null,
+        isSaving: false, // Added loading state
     };
 
     componentDidMount() {
@@ -134,6 +133,8 @@ export class DataSelectorDialog extends Component {
         const { startProcessing, updateProgress, setProgressError } = this.context;
         const { navigate, onClose, onSave } = this.props;
 
+        this.setState({ isSaving: true }); // Set loading state
+
         startProcessing('selectDataItem');
         try {
             await onSave({
@@ -145,13 +146,15 @@ export class DataSelectorDialog extends Component {
             updateProgress('selectDataItem', 100); // 20% for data item (30% total)
             onClose();
             if (typeof navigate === 'function') {
-                navigate('/tables/org-units'); // Navigate only if function
+                navigate('/tables/org-units');
             } else {
                 console.warn('navigate is not a function:', navigate);
             }
         } catch (error) {
             setProgressError(i18n.t('Failed to save data item'));
             console.error('Data save error:', error);
+        } finally {
+            this.setState({ isSaving: false }); // Clear loading state
         }
     };
 
@@ -192,8 +195,12 @@ export class DataSelectorDialog extends Component {
                 </ModalContent>
                 <ModalActions>
                     <ButtonStrip end>
-                        <Button onClick={this.props.onClose}>{i18n.t('Cancel')}</Button>
-                        <Button primary onClick={this.onSave}>{i18n.t('Save')}</Button>
+                        <Button onClick={this.props.onClose} disabled={this.state.isSaving}>
+                            {i18n.t('Cancel')}
+                        </Button>
+                        <Button primary onClick={this.onSave} disabled={this.state.isSaving}>
+                            {this.state.isSaving ? i18n.t('Saving...') : i18n.t('Save')}
+                        </Button>
                     </ButtonStrip>
                 </ModalActions>
             </Modal>
@@ -212,7 +219,7 @@ DataSelectorDialog.propTypes = {
     }),
     onClose: PropTypes.func,
     onSave: PropTypes.func,
-    navigate: PropTypes.func, // Not required to handle cases where not passed
+    navigate: PropTypes.func,
 };
 
 DataSelectorDialog.defaultProps = {

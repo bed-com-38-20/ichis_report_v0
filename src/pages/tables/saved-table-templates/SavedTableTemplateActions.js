@@ -1,13 +1,13 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Button, FlyoutMenu } from '@dhis2/ui'
-import i18n from '../../../locales'
+// src/D2App/pages/tables/saved-table-templates/SavedTableTemplateActions.jsx
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Button, FlyoutMenu } from '@dhis2/ui';
+import i18n from '../../../locales';
+import Icon from '../../../components/Icon';
+import { DeleteTableTemplate } from './DeleteTableTemplate';
+import PopoverButton from '../../../components/PopoverButton';
 
-import Icon from '../../../components/Icon'
-import { DeleteTableTemplate } from './DeleteTableTemplate'
-import PopoverButton from '../../../components/PopoverButton'
-
-export function SavedTableTemplateActions({ onGenerate, onEdit, onDelete }) {
+export function SavedTableTemplateActions({ onGenerate, onEdit, onDelete, refresh }) {
     return (
         <div>
             <Button
@@ -24,9 +24,10 @@ export function SavedTableTemplateActions({ onGenerate, onEdit, onDelete }) {
                     <FlyoutMenu>
                         <DeleteTableTemplate
                             onDeleteConfirmation={() => {
-                                onDelete()
-                                togglePopover()
+                                onDelete();
+                                togglePopover();
                             }}
+                            refresh={refresh} // Pass refresh
                         />
                     </FlyoutMenu>
                 )}
@@ -39,13 +40,14 @@ export function SavedTableTemplateActions({ onGenerate, onEdit, onDelete }) {
                 }
             `}</style>
         </div>
-    )
+    );
 }
 
 SavedTableTemplateActions.propTypes = {
     onDelete: PropTypes.func.isRequired,
     onEdit: PropTypes.func.isRequired,
     onGenerate: PropTypes.func.isRequired,
-}
+    refresh: PropTypes.func, // Add refresh prop
+};
 
-export default SavedTableTemplateActions
+export default SavedTableTemplateActions;

@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-05-28T23:18:04.401Z\n"
-"PO-Revision-Date: 2025-05-28T23:18:04.402Z\n"
+"POT-Creation-Date: 2025-05-29T00:22:32.748Z\n"
+"PO-Revision-Date: 2025-05-29T00:22:32.750Z\n"
 
 msgid "Back"
 msgstr "Back"
@@ -37,6 +37,9 @@ msgstr "Select Periods"
 
 msgid "Finalize Report"
 msgstr "Finalize Report"
+
+msgid "Delete Report"
+msgstr "Delete Report"
 
 msgid "Starting..."
 msgstr "Starting..."
@@ -231,6 +234,9 @@ msgstr "Configure highlighting intervals for this cell"
 
 msgid "Choose data for cell"
 msgstr "Choose data for cell"
+
+msgid "Saving..."
+msgstr "Saving..."
 
 msgid "Save"
 msgstr "Save"
@@ -584,11 +590,11 @@ msgstr "Report template deleted successfully"
 msgid "Failed to delete report template"
 msgstr "Failed to delete report template"
 
-msgid "Confirm delete"
-msgstr "Confirm delete"
+msgid "Confirm Deletion"
+msgstr "Confirm Deletion"
 
-msgid "Are you sure you want to delete this template?"
-msgstr "Are you sure you want to delete this template?"
+msgid "Are you sure you want to delete this report template?"
+msgstr "Are you sure you want to delete this report template?"
 
 msgid "report actions"
 msgstr "report actions"
@@ -607,6 +613,12 @@ msgstr "Create example table"
 
 msgid "Create new table template"
 msgstr "Create new table template"
+
+msgid "Confirm delete"
+msgstr "Confirm delete"
+
+msgid "Are you sure you want to delete this template?"
+msgstr "Are you sure you want to delete this template?"
 
 msgid "Table actions"
 msgstr "Table actions"

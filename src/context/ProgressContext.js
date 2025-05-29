@@ -18,17 +18,20 @@ export function ProgressProvider({ children }) {
         selectOrgUnit: { weight: 20, label: i18n.t('Select Organization Units') },
         selectPeriods: { weight: 20, label: i18n.t('Select Periods') },
         finalizeReport: { weight: 30, label: i18n.t('Finalize Report') },
+        deleteReport: { weight: 0, label: i18n.t('Delete Report') },
     };
 
     const updateProgress = (step, stepProgress = 100) => {
-        if (steps[step]) {
-            setProgress((prev) => {
-                const newProgress = prev + (steps[step].weight * stepProgress) / 100;
-                return Math.min(newProgress, 100);
-            });
-            setCurrentStep(step);
-            setIsProcessing(true);
+        if (!steps[step]) {
+            console.warn(`Invalid step: ${step}`);
+            return;
         }
+        setProgress((prev) => {
+            const newProgress = prev + (steps[step].weight * stepProgress) / 100;
+            return Math.min(newProgress, 100);
+        });
+        setCurrentStep(step);
+        setIsProcessing(true);
     };
 
     const resetProgress = () => {
@@ -39,6 +42,10 @@ export function ProgressProvider({ children }) {
     };
 
     const startProcessing = (step) => {
+        if (!steps[step]) {
+            console.warn(`Invalid step: ${step}`);
+            return;
+        }
         setIsProcessing(true);
         setError(null);
         setCurrentStep(step);
@@ -122,7 +129,7 @@ export function GlobalProgressBar() {
                     <p>
                         {i18n.t('Report progress: {{progress}}% (Step: {{step}})', {
                             progress: Math.round(progress),
-                            step: currentStep ? steps[currentStep].label : i18n.t('Starting...'),
+                            step: currentStep && steps[currentStep] ? steps[currentStep].label : i18n.t('Starting...'),
                         })}
                     </p>
                 </>
