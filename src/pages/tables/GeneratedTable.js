@@ -1,7 +1,6 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { Button, Card, Help, Switch, CircularLoader } from '@dhis2/ui';
 import i18n from '../../locales';
-import { useReactToPrint } from 'react-to-print';
 import { useNavigate, useParams } from 'react-router-dom';
 import BackButton from '../../components/BackButton';
 import Icon from '../../components/Icon';
@@ -29,8 +28,9 @@ export function GeneratedTable() {
     const { id } = useParams();
     const table = useTableState();
     const printRef = useRef();
-    const fileInputRef = useRef(); // Ref for hidden file input
+    const fileInputRef = useRef();
     const [isDarkMode, setIsDarkMode] = useState(false);
+    const [isPrinting, setIsPrinting] = useState(false);
     const [reportParams, setReportParams] = useState({
         selectedOrgUnits: [],
         selectedPeriods: [],
@@ -40,7 +40,7 @@ export function GeneratedTable() {
     const [showVisualizations, setShowVisualizations] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [animateInContent, setAnimateInContent] = useState(false);
-    const [logoUrl, setLogoUrl] = useState('https://via.placeholder.com/150x50?text=Logo'); // Default placeholder logo
+    const [logoUrl, setLogoUrl] = useState('https://via.placeholder.com/150x50?text=Logo');
 
     useEffect(() => {
         setTimeout(() => {
@@ -48,34 +48,91 @@ export function GeneratedTable() {
         }, 300);
     }, []);
 
-    const handlePrint = useReactToPrint({
-        content: () => printRef.current || null,
-        documentTitle: table.name || 'Table Report',
-        onBeforeGetContent: () => {
-            setIsLoading(true);
-            return new Promise((resolve) => setTimeout(resolve, 500));
-        },
-        onAfterPrint: () => setIsLoading(false),
-    });
+    const handlePrint = useCallback(() => {
+        if (!printRef.current) {
+            console.error("Nothing to print - ref not attached");
+            return;
+        }
+
+        setIsPrinting(true);
+
+        const printContent = printRef.current.cloneNode(true);
+
+        // Force image dimensions for print
+        const logos = printContent.querySelectorAll(`.${classes.logo}`);
+        logos.forEach(logo => {
+            logo.style.maxWidth = '200px';
+            logo.style.height = 'auto';
+        });
+
+        // Create a clone of the content to print
+        const contentClone = printRef.current.cloneNode(true);
+        contentClone.id = "print-content-clone";
+        contentClone.style.position = "absolute";
+        contentClone.style.left = "-9999px";
+        document.body.appendChild(contentClone);
+
+        // Create print window
+        const printWindow = window.open('', '_blank');
+        if (!printWindow) {
+            alert(i18n.t('Pop-up blocked. Please allow pop-ups to print.'));
+            setIsPrinting(false);
+            return;
+        }
+
+        printWindow.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>${table.name || i18n.t('Report')}</title>
+                <style>
+                    @page { size: auto; margin: 10mm; }
+                    body { font-family: Arial, sans-serif; }
+                    .print { width: 100%; }
+                    table { border-collapse: collapse; width: 100%; }
+                    th, td { border: 1px solid #ddd; padding: 8px; }
+                    th { background-color: #f2f2f2; }
+                </style>
+            </head>
+            <body>
+                <div class="print">
+                    ${contentClone.innerHTML}
+                </div>
+                <script>
+                    setTimeout(function() {
+                        window.print();
+                        window.close();
+                    }, 300);
+                </script>
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+
+        // Clean up
+        setTimeout(() => {
+            document.body.removeChild(contentClone);
+            setIsPrinting(false);
+        }, 1000);
+    }, []);
 
     const handleLogoUpload = (event) => {
         const file = event.target.files[0];
         if (file) {
-            // Validate file type (only images)
             if (!file.type.startsWith('image/')) {
                 alert(i18n.t('Please upload a valid image file (PNG, JPG, etc.).'));
                 return;
             }
             const reader = new FileReader();
             reader.onload = () => {
-                setLogoUrl(reader.result); // Set logo URL to base64 data URL
+                setLogoUrl(reader.result);
             };
             reader.readAsDataURL(file);
         }
     };
 
     const triggerFileInput = () => {
-        fileInputRef.current.click(); // Trigger hidden file input
+        fileInputRef.current.click();
     };
 
     const toggleReportParamsDialog = () => setReportParamsDialogOpen((state) => !state);
@@ -135,10 +192,10 @@ export function GeneratedTable() {
                             className={classes.actionButton}
                             primary
                             onClick={handlePrint}
-                            disabled={isPrintDisabled || isLoading}
+                            disabled={isPrintDisabled || isPrinting}
                         >
                             <Icon name="print" className={classes.buttonIcon} />
-                            {isLoading ? i18n.t('Preparing...') : i18n.t('Print')}
+                            {isPrinting ? i18n.t('Printing...') : i18n.t('Print')}
                         </Button>
                         <Button
                             className={classes.actionButton}
@@ -289,7 +346,7 @@ export function GeneratedTable() {
                 </Card>
             </div>
         </div>
-    ); 
+    );
 }
 
 export default GeneratedTable;

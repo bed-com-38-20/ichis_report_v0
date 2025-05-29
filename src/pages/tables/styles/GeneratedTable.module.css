@@ -379,7 +379,18 @@
         visibility: visible !important;
         width: 100%;
     }
+    .logo {
+        max-width: 200px !important;
+        height: auto !important;
+      }
 }
+
+@media print {
+    .logo {
+      max-width: 200px !important;
+      height: auto !important;
+    }
+  }
 
 /* Responsive Design */
 @media (max-width: 768px) {
