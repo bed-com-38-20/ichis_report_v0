@@ -301,7 +301,7 @@ export function GeneratedTable() {
 
                     {(reportParams.selectedOrgUnits.length > 0 || reportParams.selectedPeriods.length > 0) && (
                         <div className={classes.parametersSection}>
-                            {/* <h2 className={classes.parametersTitle}>{i18n.t('Report Parameters')}</h2> */}
+                            <h2 className={classes.parametersTitle}>{i18n.t('Report Parameters')}</h2>
                             {/* <div className={classes.parametersGrid}>
                                 {reportParams.selectedOrgUnits.length > 0 && (
                                     <div className={classes.parameterItem}>

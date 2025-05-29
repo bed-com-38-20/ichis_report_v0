@@ -55,7 +55,7 @@ export function SavedTableTemplates() {
         try {
             const { id } = await tableTemplateActions.add({
                 ...exampleTable,
-                name: 'Demo Table',
+                name: 'Demo Report',
                 id: Date.now().toString(),
             });
             refreshTemplates();
@@ -78,7 +78,7 @@ export function SavedTableTemplates() {
             return (
                 <div className={classes.noTemplates}>
                     <p className={classes.noTemplatesText}>
-                        {i18n.t('No tables have been created yet.')}
+                        {i18n.t('No reports have been created yet.')}
                     </p>
                     <CreateExampleTable onCreate={createDemo} />
                 </div>

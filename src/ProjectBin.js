@@ -263,8 +263,8 @@ init({
 });
 
 const DEFAULT_REPORT = {
-  title: "ICHIS Demo (ICT Projects)",
-  subtitle: "Stock Management Report",
+  title: "DHIS2 Configurable Data Report Generator",
+  subtitle: "Management Report",
   logo: null,
   date: new Date().toLocaleDateString(),
   facility: "Health Facility Name",
