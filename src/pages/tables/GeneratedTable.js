@@ -58,11 +58,17 @@ export function GeneratedTable() {
 
         const printContent = printRef.current.cloneNode(true);
 
-        // Force image dimensions for print
+        // Ensure logo is visible in print by setting explicit attributes
         const logos = printContent.querySelectorAll(`.${classes.logo}`);
         logos.forEach(logo => {
             logo.style.maxWidth = '200px';
             logo.style.height = 'auto';
+            logo.style.display = 'block';
+            logo.style.position = 'static'; // Override absolute positioning for print
+            // Ensure the src attribute is preserved for base64 or external URLs
+            if (logo.src) {
+                logo.setAttribute('src', logo.src);
+            }
         });
 
         // Create a clone of the content to print
@@ -72,10 +78,21 @@ export function GeneratedTable() {
         contentClone.style.left = "-9999px";
         document.body.appendChild(contentClone);
 
+            // Ensure logo is visible in print
+    const logo = contentClone.querySelector(`.${classes.logo}`);
+    if (logo) {
+        logo.style.maxWidth = '200px';
+        logo.style.height = 'auto';
+        logo.style.display = 'block';
+        logo.style.position = 'static';
+        logo.style.visibility = 'visible';
+    }
+
         // Create print window
         const printWindow = window.open('', '_blank');
         if (!printWindow) {
             alert(i18n.t('Pop-up blocked. Please allow pop-ups to print.'));
+            document.body.removeChild(contentClone);
             setIsPrinting(false);
             return;
         }
@@ -92,6 +109,16 @@ export function GeneratedTable() {
                     table { border-collapse: collapse; width: 100%; }
                     th, td { border: 1px solid #ddd; padding: 8px; }
                     th { background-color: #f2f2f2; }
+                    .logo-container { 
+                        margin-bottom: 20px; 
+                        text-align: left; 
+                    }
+                    img.logo { 
+                        max-width: 200px; 
+                        height: auto; 
+                        display: block; 
+                        position: static; 
+                    }
                 </style>
             </head>
             <body>
@@ -176,13 +203,16 @@ export function GeneratedTable() {
                     <div className={classes.actionButtons}>
                         <Button
                             className={classes.actionButton}
+                            primary
                             onClick={toggleReportParamsDialog}
                         >
                             <Icon name="settings" className={classes.buttonIcon} />
+                            
                             {i18n.t('Parameters')}
                         </Button>
                         <Button
                             className={classes.actionButton}
+                            primary
                             onClick={() => navigate(getPath(EDIT_TABLE, id))}
                         >
                             <Icon name="table_chart" className={classes.buttonIcon} />
@@ -199,6 +229,7 @@ export function GeneratedTable() {
                         </Button>
                         <Button
                             className={classes.actionButton}
+                            primary
                             onClick={triggerFileInput}
                         >
                             <Icon name="image" className={classes.buttonIcon} />
@@ -237,11 +268,18 @@ export function GeneratedTable() {
 
                 <Card className={classes.reportCard}>
                     <div className={classes.header}>
-                        <img
-                            src={logoUrl}
-                            alt="Report Logo"
-                            className={classes.logo}
-                        />
+                        <div className={`${classes.logoContainer} printableArea`}>
+                            <img
+                                src={logoUrl}
+                                alt="Report Logo"
+                                className={classes.logo}
+                                onLoad={() => console.log('Logo loaded')}
+                                onError={(e) => {
+                                    console.error('Logo failed to load', e);
+                                    e.target.style.display = 'none';
+                                }}
+                            />
+                        </div>
                         <h1 className={classes.title}>{table.name || i18n.t('Report')}</h1>
                         {table.description && (
                             <span className={classes.description}>{table.description}</span>
@@ -263,8 +301,8 @@ export function GeneratedTable() {
 
                     {(reportParams.selectedOrgUnits.length > 0 || reportParams.selectedPeriods.length > 0) && (
                         <div className={classes.parametersSection}>
-                            <h2 className={classes.parametersTitle}>{i18n.t('Report Parameters')}</h2>
-                            <div className={classes.parametersGrid}>
+                            {/* <h2 className={classes.parametersTitle}>{i18n.t('Report Parameters')}</h2> */}
+                            {/* <div className={classes.parametersGrid}>
                                 {reportParams.selectedOrgUnits.length > 0 && (
                                     <div className={classes.parameterItem}>
                                         <div className={classes.parameterHeader}>
@@ -282,11 +320,11 @@ export function GeneratedTable() {
                                 )}
                                 {reportParams.selectedPeriods.length > 0 && (
                                     <div className={classes.parameterItem}>
-                                        <div className={classes.parameterHeader}>
+                                        {/* <div className={classes.parameterHeader}>
                                             <Icon name="calendar_today" className={classes.parameterIcon} />
                                             <span>{i18n.t('Periods')}</span>
-                                        </div>
-                                        <div className={classes.parameterTags}>
+                                        </div> */}
+                                        {/* <div className={classes.parameterTags}>
                                             {reportParams.selectedPeriods.map((period, index) => (
                                                 <span key={index} className={classes.tag}>
                                                     {period.displayName}
@@ -295,7 +333,7 @@ export function GeneratedTable() {
                                         </div>
                                     </div>
                                 )}
-                            </div>
+                            </div> */} 
                             <Switch
                                 checked={showVisualizations}
                                 onChange={() => setShowVisualizations(!showVisualizations)}

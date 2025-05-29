@@ -1,4 +1,3 @@
-/* GeneratedTable.module.css */
 .container {
     display: grid;
     grid-template-columns: 280px 1fr;
@@ -372,26 +371,7 @@
     width: 100%;
 }
 
-/* Ensure printableArea is not hidden during print */
-@media print {
-    .printableArea {
-        display: block !important;
-        visibility: visible !important;
-        width: 100%;
-    }
-    .logo {
-        max-width: 200px !important;
-        height: auto !important;
-      }
-}
-
-@media print {
-    .logo {
-      max-width: 200px !important;
-      height: auto !important;
-    }
-  }
-
+ 
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {
@@ -422,5 +402,46 @@
     .description {
         font-size: 13px;
         max-width: 90%;
+    }
+}
+
+.logoContainer {
+    margin-bottom: 20px;
+    text-align: left;
+}
+ 
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    
+    .printableArea, .printableArea * {
+        visibility: visible;
+    }
+    
+    .printableArea {
+        position: static;
+        width: 100%;
+        height: auto;
+    }
+    
+    .logoContainer {
+        display: block !important;
+        text-align: left !important;
+        margin-bottom: 20px !important;
+        position: static !important;
+    }
+    
+    .logo {
+        max-width: 200px !important;
+        height: auto !important;
+        position: static !important;
+        display: block !important;
+        visibility: visible !important;
+    }
+    
+    /* Hide non-essential elements */
+    .no-print, .sidebar, .actionButtons {
+        display: none !important;
     }
 }
