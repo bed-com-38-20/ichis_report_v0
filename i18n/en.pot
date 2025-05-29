@@ -494,12 +494,6 @@ msgstr ""
 "No data found for the selected parameters. Try changing the period or "
 "organization unit."
 
-msgid "Download"
-msgstr "Download"
-
-msgid "Fullscreen"
-msgstr "Fullscreen"
-
 msgid "Period"
 msgstr "Period"
 
@@ -607,6 +601,12 @@ msgstr "Are you sure you want to delete this report template?"
 
 msgid "report actions"
 msgstr "report actions"
+
+msgid "No tables have been created yet."
+msgstr "No tables have been created yet."
+
+msgid "Table template deleted successfully"
+msgstr "Table template deleted successfully"
 
 msgid "No tables have been created yet."
 msgstr "No tables have been created yet."
