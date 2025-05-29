@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-05-28T22:46:42.369Z\n"
-"PO-Revision-Date: 2025-05-28T22:46:42.370Z\n"
+"POT-Creation-Date: 2025-05-29T09:43:16.963Z\n"
+"PO-Revision-Date: 2025-05-29T09:43:16.964Z\n"
 
 msgid "Back"
 msgstr "Back"
@@ -17,8 +17,35 @@ msgstr "Cancel"
 msgid "Help"
 msgstr "Help"
 
+msgid "Submitting..."
+msgstr "Submitting..."
+
 msgid "Menu"
 msgstr "Menu"
+
+msgid "Error"
+msgstr "Error"
+
+msgid "Create Report"
+msgstr "Create Report"
+
+msgid "Select Data Item"
+msgstr "Select Data Item"
+
+msgid "Select Organization Units"
+msgstr "Select Organization Units"
+
+msgid "Select Periods"
+msgstr "Select Periods"
+
+msgid "Finalize Report"
+msgstr "Finalize Report"
+
+msgid "Delete Report"
+msgstr "Delete Report"
+
+msgid "Starting..."
+msgstr "Starting..."
 
 msgid "Data"
 msgstr "Data"
@@ -89,17 +116,17 @@ msgstr "No data items found in instance. Add some data items to see example colu
 msgid "Home"
 msgstr "Home"
 
-msgid "Configurable reports"
-msgstr "Configurable reports"
+msgid "Custom tables"
+msgstr "Custom tables"
 
-msgid "reports"
-msgstr "reports"
+msgid "Custom reports"
+msgstr "Custom reports"
 
 msgid "Menu header"
 msgstr "Menu header"
 
-msgid "Generate Report"
-msgstr "Generate Report"
+msgid "Generate Table"
+msgstr "Generate Table"
 
 msgid "View & Edit"
 msgstr "View & Edit"
@@ -107,42 +134,37 @@ msgstr "View & Edit"
 msgid "Delete"
 msgstr "Delete"
 
-msgid "Failed to connect to the server. Please check your connection."
-msgstr "Failed to connect to the server. Please check your connection."
-
-msgid "Log in"
-msgstr "Log in"
-
-msgid "Login Error"
-msgstr "Login Error"
-
-msgid "Username"
-msgstr "Username"
-
-msgid "Enter your username"
-msgstr "Enter your username"
-
-msgid "Password"
-msgstr "Password"
-
-msgid "Enter your password"
-msgstr "Enter your password"
-
-msgid "Logging in..."
-msgstr "Logging in..."
-
-msgid "Don't have an account?"
-msgstr "Don't have an account?"
-
-msgid "Create an account"
-msgstr "Create an account"
+msgid "Custom Tables"
+msgstr "Custom Tables"
 
 msgid ""
-"Log in with admin / district and feel free to do changes as system is reset "
-"every night."
+"Create, view, and edit custom tables. Text and data contents of the table "
+"can be chosen on a cell-by-cell basis."
 msgstr ""
-"Log in with admin / district and feel free to do changes as system is reset "
-"every night."
+"Create, view, and edit custom tables. Text and data contents of the table "
+"can be chosen on a cell-by-cell basis."
+
+msgid "View Tables"
+msgstr "View Tables"
+
+msgid "Custom Reports"
+msgstr "Custom Reports"
+
+msgid ""
+"Create, view, and edit custom reports. Add text, images, and DHIS assets to "
+"a printable and downloadable report document."
+msgstr ""
+"Create, view, and edit custom reports. Add text, images, and DHIS assets to "
+"a printable and downloadable report document."
+
+msgid "View Reports"
+msgstr "View Reports"
+
+msgid "View instructions for using the Custom Tables and Custom Reports tools."
+msgstr "View instructions for using the Custom Tables and Custom Reports tools."
+
+msgid "View Instructions"
+msgstr "View Instructions"
 
 msgid "Add {{type}}"
 msgstr "Add {{type}}"
@@ -156,14 +178,23 @@ msgstr "{{type}} Name"
 msgid "Enter a name"
 msgstr "Enter a name"
 
-msgid "Relax!!! Changes are saved automatically. Last saved at {{time}}."
-msgstr "Relax!!! Changes are saved automatically. Last saved at {{time}}."
+msgid "Changes are saved automatically. Last saved at {{time}}."
+msgstr "Changes are saved automatically. Last saved at {{time}}."
 
 msgid "Content type"
 msgstr "Content type"
 
-msgid "Same as report"
-msgstr "Same as report"
+msgid "Failed to save data item"
+msgstr "Failed to save data item"
+
+msgid "Failed to save organization units"
+msgstr "Failed to save organization units"
+
+msgid "Failed to save periods"
+msgstr "Failed to save periods"
+
+msgid "Same as table"
+msgstr "Same as table"
 
 msgid "Same as column"
 msgstr "Same as column"
@@ -207,11 +238,11 @@ msgstr "Configure highlighting intervals for this cell"
 msgid "Choose data for cell"
 msgstr "Choose data for cell"
 
-msgid "Cancel and Exit"
-msgstr "Cancel and Exit"
+msgid "Saving..."
+msgstr "Saving..."
 
-msgid "Confirm and Save"
-msgstr "Confirm and Save"
+msgid "Save"
+msgstr "Save"
 
 msgid "Data Type"
 msgstr "Data Type"
@@ -227,9 +258,6 @@ msgstr "Detail"
 
 msgid "Search"
 msgstr "Search"
-
-msgid "Save"
-msgstr "Save"
 
 msgid "Static Text"
 msgstr "Static Text"
@@ -249,23 +277,14 @@ msgstr "Enter text"
 msgid "Enter static text for cell"
 msgstr "Enter static text for cell"
 
-msgid "Template successfully deleted, Go back to saved reports."
-msgstr "Template successfully deleted, Go back to saved reports."
+msgid "Generate Report"
+msgstr "Generate Report"
 
-msgid "An error occurred during deletion."
-msgstr "An error occurred during deletion."
+msgid "Really delete this template?"
+msgstr "Really delete this template?"
 
-msgid "Success"
-msgstr "Success"
-
-msgid "Error"
-msgstr "Error"
-
-msgid "Do you really want to delete this template?"
-msgstr "Do you really want to delete this template?"
-
-msgid "Confirm report deletion"
-msgstr "Confirm report deletion"
+msgid "Confirm deletion"
+msgstr "Confirm deletion"
 
 msgid "Lower bounds{{colon}} {{-intervalString}}"
 msgstr "Lower bounds{{colon}} {{-intervalString}}"
@@ -303,11 +322,11 @@ msgstr "Color"
 msgid "Reset"
 msgstr "Reset"
 
-msgid "Report name"
-msgstr "Report name"
+msgid "Table name"
+msgstr "Table name"
 
-msgid "Rename the Report"
-msgstr "Rename the Report"
+msgid "Rename table"
+msgstr "Rename table"
 
 msgid "Move row up"
 msgstr "Move row up"
@@ -348,9 +367,6 @@ msgstr "Select organisation unit(s) for {{name}}"
 msgid "Do you want to delete this {{name}}?"
 msgstr "Do you want to delete this {{name}}?"
 
-msgid "Confirm deletion"
-msgstr "Confirm deletion"
-
 msgid "Edit {{ name }}"
 msgstr "Edit {{ name }}"
 
@@ -378,6 +394,15 @@ msgstr "Back to Saved Reports"
 
 msgid "Edit Report"
 msgstr "Edit Report"
+
+msgid "Success"
+msgstr "Success"
+
+msgid "Failed to finalize report"
+msgstr "Failed to finalize report"
+
+msgid "Review and finalize your report template."
+msgstr "Review and finalize your report template."
 
 msgid "No data items available"
 msgstr "No data items available"
@@ -499,6 +524,9 @@ msgstr "Please upload a valid image file (PNG, JPG, etc.)."
 msgid "One or more periods are required to query data for this table."
 msgstr "One or more periods are required to query data for this table."
 
+msgid "Back to Saved Tables"
+msgstr "Back to Saved Tables"
+
 msgid "Actions"
 msgstr "Actions"
 
@@ -550,42 +578,53 @@ msgstr "Tip - hover the mouse over a data cell to see its information."
 msgid "Create sample report"
 msgstr "Create sample report"
 
-msgid "Create new report"
-msgstr "Create new report"
+msgid "Failed to create report"
+msgstr "Failed to create report"
 
-msgid "Start building your report from scratch"
-msgstr "Start building your report from scratch"
+msgid "Create new"
+msgstr "Create new"
 
 msgid "Create new report template"
 msgstr "Create new report template"
 
+msgid "report name"
+msgstr "report name"
+
 msgid "Create"
 msgstr "Create"
 
-msgid "Are you sure you want to delete this template?"
-msgstr "Are you sure you want to delete this template?"
+msgid "Report template deleted successfully"
+msgstr "Report template deleted successfully"
 
-msgid "Report actions"
-msgstr "Report actions"
+msgid "Failed to delete report template"
+msgstr "Failed to delete report template"
 
-msgid "Table template deleted successfully"
-msgstr "Table template deleted successfully"
+msgid "Confirm Deletion"
+msgstr "Confirm Deletion"
 
-msgid ""
-"No reports have been created yet. Start by creating a new report to get "
-"started."
-msgstr ""
-"No reports have been created yet. Start by creating a new report to get "
-"started."
+msgid "Are you sure you want to delete this report template?"
+msgstr "Are you sure you want to delete this report template?"
+
+msgid "report actions"
+msgstr "report actions"
+
+msgid "No tables have been created yet."
+msgstr "No tables have been created yet."
 
 msgid "Saved Reports"
 msgstr "Saved Reports"
 
-msgid "Create a sample report"
-msgstr "Create a sample report"
+msgid "Create example table"
+msgstr "Create example table"
 
-msgid "Create new"
-msgstr "Create new"
+msgid "Create new table template"
+msgstr "Create new table template"
+
+msgid "Confirm delete"
+msgstr "Confirm delete"
+
+msgid "Are you sure you want to delete this template?"
+msgstr "Are you sure you want to delete this template?"
 
 msgid "Table actions"
 msgstr "Table actions"

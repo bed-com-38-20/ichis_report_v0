@@ -1,3 +1,4 @@
+// src/D2App/pages/tables/SavedTableTemplates.jsx
 import React, { useState, useEffect } from 'react';
 import { Card, NoticeBox } from '@dhis2/ui';
 import i18n from '../../locales';
@@ -9,7 +10,7 @@ import {
 } from './saved-table-templates';
 import { defaultTable } from '../../modules/defaultTable';
 import classes from './SavedTableTemplates.module.css';
-import notificationClasses from './DeleteTableTemplate.module.css'; // Reuse notification CSS
+import notificationClasses from './DeleteTableTemplate.module.css';
 import { EDIT_TABLE, GENERATED_TABLE, getPath } from '../../modules/paths';
 import HelpButton from '../../components/HelpButton';
 import { CreateExampleTable } from './saved-table-templates/CreateExampleTable';
@@ -23,8 +24,14 @@ export function SavedTableTemplates() {
         isVisible: false,
         message: '',
     });
+    const [refreshKey, setRefreshKey] = useState(0);
 
-    // Auto-dismiss notification after 3 seconds
+    // Manual refresh by updating refreshKey
+    const refreshTemplates = () => {
+        setRefreshKey(prev => prev + 1);
+    };
+
+    // Auto-dismiss notification
     useEffect(() => {
         if (notification.isVisible) {
             const timer = setTimeout(() => {
@@ -35,24 +42,35 @@ export function SavedTableTemplates() {
     }, [notification.isVisible]);
 
     async function createNew(name) {
-        const { id } = await tableTemplateActions.add({ ...defaultTable, name });
-        navigate(getPath(EDIT_TABLE, id));
+        try {
+            const { id } = await tableTemplateActions.add({ ...defaultTable, name, id: Date.now().toString() });
+            refreshTemplates();
+            navigate(getPath(EDIT_TABLE, id));
+        } catch (err) {
+            throw new Error(`Creation failed: ${err.message}`);
+        }
     }
 
     async function createDemo(exampleTable) {
-        const { id } = await tableTemplateActions.add({
-            ...exampleTable,
-            name: 'Sample Practice Report',
-        });
-        navigate(getPath(EDIT_TABLE, id));
+        try {
+            const { id } = await tableTemplateActions.add({
+                ...exampleTable,
+                name: 'Demo Table',
+                id: Date.now().toString(),
+            });
+            refreshTemplates();
+            navigate(getPath(EDIT_TABLE, id));
+        } catch (err) {
+            throw new Error(`Creation failed: ${err.message}`);
+        }
     }
 
     async function handleDelete(id) {
-        await tableTemplateActions.remove(id);
-        setNotification({
-            isVisible: true,
-            message: i18n.t('Table template deleted successfully'),
-        });
+        try {
+            await tableTemplateActions.remove(id);
+        } catch (err) {
+            throw new Error(`Deletion failed: ${err.message}`);
+        }
     }
 
     function renderTemplates() {
@@ -60,7 +78,7 @@ export function SavedTableTemplates() {
             return (
                 <div className={classes.noTemplates}>
                     <p className={classes.noTemplatesText}>
-                        {i18n.t('No reports have been created yet. Start by creating a new report to get started.')}
+                        {i18n.t('No tables have been created yet.')}
                     </p>
                     <CreateExampleTable onCreate={createDemo} />
                 </div>
@@ -81,13 +99,10 @@ export function SavedTableTemplates() {
                                 onClick={e => e.stopPropagation()}
                             >
                                 <SavedTableTemplateActions
-                                    onGenerate={() =>
-                                        navigate(getPath(GENERATED_TABLE, template.id))
-                                    }
-                                    onEdit={() =>
-                                        navigate(getPath(EDIT_TABLE, template.id))
-                                    }
+                                    onGenerate={() => navigate(getPath(GENERATED_TABLE, template.id))}
+                                    onEdit={() => navigate(getPath(EDIT_TABLE, template.id))}
                                     onDelete={() => handleDelete(template.id)}
+                                    refresh={refreshTemplates}
                                 />
                             </div>
                         </div>
@@ -111,7 +126,7 @@ export function SavedTableTemplates() {
             </main>
             {notification.isVisible && (
                 <div className={notificationClasses.notification}>
-                    <NoticeBox title={i18n.t('Success')}>
+                    <NoticeBox title={i18n.t(notification.message.includes('Failed') ? 'Error' : 'Success')}>
                         {notification.message}
                     </NoticeBox>
                 </div>
@@ -119,7 +134,5 @@ export function SavedTableTemplates() {
         </div>
     );
 }
-
-SavedTableTemplates.propTypes = {};
 
 export default SavedTableTemplates;

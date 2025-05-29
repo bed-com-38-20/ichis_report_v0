@@ -1,3 +1,4 @@
+// src/D2App/pages/tables/edit-table-template/EditTableTemplate.jsx
 import React, { useEffect, useState } from 'react';
 import {
     ButtonStrip,
@@ -9,6 +10,7 @@ import {
     TableBody,
     TableRow,
     NoticeBox,
+    Button,
 } from '@dhis2/ui';
 import { useParams, useNavigate } from 'react-router-dom';
 import styles from './styles/EditTableTemplate.style';
@@ -27,24 +29,26 @@ import { TABLES, getPath, GENERATED_TABLE } from '../../modules/paths';
 import { useTableActions, useTableState } from '../../context/tableContext';
 import HelpButton from '../../components/HelpButton';
 import AutosaveStatus from './edit-table-template/AutosaveStatus';
-import classes from './DeleteTableTemplate.module.css'; // Reuse CSS from DeleteTableTemplate
+import classes from './DeleteTableTemplate.module.css';
+import { FinalizeReport } from './FinalizeReport';
+import { useProgress } from '../../context/ProgressContext';
 
 export function EditTableTemplate() {
     const params = useParams();
     const table = useTableState();
     const dataStoreActions = useTableActions();
     const navigate = useNavigate();
+    const { updateProgress } = useProgress();
     const [notification, setNotification] = useState({
         isVisible: false,
         message: '',
     });
+    const [finalizeModalOpen, setFinalizeModalOpen] = useState(false);
 
-    // Save table to datastore in response to changes
     useEffect(() => {
         dataStoreActions.update({ ...table });
     }, [table]);
 
-    // Auto-dismiss notification after 3 seconds
     useEffect(() => {
         if (notification.isVisible) {
             const timer = setTimeout(() => {
@@ -60,7 +64,7 @@ export function EditTableTemplate() {
             isVisible: true,
             message: i18n.t('report template deleted successfully'),
         });
-        setTimeout(() => navigate(TABLES), 500); // Delay navigation to show notification
+        setTimeout(() => navigate(TABLES), 500);
     }
 
     function onGenerate() {
@@ -69,6 +73,10 @@ export function EditTableTemplate() {
 
     function renameTable(name) {
         dataStoreActions.update({ name });
+    }
+
+    function onFinalize() {
+        setFinalizeModalOpen(true);
     }
 
     function tableColumns() {
@@ -148,6 +156,9 @@ export function EditTableTemplate() {
                 <ButtonStrip end>
                     <AddTableDimension type="Row" />
                     <AddTableDimension type="Column" />
+                    <Button primary onClick={onFinalize} disabled={!table.rows[0]?.cells[0]?.data?.periods?.length}>
+                        {i18n.t('Finalize Report')}
+                    </Button>
                 </ButtonStrip>
             </section>
             <section>
@@ -168,11 +179,12 @@ export function EditTableTemplate() {
                     </NoticeBox>
                 </div>
             )}
+            {finalizeModalOpen && (
+                <FinalizeReport onClose={() => setFinalizeModalOpen(false)} />
+            )}
             <style jsx>{styles}</style>
         </div>
     );
 }
-
-EditTableTemplate.propTypes = {};
 
 export default EditTableTemplate;
