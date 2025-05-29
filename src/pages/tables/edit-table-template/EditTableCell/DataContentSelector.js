@@ -10,7 +10,6 @@ import SelectorFrame from '../SelectorFrame';
 import { useTableDispatch, useTableState } from '../../../../context/tableContext';
 import { getIntervalString, HighlightingEditorDialog } from '../HighlightingEditor';
 import { useProgress } from '../../../../context/ProgressContext';
-import { useNavigate } from 'react-router-dom';
 
 function getSelectedNames(arr) {
     return arr.map((item) => item.name).join(', ');
@@ -20,7 +19,6 @@ export function DataContentSelector({ cell, rowIdx, cellIdx }) {
     const table = useTableState();
     const dispatch = useTableDispatch();
     const { startProcessing, updateProgress, setProgressError } = useProgress();
-    const navigate = useNavigate();
     const [dataDialogOpen, setDataDialogOpen] = useState(false);
     const [orgUnitDialogOpen, setOrgUnitDialogOpen] = useState(false);
     const [periodDialogOpen, setPeriodDialogOpen] = useState(false);
@@ -43,8 +41,9 @@ export function DataContentSelector({ cell, rowIdx, cellIdx }) {
                     cellIdx,
                 },
             });
-            updateProgress('selectDataItem', 100); // 20% for data item (30% total)
-            navigate('/tables/org-units');
+            updateProgress('selectDataItem', 100); // 20% (30% total)
+            toggleDataDialog(); // Close dialog
+            toggleOrgUnitDialog(); // Open org unit dialog
         } catch (error) {
             setProgressError(i18n.t('Failed to save data item'));
             console.error('Data save error:', error);
@@ -62,8 +61,9 @@ export function DataContentSelector({ cell, rowIdx, cellIdx }) {
                     cellIdx,
                 },
             });
-            updateProgress('selectOrgUnit', 100); // 20% for org units (50% total)
-            navigate('/tables/periods');
+            updateProgress('selectOrgUnit', 100); // 20% (50% total)
+            toggleOrgUnitDialog(); // Close dialog
+            togglePeriodDialog(); // Open period dialog
         } catch (error) {
             setProgressError(i18n.t('Failed to save organization units'));
             console.error('Org unit save error:', error);
@@ -81,8 +81,9 @@ export function DataContentSelector({ cell, rowIdx, cellIdx }) {
                     cellIdx,
                 },
             });
-            updateProgress('selectPeriods', 100); // 20% for periods (70% total)
-            navigate('/tables/finalize');
+            updateProgress('selectPeriods', 100); // 20% (70% total)
+            togglePeriodDialog(); // Close dialog
+            // Finalization handled in EditTableTemplate
         } catch (error) {
             setProgressError(i18n.t('Failed to save periods'));
             console.error('Period save error:', error);
@@ -183,7 +184,6 @@ export function DataContentSelector({ cell, rowIdx, cellIdx }) {
                             onClose={toggleDataDialog}
                             onSave={onDataDialogSave}
                             initialValues={data?.item ? { ...data } : {}}
-                            navigate={navigate}
                         />
                     )}
                 </DataEngine>

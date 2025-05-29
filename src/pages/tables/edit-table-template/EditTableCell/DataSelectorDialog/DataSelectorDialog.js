@@ -1,3 +1,4 @@
+// src/D2App/pages/tables/edit-table-template/EditTableCell/DataSelectorDialog/DataSelectorDialog.jsx
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Modal, ModalTitle, ModalContent, ModalActions, Button, ButtonStrip } from '@dhis2/ui';
@@ -6,7 +7,7 @@ import i18n from '@dhis2/d2-i18n';
 import ProgressContext from '../../../../../context/ProgressContext';
 import { DataTypes, Groups, FilterField, DimensionItemsMenu } from './index';
 import { modal, modalContent } from './styles/DataSelectorDialog.module.css';
-import { ALL_ID, DEFAULT_DATATYPE_ID, dataTypes, defaultGroupId, defaultGroupDetail } from '../../../../../modules/dataTypes'
+import { ALL_ID, DEFAULT_DATATYPE_ID, dataTypes, defaultGroupId, defaultGroupDetail } from '../../../../../modules/dataTypes';
 import { fetchGroups, fetchAlternatives } from '../../../../../api/dimensions';
 
 const FIRST_PAGE = 1;
@@ -36,7 +37,7 @@ export class DataSelectorDialog extends Component {
         nextPage: null,
         filter: {},
         selectedItem: this.props.initialValues.item || null,
-        isSaving: false, // Added loading state
+        isSaving: false,
     };
 
     componentDidMount() {
@@ -131,9 +132,9 @@ export class DataSelectorDialog extends Component {
 
     onSave = async () => {
         const { startProcessing, updateProgress, setProgressError } = this.context;
-        const { navigate, onClose, onSave } = this.props;
+        const { onClose, onSave } = this.props;
 
-        this.setState({ isSaving: true }); // Set loading state
+        this.setState({ isSaving: true });
 
         startProcessing('selectDataItem');
         try {
@@ -143,18 +144,13 @@ export class DataSelectorDialog extends Component {
                 groupId: this.state.groupId,
                 groupDetail: this.state.groupDetail,
             });
-            updateProgress('selectDataItem', 100); // 20% for data item (30% total)
+            updateProgress('selectDataItem', 100); // 20% (30% total)
             onClose();
-            if (typeof navigate === 'function') {
-                navigate('/tables/org-units');
-            } else {
-                console.warn('navigate is not a function:', navigate);
-            }
         } catch (error) {
             setProgressError(i18n.t('Failed to save data item'));
             console.error('Data save error:', error);
         } finally {
-            this.setState({ isSaving: false }); // Clear loading state
+            this.setState({ isSaving: false });
         }
     };
 

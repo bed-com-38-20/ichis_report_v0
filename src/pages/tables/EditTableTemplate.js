@@ -10,6 +10,7 @@ import {
     TableBody,
     TableRow,
     NoticeBox,
+    Button,
 } from '@dhis2/ui';
 import { useParams, useNavigate } from 'react-router-dom';
 import styles from './styles/EditTableTemplate.style';
@@ -29,16 +30,20 @@ import { useTableActions, useTableState } from '../../context/tableContext';
 import HelpButton from '../../components/HelpButton';
 import AutosaveStatus from './edit-table-template/AutosaveStatus';
 import classes from './DeleteTableTemplate.module.css';
+import { FinalizeReport } from './FinalizeReport';
+import { useProgress } from '../../context/ProgressContext';
 
 export function EditTableTemplate() {
     const params = useParams();
     const table = useTableState();
     const dataStoreActions = useTableActions();
     const navigate = useNavigate();
+    const { updateProgress } = useProgress();
     const [notification, setNotification] = useState({
         isVisible: false,
         message: '',
     });
+    const [finalizeModalOpen, setFinalizeModalOpen] = useState(false);
 
     useEffect(() => {
         dataStoreActions.update({ ...table });
@@ -68,6 +73,10 @@ export function EditTableTemplate() {
 
     function renameTable(name) {
         dataStoreActions.update({ name });
+    }
+
+    function onFinalize() {
+        setFinalizeModalOpen(true);
     }
 
     function tableColumns() {
@@ -147,6 +156,9 @@ export function EditTableTemplate() {
                 <ButtonStrip end>
                     <AddTableDimension type="Row" />
                     <AddTableDimension type="Column" />
+                    <Button primary onClick={onFinalize} disabled={!table.rows[0]?.cells[0]?.data?.periods?.length}>
+                        {i18n.t('Finalize Report')}
+                    </Button>
                 </ButtonStrip>
             </section>
             <section>
@@ -166,6 +178,9 @@ export function EditTableTemplate() {
                         {notification.message}
                     </NoticeBox>
                 </div>
+            )}
+            {finalizeModalOpen && (
+                <FinalizeReport onClose={() => setFinalizeModalOpen(false)} />
             )}
             <style jsx>{styles}</style>
         </div>

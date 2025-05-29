@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-05-29T00:22:32.748Z\n"
-"PO-Revision-Date: 2025-05-29T00:22:32.750Z\n"
+"POT-Creation-Date: 2025-05-29T09:43:16.963Z\n"
+"PO-Revision-Date: 2025-05-29T09:43:16.964Z\n"
 
 msgid "Back"
 msgstr "Back"
@@ -16,6 +16,9 @@ msgstr "Cancel"
 
 msgid "Help"
 msgstr "Help"
+
+msgid "Submitting..."
+msgstr "Submitting..."
 
 msgid "Menu"
 msgstr "Menu"
@@ -395,6 +398,12 @@ msgstr "Edit Report"
 msgid "Success"
 msgstr "Success"
 
+msgid "Failed to finalize report"
+msgstr "Failed to finalize report"
+
+msgid "Review and finalize your report template."
+msgstr "Review and finalize your report template."
+
 msgid "No data items available"
 msgstr "No data items available"
 
@@ -598,9 +607,6 @@ msgstr "Are you sure you want to delete this report template?"
 
 msgid "report actions"
 msgstr "report actions"
-
-msgid "Table template deleted successfully"
-msgstr "Table template deleted successfully"
 
 msgid "No tables have been created yet."
 msgstr "No tables have been created yet."
