@@ -53,50 +53,80 @@ export function GeneratedTable() {
             console.error("Nothing to print - ref not attached");
             return;
         }
-
+    
         setIsPrinting(true);
-
+    
         const printContent = printRef.current.cloneNode(true);
-
-        // Ensure logo is visible in print by setting explicit attributes
+    
+        // Force image dimensions for print
         const logos = printContent.querySelectorAll(`.${classes.logo}`);
         logos.forEach(logo => {
             logo.style.maxWidth = '200px';
             logo.style.height = 'auto';
-            logo.style.display = 'block';
-            logo.style.position = 'static'; // Override absolute positioning for print
-            // Ensure the src attribute is preserved for base64 or external URLs
-            if (logo.src) {
-                logo.setAttribute('src', logo.src);
+        });
+    
+        // Remove visualizations title from print content
+        const visualizationsTitle = printContent.querySelector(`.${classes.visualizationsTitle}`);
+        if (visualizationsTitle) {
+            visualizationsTitle.remove();
+        }
+    
+        // Remove SegmentedControl and ButtonStrip from visualizations
+        const segmentedControls = printContent.querySelectorAll('[data-test^="dhis2-uicore-segmentedcontrol"], .segmented-control');
+        segmentedControls.forEach(control => control.remove());
+        
+        const buttonStrips = printContent.querySelectorAll('[data-test^="dhis2-uicore-buttonstrip"], .button-strip');
+        buttonStrips.forEach(strip => strip.remove());
+    
+        // Also remove any Box containers that contain these controls
+        const controlBoxes = printContent.querySelectorAll('div[style*="justify-content: space-between"]');
+        controlBoxes.forEach(box => {
+            // Check if this box contains visualization controls
+            const hasSegmentedControl = box.querySelector('[data-test^="dhis2-uicore-segmentedcontrol"], .segmented-control');
+            const hasButtonStrip = box.querySelector('[data-test^="dhis2-uicore-buttonstrip"], .button-strip');
+            if (hasSegmentedControl || hasButtonStrip) {
+                box.remove();
             }
         });
-
+    
         // Create a clone of the content to print
         const contentClone = printRef.current.cloneNode(true);
+        
+        // Also remove visualizations title from the content clone
+        const visualizationsTitleInClone = contentClone.querySelector(`.${classes.visualizationsTitle}`);
+        if (visualizationsTitleInClone) {
+            visualizationsTitleInClone.remove();
+        }
+    
+        // Remove controls from content clone as well
+        const segmentedControlsInClone = contentClone.querySelectorAll('[data-test^="dhis2-uicore-segmentedcontrol"], .segmented-control');
+        segmentedControlsInClone.forEach(control => control.remove());
+        
+        const buttonStripsInClone = contentClone.querySelectorAll('[data-test^="dhis2-uicore-buttonstrip"], .button-strip');
+        buttonStripsInClone.forEach(strip => strip.remove());
+    
+        const controlBoxesInClone = contentClone.querySelectorAll('div[style*="justify-content: space-between"]');
+        controlBoxesInClone.forEach(box => {
+            const hasSegmentedControl = box.querySelector('[data-test^="dhis2-uicore-segmentedcontrol"], .segmented-control');
+            const hasButtonStrip = box.querySelector('[data-test^="dhis2-uicore-buttonstrip"], .button-strip');
+            if (hasSegmentedControl || hasButtonStrip) {
+                box.remove();
+            }
+        });
+        
         contentClone.id = "print-content-clone";
         contentClone.style.position = "absolute";
         contentClone.style.left = "-9999px";
         document.body.appendChild(contentClone);
-
-            // Ensure logo is visible in print
-    const logo = contentClone.querySelector(`.${classes.logo}`);
-    if (logo) {
-        logo.style.maxWidth = '200px';
-        logo.style.height = 'auto';
-        logo.style.display = 'block';
-        logo.style.position = 'static';
-        logo.style.visibility = 'visible';
-    }
-
+    
         // Create print window
         const printWindow = window.open('', '_blank');
         if (!printWindow) {
             alert(i18n.t('Pop-up blocked. Please allow pop-ups to print.'));
-            document.body.removeChild(contentClone);
             setIsPrinting(false);
             return;
         }
-
+    
         printWindow.document.write(`
             <!DOCTYPE html>
             <html>
@@ -109,16 +139,12 @@ export function GeneratedTable() {
                     table { border-collapse: collapse; width: 100%; }
                     th, td { border: 1px solid #ddd; padding: 8px; }
                     th { background-color: #f2f2f2; }
-                    .logo-container { 
-                        margin-bottom: 20px; 
-                        text-align: left; 
-                    }
-                    img.logo { 
-                        max-width: 200px; 
-                        height: auto; 
-                        display: block; 
-                        position: static; 
-                    }
+                    /* Hide visualizations title and controls in print */
+                    .${classes.visualizationsTitle} { display: none !important; }
+                    [data-test^="dhis2-uicore-segmentedcontrol"] { display: none !important; }
+                    [data-test^="dhis2-uicore-buttonstrip"] { display: none !important; }
+                    .segmented-control { display: none !important; }
+                    .button-strip { display: none !important; }
                 </style>
             </head>
             <body>
@@ -135,7 +161,7 @@ export function GeneratedTable() {
             </html>
         `);
         printWindow.document.close();
-
+    
         // Clean up
         setTimeout(() => {
             document.body.removeChild(contentClone);
@@ -143,6 +169,7 @@ export function GeneratedTable() {
         }, 1000);
     }, []);
 
+    
     const handleLogoUpload = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -203,16 +230,13 @@ export function GeneratedTable() {
                     <div className={classes.actionButtons}>
                         <Button
                             className={classes.actionButton}
-                            primary
                             onClick={toggleReportParamsDialog}
                         >
                             <Icon name="settings" className={classes.buttonIcon} />
-                            
                             {i18n.t('Parameters')}
                         </Button>
                         <Button
                             className={classes.actionButton}
-                            primary
                             onClick={() => navigate(getPath(EDIT_TABLE, id))}
                         >
                             <Icon name="table_chart" className={classes.buttonIcon} />
@@ -229,7 +253,6 @@ export function GeneratedTable() {
                         </Button>
                         <Button
                             className={classes.actionButton}
-                            primary
                             onClick={triggerFileInput}
                         >
                             <Icon name="image" className={classes.buttonIcon} />
@@ -268,18 +291,11 @@ export function GeneratedTable() {
 
                 <Card className={classes.reportCard}>
                     <div className={classes.header}>
-                        <div className={`${classes.logoContainer} printableArea`}>
-                            <img
-                                src={logoUrl}
-                                alt="Report Logo"
-                                className={classes.logo}
-                                onLoad={() => console.log('Logo loaded')}
-                                onError={(e) => {
-                                    console.error('Logo failed to load', e);
-                                    e.target.style.display = 'none';
-                                }}
-                            />
-                        </div>
+                        <img
+                            src={logoUrl}
+                            alt="Report Logo"
+                            className={classes.logo}
+                        />
                         <h1 className={classes.title}>{table.name || i18n.t('Report')}</h1>
                         {table.description && (
                             <span className={classes.description}>{table.description}</span>
@@ -301,8 +317,8 @@ export function GeneratedTable() {
 
                     {(reportParams.selectedOrgUnits.length > 0 || reportParams.selectedPeriods.length > 0) && (
                         <div className={classes.parametersSection}>
-                            <h2 className={classes.parametersTitle}>{i18n.t('Report Parameters')}</h2>
-                            {/* <div className={classes.parametersGrid}>
+                            {/* <h2 className={classes.parametersTitle}>{i18n.t('Report Parameters')}</h2>
+                            <div className={classes.parametersGrid}>
                                 {reportParams.selectedOrgUnits.length > 0 && (
                                     <div className={classes.parameterItem}>
                                         <div className={classes.parameterHeader}>
@@ -320,11 +336,11 @@ export function GeneratedTable() {
                                 )}
                                 {reportParams.selectedPeriods.length > 0 && (
                                     <div className={classes.parameterItem}>
-                                        {/* <div className={classes.parameterHeader}>
+                                        <div className={classes.parameterHeader}>
                                             <Icon name="calendar_today" className={classes.parameterIcon} />
                                             <span>{i18n.t('Periods')}</span>
-                                        </div> */}
-                                        {/* <div className={classes.parameterTags}>
+                                        </div>
+                                        <div className={classes.parameterTags}>
                                             {reportParams.selectedPeriods.map((period, index) => (
                                                 <span key={index} className={classes.tag}>
                                                     {period.displayName}
@@ -333,7 +349,7 @@ export function GeneratedTable() {
                                         </div>
                                     </div>
                                 )}
-                            </div> */} 
+                            </div> */}
                             <Switch
                                 checked={showVisualizations}
                                 onChange={() => setShowVisualizations(!showVisualizations)}

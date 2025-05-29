@@ -156,9 +156,9 @@ export function EditTableTemplate() {
                 <ButtonStrip end>
                     <AddTableDimension type="Row" />
                     <AddTableDimension type="Column" />
-                    <Button primary onClick={onFinalize} disabled={!table.rows[0]?.cells[0]?.data?.periods?.length}>
+                    {/* <Button primary onClick={onFinalize} disabled={!table.rows[0]?.cells[0]?.data?.periods?.length}>
                         {i18n.t('Finalize Report')}
-                    </Button>
+                    </Button> */}
                 </ButtonStrip>
             </section>
             <section>

@@ -100,7 +100,7 @@
 }
 
 .fileInput {
-    display: none; /* Hide file input */
+    display: none;
 }
 
 .themeSwitch {
@@ -127,24 +127,24 @@
 
 .header {
     margin-bottom: 20px;
-    position: relative;
+    text-align: center;
+}
+
+.logoContainer {
+    margin-bottom: 5px;
+    text-align: left;
 }
 
 .logo {
-    width: 150px;
-    height: 50px;
-    object-fit: contain;
-    position: absolute;
-    top: 0;
-    left: 0;
+    max-width: 150px;
+    height: auto;
+    display: block;
 }
 
 .title {
     font-size: 24px;
     font-weight: 700;
     color: #222;
-    text-align: center;
-    margin-top: 60px;
 }
 
 .darkMode .title {
@@ -159,7 +159,6 @@
     font-size: 14px;
     color: #0052cc;
     margin: 10px auto;
-    text-align: center;
     max-width: 80%;
 }
 
@@ -367,11 +366,79 @@
 }
 
 .printableArea {
-    display: block; /* Ensure the printable area is always visible in the DOM */
-    width: 100%;
+    display: block;
 }
 
- 
+@media print {
+    .container, .sidebar, .mainContent, .reportCard {
+        display: block !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        background: none !important;
+    }
+    .logoContainer {
+        margin-bottom: 15mm !important;
+        text-align: left !important;
+    }
+    .logo {
+        max-width: 500px !important;
+        height: auto !important;
+        position: static !important;
+        display: block !important;
+    }
+    .printableArea {
+        display: block !important;
+        visibility: visible !important;
+        width: 100% !important;
+    }
+    .header {
+        margin-bottom: 10mm !important;
+        text-align: center !important;
+    }
+    .title {
+        font-size: 16pt !important;
+        font-weight: bold !important;
+    }
+    .description {
+        font-size: 10pt !important;
+        margin: 5mm 0 !important;
+        background: none !important;
+        color: #444 !important;
+    }
+    .dateTime {
+        font-size: 10pt !important;
+        margin: 5mm 0 !important;
+    }
+    .errorBanner {
+        background: #ffebee !important;
+        color: #d32f2f !important;
+    }
+    .parametersSection {
+        margin-bottom: 10mm !important;
+    }
+    .parametersTitle {
+        font-size: 12pt !important;
+    }
+    .parameterItem {
+        background: none !important;
+    }
+    .tag {
+        background: #f0f0f0 !important;
+        color: #000 !important;
+    }
+    .table th, .table td {
+        border: 1px solid #ccc !important;
+        font-size: 10pt !important;
+    }
+    .table th {
+        background: #f5f5f5 !important;
+    }
+    .visualizations {
+        display: none !important; /* Hide visualizations in print */
+    }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {
@@ -392,8 +459,7 @@
         padding: 15px;
     }
     .logo {
-        width: 250px;
-        height: 40px;
+        max-width: 80px;
     }
     .title {
         font-size: 20px;
@@ -402,46 +468,5 @@
     .description {
         font-size: 13px;
         max-width: 90%;
-    }
-}
-
-.logoContainer {
-    margin-bottom: 20px;
-    text-align: left;
-}
- 
-@media print {
-    body * {
-        visibility: hidden;
-    }
-    
-    .printableArea, .printableArea * {
-        visibility: visible;
-    }
-    
-    .printableArea {
-        position: static;
-        width: 100%;
-        height: auto;
-    }
-    
-    .logoContainer {
-        display: block !important;
-        text-align: left !important;
-        margin-bottom: 20px !important;
-        position: static !important;
-    }
-    
-    .logo {
-        max-width: 250px !important;
-        height: auto !important;
-        position: static !important;
-        display: block !important;
-        visibility: visible !important;
-    }
-    
-    /* Hide non-essential elements */
-    .no-print, .sidebar, .actionButtons {
-        display: none !important;
     }
 }
