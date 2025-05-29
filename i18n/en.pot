@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-05-28T18:33:41.234Z\n"
-"PO-Revision-Date: 2025-05-28T18:33:41.235Z\n"
+"POT-Creation-Date: 2025-05-28T22:46:42.369Z\n"
+"PO-Revision-Date: 2025-05-28T22:46:42.370Z\n"
 
 msgid "Back"
 msgstr "Back"
@@ -107,43 +107,11 @@ msgstr "View & Edit"
 msgid "Delete"
 msgstr "Delete"
 
-msgid "Custom Tables"
-msgstr "Custom Tables"
-
-msgid ""
-"Create, view, and edit custom reports. Text and data contents of the "
-"reports can be chosen on a cell-by-cell basis."
-msgstr ""
-"Create, view, and edit custom reports. Text and data contents of the "
-"reports can be chosen on a cell-by-cell basis."
-
-msgid "View Tables"
-msgstr "View Tables"
-
-msgid "Custom Reports"
-msgstr "Custom Reports"
-
-msgid ""
-"Create, view, and edit custom reports. Add text, images, and DHIS assets to "
-"a printable and downloadable report document."
-msgstr ""
-"Create, view, and edit custom reports. Add text, images, and DHIS assets to "
-"a printable and downloadable report document."
-
-msgid "View Reports"
-msgstr "View Reports"
-
-msgid "View instructions for using the Configurable Reports tools."
-msgstr "View instructions for using the Configurable Reports tools."
-
-msgid "View Instructions"
-msgstr "View Instructions"
-
 msgid "Failed to connect to the server. Please check your connection."
 msgstr "Failed to connect to the server. Please check your connection."
 
-msgid "Login to DHIS2"
-msgstr "Login to DHIS2"
+msgid "Log in"
+msgstr "Log in"
 
 msgid "Login Error"
 msgstr "Login Error"
@@ -163,8 +131,18 @@ msgstr "Enter your password"
 msgid "Logging in..."
 msgstr "Logging in..."
 
-msgid "Login"
-msgstr "Login"
+msgid "Don't have an account?"
+msgstr "Don't have an account?"
+
+msgid "Create an account"
+msgstr "Create an account"
+
+msgid ""
+"Log in with admin / district and feel free to do changes as system is reset "
+"every night."
+msgstr ""
+"Log in with admin / district and feel free to do changes as system is reset "
+"every night."
 
 msgid "Add {{type}}"
 msgstr "Add {{type}}"
