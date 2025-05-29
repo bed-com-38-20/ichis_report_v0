@@ -3,7 +3,7 @@ export const EDIT_TABLE = '/tables/edit';
 export const GENERATED_TABLE = '/tables/generated';
 
 export const HELP =
-    'https://github.com/KaiVandivier/custom-report-builder/blob/master/docs/tables.md';
+    'https://github.com/bed-com-38-20/ichis_report_v0';
 
 export const REPORTS = '/reports';
 

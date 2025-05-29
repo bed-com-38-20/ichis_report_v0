@@ -1,0 +1,118 @@
+/* ConditionalFormatting.css */
+
+.conditional-formatting {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .conditional-formatting h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eaeaea;
+  }
+  
+  .format-rule {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    background-color: #f9f9f9;
+    border: 1px solid #e5e5e5;
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    position: relative;
+  }
+  
+  .rule-field, .rule-operator, .rule-value, .rule-color {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .conditional-formatting label {
+    font-size: 0.875rem;
+    color: #555;
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  
+  .conditional-formatting input[type="text"],
+  .conditional-formatting input[type="number"],
+  .conditional-formatting select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  
+  .conditional-formatting input[type="text"]:focus,
+  .conditional-formatting input[type="number"]:focus,
+  .conditional-formatting select:focus {
+    border-color: #2684ff;
+    box-shadow: 0 0 0 2px rgba(38, 132, 255, 0.2);
+    outline: none;
+  }
+  
+  .conditional-formatting input[type="color"] {
+    width: 40px;
+    height: 40px;
+    padding: 2px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .remove-rule {
+    background-color: #ff4d4f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+  }
+  
+  .remove-rule:hover {
+    background-color: #ff7875;
+  }
+  
+  .add-rule {
+    background-color: #1890ff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 10px;
+  }
+  
+  .add-rule:hover {
+    background-color: #40a9ff;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .format-rule {
+      grid-template-columns: 1fr;
+    }
+    
+    .remove-rule {
+      position: static;
+      margin-top: 10px;
+      width: 100%;
+    }
+  }

@@ -13,7 +13,7 @@ export function TableProvider({ children, id }) {
     const [table, dispatch] = useReducer(tableReducer, savedTable)
 
     if (table === undefined) {
-        console.log(`No table found for ID '${id}'`)
+        console.log(`No report found for ID '${id}'`)
         return <Navigate to="/" />
     }
 

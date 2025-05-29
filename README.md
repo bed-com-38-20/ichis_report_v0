@@ -1,3 +1,16 @@
+# Custom Report Builder
+
+This is a DHIS2 app designed to provide table-building functionality with some tools that are currently unavailable to the existing pivot tables, including:
+
+-   Adding predefined text to cells
+-   Highlighting cells based on value
+-   Querying different data items for every cell
+-   Having control over the exact contents of every cell
+
+Read the Instructions for Use [on this page](https://github.com/KaiVandivier/custom-report-builder/blob/master/docs/tables.md).
+
+<hr />
+
 This project was bootstrapped with [DHIS2 Application Platform](https://github.com/dhis2/app-platform).
 
 ## Available Scripts
@@ -27,14 +40,6 @@ The build is minified and the filenames include the hashes.<br />
 A deployable `.zip` file can be found in `build/bundle`!
 
 See the section about [building](https://platform.dhis2.nu/#/scripts/build) for more information.
-
-### `yarn deploy`
-
-Deploys the built app in the `build` folder to a running DHIS2 instance.<br />
-This command will prompt you to enter a server URL as well as the username and password of a DHIS2 user with the App Management authority.<br/>
-You must run `yarn build` before running `yarn deploy`.<br />
-
-See the section about [deploying](https://platform.dhis2.nu/#/scripts/deploy) for more information.
 
 ## Learn More
 

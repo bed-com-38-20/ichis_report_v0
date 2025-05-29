@@ -83,7 +83,7 @@ const DataElementPicker = ({ onSelect }) => {
                     label="Metadata type"
                     style={{ width: '180px' }}
                 >
-                    <SingleSelectOption label="Data Elements" value="dataElements" />
+                    <SingleSelectOption label="evan chimwaza" value="dataElements" />
                     <SingleSelectOption label="Indicators" value="indicators" />
                 </SingleSelect>
                 
@@ -92,7 +92,7 @@ const DataElementPicker = ({ onSelect }) => {
                         selected={categoryComboId}
                         onChange={({ selected }) => setCategoryComboId(selected)}
                         label="Filter by category"
-                        placeholder="Select category"
+                        placeholder="Select cppppp"
                         style={{ width: '200px' }}
                     >
                         <SingleSelectOption label="All categories" value="" />
@@ -109,7 +109,7 @@ const DataElementPicker = ({ onSelect }) => {
                 <InputField
                     value={searchTerm}
                     onChange={({ value }) => setSearchTerm(value)}
-                    placeholder="Type to search..."
+                    placeholder="Type"
                     style={{ flex: 1 }}
                 />
             </div>
