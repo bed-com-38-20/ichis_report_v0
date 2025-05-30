@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-05-29T21:10:06.524Z\n"
-"PO-Revision-Date: 2025-05-29T21:10:06.525Z\n"
+"POT-Creation-Date: 2025-05-30T00:19:32.110Z\n"
+"PO-Revision-Date: 2025-05-30T00:19:32.111Z\n"
 
 msgid "Back"
 msgstr "Back"
@@ -604,6 +604,12 @@ msgstr "Tip - hover the mouse over a data cell to see its information."
 
 msgid "Create sample report"
 msgstr "Create sample report"
+
+msgid "Report name cannot be empty"
+msgstr "Report name cannot be empty"
+
+msgid "A report with this name already exists"
+msgstr "A report with this name already exists"
 
 msgid "Failed to create report"
 msgstr "Failed to create report"
