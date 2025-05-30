@@ -1,0 +1,22 @@
+.errorContainer {
+    margin-top: 16px;
+    max-width: 400px;
+    width: 100%;
+}
+
+.errorNotice {
+    background-color: #fef7f5 !important;
+    border: 1px solid #e57373 !important;
+    border-radius: 4px !important;
+    padding: 12px !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    font-size: 14px !important;
+    color: #d32f2f !important;
+}
+
+.errorNotice h3 {
+    margin: 0 0 8px 0 !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    color: #b71c1c !important;
+}
