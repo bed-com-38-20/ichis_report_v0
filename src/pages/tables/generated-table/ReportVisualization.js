@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import {
   Card,
   Divider,
@@ -14,6 +14,7 @@ import {
   IconTable16,
   IconDownload16,
   IconFullscreen16,
+  IconFullscreenExit16,
   IconMore16,
   Table,
   TableHead,
@@ -53,7 +54,7 @@ function extractMonthYear(periodName) {
   ];
   
   const monthRegex = new RegExp(months.join('|'), 'i');
-  const yearRegex = /\b(20\d{2})\b/; // Match years like 2022, 2023, etc.
+  const yearRegex = /\b(20\d{2})\b/; 
   
   const monthMatch = periodName.match(monthRegex);
   const yearMatch = periodName.match(yearRegex);
@@ -73,7 +74,6 @@ function extractMonthYear(periodName) {
   return { month, year };
 }
 
-// DHIS2 visualization color scheme - matches DHIS2 Data Visualizer
 const CHART_COLORS = [
   '#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9',
   '#f15c80', '#e4d354', '#2b908f', '#f45b5b', '#91e8e1'
@@ -90,7 +90,6 @@ const ANALYTICS_VISUALIZATION_QUERY = {
         orgUnits: ouIds
       });
       
-      // Check if we have multiple periods or a single one
       const manyPeriods = peIds.includes(';');
       
       // Always include periods as dimension for x-axis
@@ -119,10 +118,55 @@ const ANALYTICS_VISUALIZATION_QUERY = {
 };
 
 function ReportVisualizations({ selectedOrgUnits, selectedPeriods }) {
-  // State hooks
   const [visualizationType, setVisualizationType] = useState('column');
   const table = useTableState();
-  
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const visualizationRef = useRef(null);
+
+  // A function for handling fullscreen
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      const isNowFullscreen = !!document.fullscreenElement || !!document.webkitFullscreenElement || !!document.msFullscreenElement;
+      setIsFullscreen(isNowFullscreen);
+      // Force recharts to recalculate size after fullscreen change
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+      }, 100);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('msfullscreenchange', handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('msfullscreenchange', handleFullscreenChange);
+    };
+  }, []);
+
+  const handleFullscreenToggle = () => {
+    if (!visualizationRef.current) return;
+
+    if (!isFullscreen) {
+      const requestFullscreen = visualizationRef.current.requestFullscreen ||
+                               visualizationRef.current.webkitRequestFullscreen ||
+                               visualizationRef.current.msRequestFullscreen;
+      if (requestFullscreen) {
+        requestFullscreen.call(visualizationRef.current).catch((err) => {
+          console.error('Failed to enter fullscreen:', err);
+        });
+      }
+    } else {
+      const exitFullscreen = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+      if (exitFullscreen) {
+        exitFullscreen.call(document).catch((err) => {
+          console.error('Failed to exit fullscreen:', err);
+        });
+      }
+    }
+  };
+
   // Extract all data items and their values from the table
   const { dataItems, tableData } = useMemo(() => {
     const items = [];
@@ -333,7 +377,7 @@ function ReportVisualizations({ selectedOrgUnits, selectedPeriods }) {
       });
     }
     
-  // Sort resultData chronologically if possible
+    // Sort resultData chronologically if possible
     resultData.sort((a, b) => {
       // For standard period IDs with years (like 202205, 202206), we can sort numerically
       if (a.id.match(/^\d{6}$/) && b.id.match(/^\d{6}$/)) {
@@ -520,38 +564,61 @@ function ReportVisualizations({ selectedOrgUnits, selectedPeriods }) {
       </Card>
     );
   }
+
+  // Dynamic styles based on fullscreen state
+  const containerStyles = isFullscreen ? {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100vw',
+    height: '100vh',
+    zIndex: 9999,
+    backgroundColor: 'white',
+    display: 'flex',
+    flexDirection: 'column'
+  } : {};
+
+  // Dynamic chart height based on fullscreen state
+  const chartHeight = isFullscreen ? 'calc(100vh - 120px)' : '400px';
   
   return (
-    <Card>
-      <Box padding="16px">
-        {/* Header with visualization type selection */}
-        <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="16px">
-          <SegmentedControl
-            options={[
-              { label: '', value: 'column', icon: <IconVisualizationColumn16 /> },
-              { label: '', value: 'line', icon: <IconVisualizationLine16 /> },
-              { label: '', value: 'pie', icon: <IconVisualizationPie16 /> },
-              { label: '', value: 'table', icon: <IconTable16 /> }
-            ]}
-            selected={visualizationType}
-            onChange={handleVisualizationTypeChange}
-          />
+    <div ref={visualizationRef} style={containerStyles}>
+      <Card style={{ height: isFullscreen ? '100%' : 'auto', display: 'flex', flexDirection: 'column' }}>
+        <Box padding="16px" style={{ flex: isFullscreen ? '0 0 auto' : 'none' }}>
+          {/* Header with visualization type selection */}
+          <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="16px">
+            <SegmentedControl
+              options={[
+                { label: 'Bar Chart', value: 'column', icon: <IconVisualizationColumn16 /> },
+                { label: 'Line Chart', value: 'line', icon: <IconVisualizationLine16 /> },
+                { label: 'Pie Chart', value: 'pie', icon: <IconVisualizationPie16 /> },
+                { label: 'Table', value: 'table', icon: <IconTable16 /> }
+              ]}
+              selected={visualizationType}
+              onChange={handleVisualizationTypeChange}
+            />
+            
+            <ButtonStrip>
+              <Button
+                small
+                icon={isFullscreen ? <IconFullscreenExit16 /> : <IconFullscreen16 />}
+                onClick={() => handleFullscreenToggle()}
+              >
+                {i18n.t(isFullscreen ? 'Exit Fullscreen' : 'Fullscreen')}
+              </Button>
+              <Button small icon={<IconMore16 />} />
+            </ButtonStrip>
+          </Box>
           
-          <ButtonStrip>
-            <Button small icon={<IconDownload16 />}>
-              {i18n.t('Download')}
-            </Button>
-            <Button small icon={<IconFullscreen16 />}>
-              {i18n.t('Fullscreen')}
-            </Button>
-            <Button small icon={<IconMore16 />} />
-          </ButtonStrip>
+          <Divider margin="0 0 16px 0" />
         </Box>
         
-        <Divider margin="0 0 16px 0" />
-        
-        {/* Chart visualization area */}
-        <Box height="400px">
+        {/* Chart visualization area with dynamic height */}
+        <Box 
+          height={chartHeight} 
+          padding="0 16px 16px 16px"
+          style={{ flex: isFullscreen ? '1 1 auto' : 'none' }}
+        >
           {/* Column chart */}
           {visualizationType === 'column' && (
             <ResponsiveContainer width="100%" height="100%">
@@ -672,7 +739,7 @@ function ReportVisualizations({ selectedOrgUnits, selectedPeriods }) {
                   nameKey="name"
                   cx="50%"
                   cy="50%"
-                  outerRadius={130}
+                  outerRadius={isFullscreen ? 200 : 130}
                   innerRadius={0}
                   labelLine={true}
                   label={(entry) => entry.value > 0 ? `${entry.name}: ${entry.value.toLocaleString()}` : null}
@@ -732,14 +799,14 @@ function ReportVisualizations({ selectedOrgUnits, selectedPeriods }) {
             </Box>
           )}
         </Box>
-      </Box>
-    </Card>
+      </Card>
+    </div>
   );
 }
 
 ReportVisualizations.propTypes = {
   selectedOrgUnits: PropTypes.array.isRequired,
-  selectedPeriods: PropTypes.array.isRequired
+  selectedPeriods: PropTypes.array.isRequired,
 };
 
 export default ReportVisualizations;
