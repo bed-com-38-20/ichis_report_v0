@@ -5,12 +5,10 @@ import { Button, NoticeBox } from '@dhis2/ui';
 import i18n from '../../../locales';
 import InputDialog from '../../../components/InputDialog';
 import Icon from '../../../components/Icon';
-//import { useProgress } from '../../../context/ProgressContext';
 import { useNavigate } from 'react-router-dom';
 
-export function CreateNewTableTemplate({ createNew, savedTableTemplates }) {
+export function CreateNewTableTemplate({ createNew, savedTableTemplates = [] }) {
     const [modalOpen, setModalOpen] = useState(false);
-    //const { startProcessing, updateProgress, setProgressError } = useProgress();
     const navigate = useNavigate();
     const [error, setError] = useState(null);
     const [validationError, setValidationError] = useState(null);
@@ -40,27 +38,27 @@ export function CreateNewTableTemplate({ createNew, savedTableTemplates }) {
         }
 
         // Check for duplicate names (case-insensitive)
-        const isDuplicate = savedTableTemplates.some(
-            template => template.name.toLowerCase() === trimmedInput.toLowerCase()
-        );
-        if (isDuplicate) {
-            const errorMessage = i18n.t('A report with this name already exists');
-            setValidationError(errorMessage);
-            return;
+        // Add safety check for savedTableTemplates
+        if (savedTableTemplates && Array.isArray(savedTableTemplates)) {
+            const isDuplicate = savedTableTemplates.some(
+                template => template.name.toLowerCase() === trimmedInput.toLowerCase()
+            );
+            if (isDuplicate) {
+                const errorMessage = i18n.t('A report with this name already exists');
+                setValidationError(errorMessage);
+                return;
+            }
         }
 
         // If validation passes, proceed with creation
-        startProcessing('createReport');
         setError(null);
 
         try {
             await createNew(trimmedInput);
-            updateProgress('createReport', 100);
             setModalOpen(false);
             navigate('/tables/data-item');
         } catch (error) {
             const errorMessage = i18n.t('Failed to create report: {{message}}', { message: error.message });
-            setProgressError(i18n.t('Failed to create report'));
             setError(errorMessage);
             setModalOpen(false);
             console.error('Report creation failed:', error);
@@ -125,7 +123,7 @@ export function CreateNewTableTemplate({ createNew, savedTableTemplates }) {
 
 CreateNewTableTemplate.propTypes = {
     createNew: PropTypes.func.isRequired,
-    savedTableTemplates: PropTypes.arrayOf(PropTypes.object).isRequired,
+    savedTableTemplates: PropTypes.arrayOf(PropTypes.object),
 };
 
 export default CreateNewTableTemplate;

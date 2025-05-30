@@ -21,10 +21,16 @@ function InputDialog({
     initialValue = '',
 }) {
     const [inputText, setInputText] = useState(initialValue)
+    
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        onConfirm(inputText)
+    }
+    
     return (
         <Modal onClose={onCancel}>
             <ModalTitle>{title}</ModalTitle>
-            <form onSubmit={() => onConfirm(inputText)}>
+            <form onSubmit={handleSubmit}>
                 <ModalContent>
                     <InputField
                         initialFocus
@@ -40,7 +46,6 @@ function InputDialog({
                         <Button
                             primary
                             type="submit"
-                            onClick={() => onConfirm(inputText)}
                         >
                             {confirmText}
                         </Button>
