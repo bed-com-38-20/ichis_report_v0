@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-05-30T04:28:25.463Z\n"
-"PO-Revision-Date: 2025-05-30T04:28:25.464Z\n"
+"POT-Creation-Date: 2025-05-30T09:31:48.441Z\n"
+"PO-Revision-Date: 2025-05-30T09:31:48.443Z\n"
 
 msgid "Back"
 msgstr "Back"
@@ -542,8 +542,8 @@ msgstr "Data Visualizations"
 msgid "Tip - hover the mouse over a data cell to see its information."
 msgstr "Tip - hover the mouse over a data cell to see its information."
 
-msgid "Create example table"
-msgstr "Create example table"
+msgid "Create Demo report"
+msgstr "Create Demo report"
 
 msgid "Report name cannot be empty"
 msgstr "Report name cannot be empty"
@@ -582,8 +582,14 @@ msgstr ""
 msgid "Saved Reports"
 msgstr "Saved Reports"
 
-msgid "Create new table template"
-msgstr "Create new table template"
+msgid "Create Demo Report"
+msgstr "Create Demo Report"
+
+msgid "Report name"
+msgstr "Report name"
+
+msgid "Report actions"
+msgstr "Report actions"
 
 msgctxt "Application title"
 msgid "__MANIFEST_APP_TITLE"

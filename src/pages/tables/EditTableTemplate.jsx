@@ -219,13 +219,13 @@ export function EditTableTemplate() {
 
                 /* Make all headings bright and visible */
                 :global(h1, h2, h3, h4, h5, h6) {
-                    color: #1a365d !important;
+                    color:rgb(9, 11, 15) !important;
                     font-weight: 600 !important;
                 }
 
                 /* Ensure all text is dark and readable */
                 :global(.edit-table-template-container *) {
-                    color: #2d3748;
+                    color:rgb(152, 176, 218);
                 }
 
                 /* Style the page title container */
@@ -243,7 +243,7 @@ export function EditTableTemplate() {
                 /* Card styling */
                 :global(.edit-table-template-container .card) {
                     background-color: white !important;
-                    border: 1px solid #e2e8f0 !important;
+                    border: 1px solidrgb(87, 97, 192) !important;
                     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
                 }
 
@@ -253,7 +253,7 @@ export function EditTableTemplate() {
                 }
 
                 :global(.edit-table-template-container th) {
-                    background-color: #f7fafc !important;
+                    background-color:rgb(165, 194, 212) !important;
                     color: #2d3748 !important;
                     font-weight: 600 !important;
                 }

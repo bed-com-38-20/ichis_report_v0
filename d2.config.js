@@ -3,7 +3,7 @@ const config = {
     title: 'ichis-reports',
     name: 'ichis_reports',
     entryPoints: {
-        app: './src/App',
+         app: './src/App.jsx',
     },
 }
 

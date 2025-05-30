@@ -263,7 +263,7 @@ init({
 });
 
 const DEFAULT_REPORT = {
-  title: "ICHIS Demo (ICT Projects)",
+  title: "DHIS2 configurable report generator",
   subtitle: "Stock Management Report",
   logo: null,
   date: new Date().toLocaleDateString(),

@@ -95,7 +95,7 @@ export function CreateNewTableTemplate({ createNew, savedTableTemplates = [] }) 
                             backgroundColor: 'white',
                             padding: '16px',
                             borderRadius: '8px',
-                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                            boxShadow: '0 4px 12px rgba(65, 115, 180, 0.15)',
                             maxWidth: '400px',
                             width: '90%'
                         }}>

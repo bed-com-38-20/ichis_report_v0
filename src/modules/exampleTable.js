@@ -153,7 +153,7 @@ export function useExampleTable() {
 // It is the base that will be changed with a series of operations
 // to use the real instance's data
 export const exampleTable = {
-    name: 'Demo table',
+    name: 'Demo report',
     rows: [
         {
             name: 'Targets',

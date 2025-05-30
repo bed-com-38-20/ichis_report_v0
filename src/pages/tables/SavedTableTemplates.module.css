@@ -1,7 +1,6 @@
-/* SavedTableTemplates.module.css */
 .container {
     min-height: 100vh;
-    background: linear-gradient(135deg, #e0f7fa 0%, #f3e5f5 100%);
+    background: linear-gradient(135deg, #b2bcbe 0%, #f3e5f5 100%);
     font-family: 'Poppins', sans-serif;
     padding: 0;
     display: flex;
@@ -45,7 +44,7 @@
 }
 
 .templateCard {
-    background: #ffffff;
+    background: white; /* Changed from #63c4c4 */
     border-radius: 12px;
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -54,7 +53,7 @@
 
 .templateCard:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 20px rgba(47, 61, 185, 0.89);
 }
 
 .cardContent {
@@ -83,7 +82,7 @@
 .noTemplates {
     text-align: center;
     padding: 50px;
-    background: #f9fafb;
+    background: #394d43;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
@@ -103,10 +102,10 @@
         background: linear-gradient(90deg, #00695c 0%, #4527a0 100%);
     }
     .templateCard {
-        background: #37474f;
+        background: white; /* Changed from #37474f */
     }
     .templateName {
-        color: #e8eaf6;
+        color: #333333; /* Changed from #e8eaf6 for better contrast on white */
     }
     .noTemplates {
         background: #455a64;
