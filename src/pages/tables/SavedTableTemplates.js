@@ -117,7 +117,10 @@ export function SavedTableTemplates() {
             <header className={classes.header}>
                 <h1 className={classes.headerTitle}>{i18n.t('Saved Reports')}</h1>
                 <div className={classes.headerActions}>
-                    <CreateNewTableTemplate createNew={createNew} />
+                    <CreateNewTableTemplate 
+                        createNew={createNew} 
+                        savedTableTemplates={savedTableTemplates || []} 
+                    />
                     <HelpButton subsection="#saved-tables" />
                 </div>
             </header>

@@ -134,10 +134,6 @@ export function EditTableTemplate() {
                         <HelpButton subsection="#editing-a-report-template" />
                     </div>
                 </div>
-                <EditTableTemplateActions
-                    onGenerate={onGenerate}
-                    onDelete={onDelete}
-                />
             </header>
             <section className="controls">
                 <div>
@@ -172,6 +168,10 @@ export function EditTableTemplate() {
             <footer>
                 <AutosaveStatus />
             </footer>
+            <EditTableTemplateActions
+                    onGenerate={onGenerate}
+                    onDelete={onDelete}
+                />
             {notification.isVisible && (
                 <div className={classes.notification}>
                     <NoticeBox title={i18n.t('Success')}>
