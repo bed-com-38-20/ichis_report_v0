@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-05-25T18:02:34.000Z\n"
-"PO-Revision-Date: 2025-05-25T18:02:34.002Z\n"
+"POT-Creation-Date: 2025-05-30T04:28:25.463Z\n"
+"PO-Revision-Date: 2025-05-30T04:28:25.464Z\n"
 
 msgid "Back"
 msgstr "Back"
@@ -238,14 +238,26 @@ msgstr "Enter text"
 msgid "Enter static text for cell"
 msgstr "Enter static text for cell"
 
+msgid "Template successfully deleted, Go back to saved reports."
+msgstr "Template successfully deleted, Go back to saved reports."
+
+msgid "An error occurred during deletion."
+msgstr "An error occurred during deletion."
+
+msgid "Success"
+msgstr "Success"
+
+msgid "Error"
+msgstr "Error"
+
 msgid "Generate Report"
 msgstr "Generate Report"
 
-msgid "Really delete this template?"
-msgstr "Really delete this template?"
+msgid "Do you really want to delete this template?"
+msgstr "Do you really want to delete this template?"
 
-msgid "Confirm deletion"
-msgstr "Confirm deletion"
+msgid "Confirm report deletion"
+msgstr "Confirm report deletion"
 
 msgid "Lower bounds{{colon}} {{-intervalString}}"
 msgstr "Lower bounds{{colon}} {{-intervalString}}"
@@ -328,6 +340,9 @@ msgstr "Select organisation unit(s) for {{name}}"
 msgid "Do you want to delete this {{name}}?"
 msgstr "Do you want to delete this {{name}}?"
 
+msgid "Confirm deletion"
+msgstr "Confirm deletion"
+
 msgid "Edit {{ name }}"
 msgstr "Edit {{ name }}"
 
@@ -355,9 +370,6 @@ msgstr "Back to Saved Tables"
 
 msgid "Edit Table"
 msgstr "Edit Table"
-
-msgid "Success"
-msgstr "Success"
 
 msgid "No data items available"
 msgstr "No data items available"
@@ -449,12 +461,6 @@ msgstr ""
 "No data found for the selected parameters. Try changing the period or "
 "organization unit."
 
-msgid "Download"
-msgstr "Download"
-
-msgid "Fullscreen"
-msgstr "Fullscreen"
-
 msgid "Period"
 msgstr "Period"
 
@@ -473,11 +479,32 @@ msgstr "Period{{s}} - {{pe}}"
 msgid "Date - "
 msgstr "Date - "
 
+msgid "Report"
+msgstr "Report"
+
+msgid "Generated on"
+msgstr "Generated on"
+
+msgid "Pop-up blocked. Please allow pop-ups to print."
+msgstr "Pop-up blocked. Please allow pop-ups to print."
+
+msgid "An error occurred while preparing the print. Please try again."
+msgstr "An error occurred while preparing the print. Please try again."
+
 msgid "Please upload a valid image file (PNG, JPG, etc.)."
 msgstr "Please upload a valid image file (PNG, JPG, etc.)."
 
+msgid "Image file is too large. Please choose a smaller image."
+msgstr "Image file is too large. Please choose a smaller image."
+
+msgid "Error reading the image file. Please try again."
+msgstr "Error reading the image file. Please try again."
+
 msgid "One or more periods are required to query data for this table."
 msgstr "One or more periods are required to query data for this table."
+
+msgid "Back to Saved Reports"
+msgstr "Back to Saved Reports"
 
 msgid "Actions"
 msgstr "Actions"
@@ -488,32 +515,20 @@ msgstr "Parameters"
 msgid "Template"
 msgstr "Template"
 
-msgid "Preparing..."
-msgstr "Preparing..."
+msgid "Add Logo"
+msgstr "Add Logo"
+
+msgid "Printing..."
+msgstr "Printing..."
 
 msgid "Print"
 msgstr "Print"
 
-msgid "Add Logo"
-msgstr "Add Logo"
-
 msgid "Dark Mode"
 msgstr "Dark Mode"
 
-msgid "Report"
-msgstr "Report"
-
-msgid "Generated on"
-msgstr "Generated on"
-
-msgid "Report Parameters"
-msgstr "Report Parameters"
-
-msgid "Organization Units"
-msgstr "Organization Units"
-
-msgid "Periods"
-msgstr "Periods"
+msgid "Generated Report"
+msgstr "Generated Report"
 
 msgid "Show Visualizations"
 msgstr "Show Visualizations"
@@ -530,11 +545,20 @@ msgstr "Tip - hover the mouse over a data cell to see its information."
 msgid "Create example table"
 msgstr "Create example table"
 
+msgid "Report name cannot be empty"
+msgstr "Report name cannot be empty"
+
+msgid "A report with this name already exists"
+msgstr "A report with this name already exists"
+
 msgid "Create new"
 msgstr "Create new"
 
-msgid "Create new table template"
-msgstr "Create new table template"
+msgid "Create new report template"
+msgstr "Create new report template"
+
+msgid "report name"
+msgstr "report name"
 
 msgid "Create"
 msgstr "Create"
@@ -548,11 +572,18 @@ msgstr "Are you sure you want to delete this template?"
 msgid "Table actions"
 msgstr "Table actions"
 
-msgid "No tables have been created yet."
-msgstr "No tables have been created yet."
+msgid ""
+"No reports have been created yet. Start by creating a new report to get "
+"started."
+msgstr ""
+"No reports have been created yet. Start by creating a new report to get "
+"started."
 
 msgid "Saved Reports"
 msgstr "Saved Reports"
+
+msgid "Create new table template"
+msgstr "Create new table template"
 
 msgctxt "Application title"
 msgid "__MANIFEST_APP_TITLE"

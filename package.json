@@ -5,30 +5,30 @@
     "license": "BSD-3-Clause",
     "private": true,
     "scripts": {
-      "start": "d2-app-scripts start --allowJsxInJs --proxy  https://play.im.dhis2.org/stable-2-41-3-1/",
-      "build": "d2-app-scripts build",
-      "test": "d2-app-scripts test",
-      "deploy": "d2-app-scripts deploy"
+        "start": "d2-app-scripts start --allowJsxInJs --proxy  https://play.im.dhis2.org/stable-2-41-3-1/",
+        "build": "d2-app-scripts build",
+        "test": "d2-app-scripts test",
+        "deploy": "d2-app-scripts deploy"
     },
     "devDependencies": {
-      "@dhis2/cli-app-scripts": "^12.3.0",
-      "autoprefixer": "^10.4.21",
-      "postcss": "^8.5.3",
-      "tailwindcss": "3"
+        "@dhis2/cli-app-scripts": "^12.3.0",
+        "autoprefixer": "^10.4.21",
+        "postcss": "^8.5.3",
+        "tailwindcss": "3"
     },
     "dependencies": {
-      "@dhis2/analytics": "^26.13.3",
-      "@dhis2/app-runtime": "^3.14.1",
-      "@dhis2/app-service-datastore": "^1.0.0-beta.3",
-      "@dhis2/prop-types": "^3.1.2",
-      "@dhis2/ui": "^10.5.1",
-      "@material-ui/core": "^4.12.4",
-      "axios": "^1.8.4",
-      "prop-types": "^15.8.1",
-      "react": "^18.2.0",
-      "react-dom": "^18.2.0",
-      "react-router-dom": "^7.4.1",
-      "react-to-print": "^3.0.5"
-    }
-  }
-  
+        "@dhis2/analytics": "^26.13.3",
+        "@dhis2/app-runtime": "^3.14.1",
+        "@dhis2/app-service-datastore": "^1.0.0-beta.3",
+        "@dhis2/prop-types": "^3.1.2",
+        "@dhis2/ui": "^10.5.1",
+        "@material-ui/core": "^4.12.4",
+        "axios": "^1.8.4",
+        "prop-types": "^15.8.1",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-router-dom": "^7.4.1",
+        "react-to-print": "^3.0.5"
+    },
+    "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
+}

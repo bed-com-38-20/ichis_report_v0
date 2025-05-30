@@ -114,7 +114,7 @@ export function EditTableTemplate() {
     }
 
     return (
-        <div className={classes.container}>
+        <div className={`${classes.container} edit-table-template-container`}>
             <header className="header">
                 <div>
                     <BackButton
@@ -122,7 +122,7 @@ export function EditTableTemplate() {
                         text={i18n.t('Back to Saved Tables')}
                     />
                     <div className="pageTitle">
-                        <h1>{i18n.t('Edit Table')}</h1>
+                        <h1 className="main-title">{i18n.t('Edit Table')}</h1>
                         <HelpButton subsection="#editing-a-table-template" />
                     </div>
                 </div>
@@ -134,9 +134,9 @@ export function EditTableTemplate() {
             <section className="controls">
                 <div>
                     <div className="container">
-                        <h6 className="label">{i18n.t('Table name')}</h6>
+                        <h6 className="label bright-label">{i18n.t('Table name')}</h6>
                         <div className="tableName">
-                            <div>{table.name}</div>
+                            <div className="table-name-display">{table.name}</div>
                             <RenameTable
                                 name={table.name}
                                 onRename={renameTable}
@@ -169,6 +169,106 @@ export function EditTableTemplate() {
                 </div>
             )}
             <style jsx>{styles}</style>
+            <style jsx>{`
+                .edit-table-template-container {
+                    background-color: white !important;
+                    min-height: 100vh;
+                    padding: 1.5rem;
+                }
+
+                /* Main title styling */
+                :global(.main-title) {
+                    color: #1a202c !important;
+                    font-weight: 700 !important;
+                    font-size: 2rem !important;
+                    margin-bottom: 1rem !important;
+                    text-shadow: none !important;
+                }
+
+                /* Bright label styling */
+                :global(.bright-label) {
+                    color: #2d3748 !important;
+                    font-weight: 600 !important;
+                    font-size: 1rem !important;
+                    margin-bottom: 0.5rem !important;
+                }
+
+                /* Table name display */
+                :global(.table-name-display) {
+                    color: #1a365d !important;
+                    font-weight: 600 !important;
+                    font-size: 1.2rem !important;
+                }
+
+                /* Header styling */
+                :global(.header) {
+                    background-color: white !important;
+                    padding: 1rem 0 !important;
+                    border-bottom: 2px solid #e2e8f0 !important;
+                    margin-bottom: 1.5rem !important;
+                }
+
+                /* Controls section styling */
+                :global(.controls) {
+                    background-color: white !important;
+                    padding: 1rem !important;
+                    border-radius: 8px !important;
+                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+                    margin-bottom: 1.5rem !important;
+                }
+
+                /* Make all headings bright and visible */
+                :global(h1, h2, h3, h4, h5, h6) {
+                    color: #1a365d !important;
+                    font-weight: 600 !important;
+                }
+
+                /* Ensure all text is dark and readable */
+                :global(.edit-table-template-container *) {
+                    color: #2d3748;
+                }
+
+                /* Style the page title container */
+                :global(.pageTitle) {
+                    display: flex !important;
+                    align-items: center !important;
+                    gap: 1rem !important;
+                }
+
+                /* Back button styling */
+                :global(.edit-table-template-container button) {
+                    font-weight: 500 !important;
+                }
+
+                /* Card styling */
+                :global(.edit-table-template-container .card) {
+                    background-color: white !important;
+                    border: 1px solid #e2e8f0 !important;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+                }
+
+                /* Table styling */
+                :global(.edit-table-template-container table) {
+                    background-color: white !important;
+                }
+
+                :global(.edit-table-template-container th) {
+                    background-color: #f7fafc !important;
+                    color: #2d3748 !important;
+                    font-weight: 600 !important;
+                }
+
+                :global(.edit-table-template-container td) {
+                    color: #2d3748 !important;
+                }
+
+                /* Footer styling */
+                :global(footer) {
+                    background-color: white !important;
+                    padding: 1rem 0 !important;
+                    margin-top: 2rem !important;
+                }
+            `}</style>
         </div>
     );
 }
