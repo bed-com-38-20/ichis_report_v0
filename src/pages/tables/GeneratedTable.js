@@ -41,6 +41,18 @@ export function GeneratedTable() {
     const [isLoading, setIsLoading] = useState(false);
     const [animateInContent, setAnimateInContent] = useState(false);
     const [logoUrl, setLogoUrl] = useState('https://via.placeholder.com/150x50?text=Logo');
+    const [reportDescription, setReportDescription] = useState('');
+    const [isEditingDescription, setIsEditingDescription] = useState(false);
+
+    // Define formattedDateTime BEFORE handlePrint function
+    const formattedDateTime = new Date().toLocaleString(undefined, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        // hour: '2-digit',
+        // minute: '2-digit',
+        hour12: true,
+    });
 
     useEffect(() => {
         setTimeout(() => {
@@ -48,128 +60,338 @@ export function GeneratedTable() {
         }, 300);
     }, []);
 
-    const handlePrint = useCallback(() => {
+    // Add this function to handle description changes
+    const handleDescriptionChange = (event) => {
+        setReportDescription(event.target.value);
+    };
+
+    const handleDescriptionSave = () => {
+        setIsEditingDescription(false);
+    };
+
+    const handleDescriptionEdit = () => {
+        setIsEditingDescription(true);
+    };
+
+    const handlePrint = useCallback(async () => {
         if (!printRef.current) {
             console.error("Nothing to print - ref not attached");
             return;
         }
-    
-        setIsPrinting(true);
-    
-        const printContent = printRef.current.cloneNode(true);
-    
-        // Force image dimensions for print
-        const logos = printContent.querySelectorAll(`.${classes.logo}`);
-        logos.forEach(logo => {
-            logo.style.maxWidth = '200px';
-            logo.style.height = 'auto';
-        });
-    
-        // Remove visualizations title from print content
-        const visualizationsTitle = printContent.querySelector(`.${classes.visualizationsTitle}`);
-        if (visualizationsTitle) {
-            visualizationsTitle.remove();
-        }
-    
-        // Remove SegmentedControl and ButtonStrip from visualizations
-        const segmentedControls = printContent.querySelectorAll('[data-test^="dhis2-uicore-segmentedcontrol"], .segmented-control');
-        segmentedControls.forEach(control => control.remove());
-        
-        const buttonStrips = printContent.querySelectorAll('[data-test^="dhis2-uicore-buttonstrip"], .button-strip');
-        buttonStrips.forEach(strip => strip.remove());
-    
-        // Also remove any Box containers that contain these controls
-        const controlBoxes = printContent.querySelectorAll('div[style*="justify-content: space-between"]');
-        controlBoxes.forEach(box => {
-            // Check if this box contains visualization controls
-            const hasSegmentedControl = box.querySelector('[data-test^="dhis2-uicore-segmentedcontrol"], .segmented-control');
-            const hasButtonStrip = box.querySelector('[data-test^="dhis2-uicore-buttonstrip"], .button-strip');
-            if (hasSegmentedControl || hasButtonStrip) {
-                box.remove();
-            }
-        });
-    
-        // Create a clone of the content to print
-        const contentClone = printRef.current.cloneNode(true);
-        
-        // Also remove visualizations title from the content clone
-        const visualizationsTitleInClone = contentClone.querySelector(`.${classes.visualizationsTitle}`);
-        if (visualizationsTitleInClone) {
-            visualizationsTitleInClone.remove();
-        }
-    
-        // Remove controls from content clone as well
-        const segmentedControlsInClone = contentClone.querySelectorAll('[data-test^="dhis2-uicore-segmentedcontrol"], .segmented-control');
-        segmentedControlsInClone.forEach(control => control.remove());
-        
-        const buttonStripsInClone = contentClone.querySelectorAll('[data-test^="dhis2-uicore-buttonstrip"], .button-strip');
-        buttonStripsInClone.forEach(strip => strip.remove());
-    
-        const controlBoxesInClone = contentClone.querySelectorAll('div[style*="justify-content: space-between"]');
-        controlBoxesInClone.forEach(box => {
-            const hasSegmentedControl = box.querySelector('[data-test^="dhis2-uicore-segmentedcontrol"], .segmented-control');
-            const hasButtonStrip = box.querySelector('[data-test^="dhis2-uicore-buttonstrip"], .button-strip');
-            if (hasSegmentedControl || hasButtonStrip) {
-                box.remove();
-            }
-        });
-        
-        contentClone.id = "print-content-clone";
-        contentClone.style.position = "absolute";
-        contentClone.style.left = "-9999px";
-        document.body.appendChild(contentClone);
-    
-        // Create print window
-        const printWindow = window.open('', '_blank');
-        if (!printWindow) {
-            alert(i18n.t('Pop-up blocked. Please allow pop-ups to print.'));
-            setIsPrinting(false);
-            return;
-        }
-    
-        printWindow.document.write(`
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>${table.name || i18n.t('Report')}</title>
-                <style>
-                    @page { size: auto; margin: 10mm; }
-                    body { font-family: Arial, sans-serif; }
-                    .print { width: 100%; }
-                    table { border-collapse: collapse; width: 100%; }
-                    th, td { border: 1px solid #ddd; padding: 8px; }
-                    th { background-color: #f2f2f2; }
-                    /* Hide visualizations title and controls in print */
-                    .${classes.visualizationsTitle} { display: none !important; }
-                    [data-test^="dhis2-uicore-segmentedcontrol"] { display: none !important; }
-                    [data-test^="dhis2-uicore-buttonstrip"] { display: none !important; }
-                    .segmented-control { display: none !important; }
-                    .button-strip { display: none !important; }
-                </style>
-            </head>
-            <body>
-                <div class="print">
-                    ${contentClone.innerHTML}
-                </div>
-                <script>
-                    setTimeout(function() {
-                        window.print();
-                        window.close();
-                    }, 300);
-                </script>
-            </body>
-            </html>
-        `);
-        printWindow.document.close();
-    
-        // Clean up
-        setTimeout(() => {
-            document.body.removeChild(contentClone);
-            setIsPrinting(false);
-        }, 1000);
-    }, []);
 
-    
+        setIsPrinting(true);
+
+        try {
+            // Wait for all images to load before printing
+            const images = printRef.current.querySelectorAll('img');
+            const imagePromises = Array.from(images).map(img => {
+                return new Promise((resolve) => {
+                    if (img.complete) {
+                        resolve();
+                    } else {
+                        img.onload = resolve;
+                        img.onerror = resolve; // Resolve even on error to not block printing
+                    }
+                });
+            });
+
+            await Promise.all(imagePromises);
+
+            const printContent = printRef.current.cloneNode(true);
+
+            // Create a header with the new layout for the print content
+            const printHeader = document.createElement('div');
+            printHeader.className = 'print-header';
+            printHeader.style.cssText = `
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                padding: 20px 0;
+                margin-bottom: 30px;
+                border-bottom: 2px solid #eee;
+                page-break-inside: avoid;
+            `;
+
+            // Create header content container
+            const headerContent = document.createElement('div');
+            headerContent.style.cssText = `
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                width: 100%;
+            `;
+
+            // Add logo/avatar section if logo exists and is not placeholder
+            if (logoUrl && logoUrl !== 'https://via.placeholder.com/150x50?text=Logo') {
+                const avatarContainer = document.createElement('div');
+                avatarContainer.style.cssText = `
+                    flex-shrink: 0;
+                    width: 56px;
+                    height: 56px;
+                    border-radius: 8px;
+                    overflow: hidden;
+                    background: #f5f5f5;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                `;
+
+                const logoImg = document.createElement('img');
+                logoImg.src = logoUrl;
+                logoImg.alt = 'Report Logo';
+                logoImg.style.cssText = `
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                `;
+
+                avatarContainer.appendChild(logoImg);
+                headerContent.appendChild(avatarContainer);
+            }
+
+            // Create info section container
+            const infoSection = document.createElement('div');
+            infoSection.style.cssText = `
+                flex: 1;
+                min-width: 0;
+            `;
+
+            // Add report title
+            const titleElement = document.createElement('h1');
+            titleElement.textContent = table.name || i18n.t('Report');
+            titleElement.style.cssText = `
+                margin: 0 0 4px 0;
+                font-size: 20px;
+                font-weight: 600;
+                color: #1a1a1a;
+                line-height: 1.3;
+            `;
+            infoSection.appendChild(titleElement);
+
+            // Add description if exists
+            if (table.description) {
+                const descElement = document.createElement('p');
+                descElement.textContent = table.description;
+                descElement.style.cssText = `
+                    margin: 0 0 4px 0;
+                    font-size: 14px;
+                    color: #666;
+                    line-height: 1.4;
+                `;
+                infoSection.appendChild(descElement);
+            }
+
+            // Add generation date
+            const dateElement = document.createElement('span');
+            dateElement.textContent = `${i18n.t('Generated on')} ${formattedDateTime}`;
+            dateElement.style.cssText = `
+                font-size: 12px;
+                color: #999;
+                font-weight: 400;
+            `;
+            infoSection.appendChild(dateElement);
+
+            headerContent.appendChild(infoSection);
+            printHeader.appendChild(headerContent);
+
+            // Remove existing logos from the cloned content to avoid duplicates
+            const existingLogos = printContent.querySelectorAll(`.${classes.logo}, .${classes.logoPreview}`);
+            existingLogos.forEach(logo => logo.remove());
+
+            // Remove visualizations title from print content
+            const visualizationsTitle = printContent.querySelector(`.${classes.visualizationsTitle}`);
+            if (visualizationsTitle) {
+                visualizationsTitle.remove();
+            }
+
+            // Remove SegmentedControl and ButtonStrip from visualizations
+            const segmentedControls = printContent.querySelectorAll('[data-test^="dhis2-uicore-segmentedcontrol"], .segmented-control');
+            segmentedControls.forEach(control => control.remove());
+
+            const buttonStrips = printContent.querySelectorAll('[data-test^="dhis2-uicore-buttonstrip"], .button-strip');
+            buttonStrips.forEach(strip => strip.remove());
+
+            // Remove control boxes
+            const controlBoxes = printContent.querySelectorAll('div[style*="justify-content: space-between"]');
+            controlBoxes.forEach(box => {
+                const hasSegmentedControl = box.querySelector('[data-test^="dhis2-uicore-segmentedcontrol"], .segmented-control');
+                const hasButtonStrip = box.querySelector('[data-test^="dhis2-uicore-buttonstrip"], .button-strip');
+                if (hasSegmentedControl || hasButtonStrip) {
+                    box.remove();
+                }
+            });
+
+            // Create print window
+            const printWindow = window.open('', '_blank');
+            if (!printWindow) {
+                alert(i18n.t('Pop-up blocked. Please allow pop-ups to print.'));
+                setIsPrinting(false);
+                return;
+            }
+
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>${table.name || i18n.t('Report')}</title>
+                    <style>
+                        @page { 
+                            size: auto; 
+                            margin: 15mm; 
+                        }
+                        body { 
+                            font-family: Arial, sans-serif; 
+                            margin: 0;
+                            padding: 0;
+                            line-height: 1.4;
+                        }
+                        .print { 
+                            width: 100%; 
+                        }
+                        .print-header {
+                            display: flex !important;
+                            align-items: center !important;
+                            gap: 16px !important;
+                            padding: 20px 0 !important;
+                            margin-bottom: 30px !important;
+                            border-bottom: 2px solid #eee !important;
+                            page-break-inside: avoid !important;
+                        }
+                        .print-header > div {
+                            display: flex !important;
+                            align-items: center !important;
+                            gap: 16px !important;
+                            width: 100% !important;
+                        }
+                        .print-header img {
+                            width: 56px !important;
+                            height: 56px !important;
+                            object-fit: cover !important;
+                            border-radius: 8px !important;
+                            flex-shrink: 0 !important;
+                        }
+                        .print-header h1 {
+                            margin: 0 0 4px 0 !important;
+                            font-size: 20px !important;
+                            font-weight: 600 !important;
+                            color: #1a1a1a !important;
+                            line-height: 1.3 !important;
+                        }
+                        .print-header p {
+                            margin: 0 0 4px 0 !important;
+                            font-size: 14px !important;
+                            color: #666 !important;
+                            line-height: 1.4 !important;
+                        }
+                        .print-header span {
+                            font-size: 12px !important;
+                            color: #999 !important;
+                            font-weight: 400 !important;
+                        }
+                        table { 
+                            border-collapse: collapse; 
+                            width: 100%; 
+                            margin: 20px 0;
+                        }
+                        th, td { 
+                            border: 1px solid #ddd; 
+                            padding: 8px; 
+                            text-align: left;
+                        }
+                        th { 
+                            background-color: #f2f2f2; 
+                            font-weight: bold;
+                        }
+                        
+                        /* Hide unwanted elements in print */
+                        .${classes.visualizationsTitle} { 
+                            display: none !important; 
+                        }
+                        [data-test^="dhis2-uicore-segmentedcontrol"] { 
+                            display: none !important; 
+                        }
+                        [data-test^="dhis2-uicore-buttonstrip"] { 
+                            display: none !important; 
+                        }
+                        .segmented-control { 
+                            display: none !important; 
+                        }
+                        .button-strip { 
+                            display: none !important; 
+                        }
+                        
+                        /* Print-specific layout adjustments */
+                        @media print {
+                            body { 
+                                -webkit-print-color-adjust: exact !important; 
+                                print-color-adjust: exact !important;
+                            }
+                            .print-header {
+                                page-break-after: avoid !important;
+                            }
+                            .print-header img {
+                                page-break-inside: avoid !important;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="print">
+                        ${printHeader.outerHTML}
+                        ${printContent.innerHTML}
+                    </div>
+                    <script>
+                        // Wait for images to load in the print window too
+                        function waitForImages() {
+                            const images = document.querySelectorAll('img');
+                            const promises = Array.from(images).map(img => {
+                                return new Promise((resolve) => {
+                                    if (img.complete) {
+                                        resolve();
+                                    } else {
+                                        img.onload = resolve;
+                                        img.onerror = resolve;
+                                    }
+                                });
+                            });
+                            
+                            Promise.all(promises).then(() => {
+                                setTimeout(() => {
+                                    window.print();
+                                    window.close();
+                                }, 1000); // Increased timeout to ensure logo loads
+                            });
+                        }
+                        
+                        if (document.readyState === 'complete') {
+                            waitForImages();
+                        } else {
+                            window.addEventListener('load', waitForImages);
+                        }
+                    </script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+
+        } catch (error) {
+            console.error('Print error:', error);
+            alert(i18n.t('An error occurred while preparing the print. Please try again.'));
+        } finally {
+            setIsPrinting(false);
+        }
+    }, [logoUrl, table.name, table.description, formattedDateTime]);
+
+
+
+
+
+
+
+
+
+
+
     const handleLogoUpload = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -177,9 +399,19 @@ export function GeneratedTable() {
                 alert(i18n.t('Please upload a valid image file (PNG, JPG, etc.).'));
                 return;
             }
+
+            // Check file size (optional)
+            if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                alert(i18n.t('Image file is too large. Please choose a smaller image.'));
+                return;
+            }
+
             const reader = new FileReader();
             reader.onload = () => {
                 setLogoUrl(reader.result);
+            };
+            reader.onerror = () => {
+                alert(i18n.t('Error reading the image file. Please try again.'));
             };
             reader.readAsDataURL(file);
         }
@@ -211,14 +443,6 @@ export function GeneratedTable() {
     }
 
     const isPrintDisabled = periodParamNeeded && !reportParams.selectedPeriods.length;
-    const formattedDateTime = new Date().toLocaleString(undefined, {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true,
-    });
 
     return (
         <div id="generated-table" className={`${classes.container} ${isDarkMode ? classes.darkMode : ''}`}>
@@ -230,6 +454,7 @@ export function GeneratedTable() {
                     <div className={classes.actionButtons}>
                         <Button
                             className={classes.actionButton}
+                            primary
                             onClick={toggleReportParamsDialog}
                         >
                             <Icon name="settings" className={classes.buttonIcon} />
@@ -237,22 +462,17 @@ export function GeneratedTable() {
                         </Button>
                         <Button
                             className={classes.actionButton}
+                            primary
                             onClick={() => navigate(getPath(EDIT_TABLE, id))}
                         >
                             <Icon name="table_chart" className={classes.buttonIcon} />
                             {i18n.t('Template')}
                         </Button>
+
+
                         <Button
                             className={classes.actionButton}
                             primary
-                            onClick={handlePrint}
-                            disabled={isPrintDisabled || isPrinting}
-                        >
-                            <Icon name="print" className={classes.buttonIcon} />
-                            {isPrinting ? i18n.t('Printing...') : i18n.t('Print')}
-                        </Button>
-                        <Button
-                            className={classes.actionButton}
                             onClick={triggerFileInput}
                         >
                             <Icon name="image" className={classes.buttonIcon} />
@@ -265,6 +485,16 @@ export function GeneratedTable() {
                             accept="image/*"
                             className={classes.fileInput}
                         />
+
+                        <Button
+                            className={classes.actionButton}
+                            primary
+                            onClick={handlePrint}
+                            disabled={isPrintDisabled || isPrinting}
+                        >
+                            <Icon name="print" className={classes.buttonIcon} />
+                            {isPrinting ? i18n.t('Printing...') : i18n.t('Print')}
+                        </Button>
                     </div>
                     <Switch
                         checked={isDarkMode}
@@ -290,19 +520,61 @@ export function GeneratedTable() {
                 )}
 
                 <Card className={classes.reportCard}>
+
+
                     <div className={classes.header}>
-                        <img
-                            src={logoUrl}
-                            alt="Report Logo"
-                            className={classes.logo}
-                        />
-                        <h1 className={classes.title}>{table.name || i18n.t('Report')}</h1>
-                        {table.description && (
-                            <span className={classes.description}>{table.description}</span>
-                        )}
-                        <div className={classes.dateTime}>
-                            <Icon name="today" className={classes.dateIcon} />
-                            {i18n.t('Generated on')} {formattedDateTime}
+                        <div className={classes.headerContent}>
+                            {/* Avatar/Logo Section */}
+                            <div className={classes.headerAvatar}>
+                                {logoUrl !== 'https://via.placeholder.com/150x50?text=Logo' ? (
+                                    <img
+                                        src={logoUrl}
+                                        alt="Report Logo"
+                                        className={classes.avatarImage}
+                                    />
+                                ) : (
+                                    <div className={classes.avatarPlaceholder}>
+                                        <Icon name="image" />
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Title and Info Section */}
+                            <div className={classes.headerInfo}>
+                                <h1 className={classes.headerTitle}>
+                                    {table.name || i18n.t('Report')}
+                                </h1>
+
+                                {/* {selectedPeriods.length ? (
+                                    <p>
+                                        {i18n.t('Period{{s}} - {{pe}}', {
+                                            s: selectedPeriods.length > 1 ? 's' : '',
+                                            pe: getSelectedNames(selectedPeriods),
+                                        })}
+                                    </p>
+                                ) : null} */}
+                                {/* <p className={classes.headerSubtitle}>
+                                    {table.description || i18n.t('Generated Report')}
+                                </p> */}
+                                <span className={classes.headerDate}>
+                                    {formattedDateTime}
+                                </span>
+
+                            </div>
+
+                            {/* Actions Section */}
+                            <div className={classes.headerActions}>
+                                {logoUrl !== 'https://via.placeholder.com/150x50?text=Logo' && (
+                                    <Button
+                                        small
+                                        secondary
+                                        onClick={() => setLogoUrl('https://via.placeholder.com/150x50?text=Logo')}
+                                        className={classes.removeLogoBtn}
+                                    >
+                                        <Icon name="delete" />
+                                    </Button>
+                                )}
+                            </div>
                         </div>
                     </div>
 
@@ -317,39 +589,6 @@ export function GeneratedTable() {
 
                     {(reportParams.selectedOrgUnits.length > 0 || reportParams.selectedPeriods.length > 0) && (
                         <div className={classes.parametersSection}>
-                            {/* <h2 className={classes.parametersTitle}>{i18n.t('Report Parameters')}</h2>
-                            <div className={classes.parametersGrid}>
-                                {reportParams.selectedOrgUnits.length > 0 && (
-                                    <div className={classes.parameterItem}>
-                                        <div className={classes.parameterHeader}>
-                                            <Icon name="location_on" className={classes.parameterIcon} />
-                                            <span>{i18n.t('Organization Units')}</span>
-                                        </div>
-                                        <div className={classes.parameterTags}>
-                                            {reportParams.selectedOrgUnits.map((unit, index) => (
-                                                <span key={index} className={classes.tag}>
-                                                    {unit.displayName}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                                {reportParams.selectedPeriods.length > 0 && (
-                                    <div className={classes.parameterItem}>
-                                        <div className={classes.parameterHeader}>
-                                            <Icon name="calendar_today" className={classes.parameterIcon} />
-                                            <span>{i18n.t('Periods')}</span>
-                                        </div>
-                                        <div className={classes.parameterTags}>
-                                            {reportParams.selectedPeriods.map((period, index) => (
-                                                <span key={index} className={classes.tag}>
-                                                    {period.displayName}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                            </div> */}
                             <Switch
                                 checked={showVisualizations}
                                 onChange={() => setShowVisualizations(!showVisualizations)}
@@ -372,17 +611,21 @@ export function GeneratedTable() {
                             <>
                                 <FootnotesProvider>
                                     <TableWithData
+
                                         {...reportParams}
                                         periodParamNeeded={periodParamNeeded}
                                         className={classes.table}
+                                        hideHeader
                                     />
                                 </FootnotesProvider>
+
                                 {showVisualizations && (
                                     <div className={classes.visualizations}>
                                         <h2 className={classes.visualizationsTitle}>
                                             <Icon name="bar_chart" className={classes.sectionIcon} />
                                             {i18n.t('Data Visualizations')}
                                         </h2>
+
                                         <ReportVisualizations
                                             selectedOrgUnits={reportParams.selectedOrgUnits}
                                             selectedPeriods={reportParams.selectedPeriods}

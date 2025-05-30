@@ -67,16 +67,16 @@ export function TableWithData({
     return (
         <>
             <div>
-                <h2 className="title">{table.name}</h2>
+                {/* <h2 className="title">{table.name}</h2> */}
 
-                {selectedOrgUnits.length ? (
+                {/* {selectedOrgUnits.length ? (
                     <p>
                         {i18n.t('Organisation Unit{{s}} - {{ou}}', {
                             s: selectedOrgUnits.length > 1 ? 's' : '',
                             ou: getSelectedNames(selectedOrgUnits),
                         })}
                     </p>
-                ) : null}
+                ) : null} */}
 
                 {selectedPeriods.length ? (
                     <p>
@@ -87,10 +87,10 @@ export function TableWithData({
                     </p>
                 ) : null}
 
-                <p>
+                {/* <p>
                     {i18n.t('Date - ')}
                     {new Date().toLocaleDateString()}
-                </p>
+                </p> */}
 
                 <Table>
                     <TableHead>{tableHeader()}</TableHead>

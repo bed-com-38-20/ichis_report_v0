@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-05-29T18:10:11.243Z\n"
-"PO-Revision-Date: 2025-05-29T18:10:11.244Z\n"
+"POT-Creation-Date: 2025-05-29T23:00:45.731Z\n"
+"PO-Revision-Date: 2025-05-29T23:00:45.732Z\n"
 
 msgid "Back"
 msgstr "Back"
@@ -545,14 +545,26 @@ msgstr "Period{{s}} - {{pe}}"
 msgid "Date - "
 msgstr "Date - "
 
-msgid "Pop-up blocked. Please allow pop-ups to print."
-msgstr "Pop-up blocked. Please allow pop-ups to print."
-
 msgid "Report"
 msgstr "Report"
 
+msgid "Generated on"
+msgstr "Generated on"
+
+msgid "Pop-up blocked. Please allow pop-ups to print."
+msgstr "Pop-up blocked. Please allow pop-ups to print."
+
+msgid "An error occurred while preparing the print. Please try again."
+msgstr "An error occurred while preparing the print. Please try again."
+
 msgid "Please upload a valid image file (PNG, JPG, etc.)."
 msgstr "Please upload a valid image file (PNG, JPG, etc.)."
+
+msgid "Image file is too large. Please choose a smaller image."
+msgstr "Image file is too large. Please choose a smaller image."
+
+msgid "Error reading the image file. Please try again."
+msgstr "Error reading the image file. Please try again."
 
 msgid "One or more periods are required to query data for this table."
 msgstr "One or more periods are required to query data for this table."
@@ -578,8 +590,8 @@ msgstr "Add Logo"
 msgid "Dark Mode"
 msgstr "Dark Mode"
 
-msgid "Generated on"
-msgstr "Generated on"
+msgid "X"
+msgstr "X"
 
 msgid "Report Parameters"
 msgstr "Report Parameters"
