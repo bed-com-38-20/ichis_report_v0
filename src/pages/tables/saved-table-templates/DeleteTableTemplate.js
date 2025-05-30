@@ -1,4 +1,3 @@
-// src/D2App/components/DeleteTableTemplate.jsx
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Modal, ModalTitle, ModalContent, ModalActions, ButtonStrip } from '@dhis2/ui';

@@ -1,4 +1,4 @@
-// src/D2App/pages/tables/edit-table-template/EditTableCell/DataSelectorDialog/DataSelectorDialog.jsx
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Modal, ModalTitle, ModalContent, ModalActions, Button, ButtonStrip } from '@dhis2/ui';
